@@ -1265,17 +1265,17 @@ function mns2dhm(mns) {
 
 function yns(x) {
   if (x == 1) {
-    return ""
+    return "";
   } else {
-    return "s"
+    return "s";
   }
 }
 
 function ynes(x) {
   if (x == 1) {
-    return "y"
+    return "y";
   } else {
-    return "ies"
+    return "ies";
   }
 }
 
@@ -2661,7 +2661,6 @@ function generalinit() {
   <a href="WatchGraph copy.html">Watch Graph copy</a>|||||
   <a href="recent.html">Recent</a>|||||
   <a href="rewatched.html">Rewatched</a>|||||
-  <a href="testing1.html">Rewatched Testing</a>|||||
   <a href="LATG.html">Custom Graph</a>|||||
   <a href="CountGraph.html">Count Graph</a>|||||
   <a href="stats.html">Stats</a>|||||

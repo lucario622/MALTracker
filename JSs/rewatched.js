@@ -1,10 +1,9 @@
 var rewaDict = {};
+var sortChoice = true;
 
 function init() {
   generalinit();
 }
-
-var n = 1;
 
 function start() {
   makeDatas();
@@ -19,20 +18,25 @@ function start() {
     }
   });
 
-  console.log(rewaDict);
+  p.onclick = () => {
+    sortChoice = !sortChoice;
+    testdisplay();
+  };
 
   testdisplay();
 }
 
 function testdisplay() {
-  erasePD();
+  d.innerHTML = "";
   data.sort(compareTitles);
-  data.sort(compareScores).reverse();
+  if (sortChoice) {
+    data.sort(compareScores).reverse();
+  } else {
+    data.sort(compareWatchDate);
+  }
   data.sort(compareRewatched);
-  let pr = document.createElement("pre");
-  pr.innerHTML = "<b>Watched\tScore\tTitle<b>";
-  pr.style.color = colors.Aired;
-  insert(d, pr);
+  p.innerHTML = "<b>Watched\tScore\tTitle<b>";
+  p.style.color = colors.Aired;
   for (let i = 0; i < data.length; i++) {
     const e = data[i];
     if (e.status != "Completed") {
@@ -49,21 +53,31 @@ function testdisplay() {
       "</b>";
     switch (e.rewatched) {
       case true:
-        if (daycount(e.startdate) < 187) {
-          pr1.style.color = "rgb(27, 102, 33)";
-        } else if (daycount(e.startdate) < 366) {
-          pr1.style.color = colors.Watching; //rgb(45,176,57)
+        if (sortChoice) {
+          if (daycount(e.startdate) < 187) {
+            pr1.style.color = "rgb(27, 102, 33)";
+          } else if (daycount(e.startdate) < 366) {
+            pr1.style.color = colors.Watching; //rgb(45,176,57)
+          } else {
+            pr1.style.color = "rgb(66, 255, 82)";
+          }
         } else {
-          pr1.style.color = "rgb(66, 255, 82)";
+          let x = (daycount(e.startdate) / 451) * 255;
+          pr1.style.color = `rgb(${x / 3},${x},${x / 3})`;
         }
         break;
       case false:
-        if (daycount(e.startdate) < 187) {
-          pr1.style.color = colors.Dropped;
-        } else if (daycount(e.startdate) < 366) {
-          pr1.style.color = colors.Sequel;
+        if (sortChoice) {
+          if (daycount(e.startdate) < 187) {
+            pr1.style.color = colors.Dropped;
+          } else if (daycount(e.startdate) < 366) {
+            pr1.style.color = colors.Sequel;
+          } else {
+            pr1.style.color = colors["On-Hold"];
+          }
         } else {
-          pr1.style.color = colors["On-Hold"];
+          let y = (daycount(e.startdate) / 451) * 255;
+          pr1.style.color = `rgb(255,${y},20)`;
         }
         break;
       default:
@@ -82,18 +96,4 @@ function testdisplay() {
     };
     insert(d, pr1);
   }
-}
-
-function compareScoreDensity(a, b) {
-  let aa = Math.pow(a.MALscore, n) / a.episodes;
-  let bb = Math.pow(b.MALscore, n) / b.episodes;
-  if (a.airStatus != "Aired") aa = 0;
-  if (b.airStatus != "Aired") bb = 0;
-  if (aa > bb) {
-    return 1;
-  }
-  if (aa < bb) {
-    return -1;
-  }
-  return 0;
 }
