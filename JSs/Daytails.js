@@ -13,11 +13,22 @@ function start() {
   baseformat = mainbd.childNodes[2];
   let allboxes = document.getElementsByClassName("information");
 
-  mainbd.innerHTML = "";
   let myDate = localStorage.getItem("transfer");
-  for (let i = 0; i < data.length; i++) {
-    const element = data[i];
-    if (element.startdate == myDate) elementlist.push(element);
+  mainbd.innerHTML =
+    "<p id='outputp' style='color:white;'>" + defaultdatetoreadable(myDate) + "</p>";
+  if (myDate.charAt(0) == "M") {
+    myDate = myDate.substring(1);
+    for (const element of data) {
+      if (
+        daycount(element.startdate) >= daycount(myDate) &&
+        daycount(element.enddate) <= daycount(myDate)
+      )
+        elementlist.push(element);
+    }
+  } else {
+    for (const element of data) {
+      if (element.startdate == myDate) elementlist.push(element);
+    }
   }
 
   data.sort(compareMALScore).reverse();
@@ -63,6 +74,5 @@ function start() {
       allboxes[i++].innerText +=
         " to " + defaultdatetoreadable(curEntry.enddate);
     else i++;
-    // i++;
   }
 }

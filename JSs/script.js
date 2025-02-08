@@ -2658,7 +2658,6 @@ function generalinit() {
   <a href="TimelineD.html">Timeline - by Day</a>|||||
   <a href="TimelineW.html">Timeline - by Watched Day</a>|||||
   <a href="WatchGraph.html">Watch Graph</a>|||||
-  <a href="WatchGraph copy.html">Watch Graph copy</a>|||||
   <a href="recent.html">Recent</a>|||||
   <a href="rewatched.html">Rewatched</a>|||||
   <a href="LATG.html">Custom Graph</a>|||||

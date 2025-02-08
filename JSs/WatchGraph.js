@@ -5,8 +5,12 @@ var maxwatched = 0;
 var offset1;
 var offset2;
 var longeststreak = ["", "", 0, 0, []];
+var byMinutes = false;
+var streakDiv;
 
 function init() {
+  streakDiv = document.createElement("div");
+  insert(document.getElementById("mainbody"), streakDiv);
   generalinit();
 }
 
@@ -21,6 +25,16 @@ function start() {
   // curday = 3;
   // curmon = 05;
   // curyear = 30;
+  document.getElementById("maintable").innerHTML = "";
+  if (byMinutes) {
+    p.textContent = "Plotting considers both start and end date";
+  } else {
+    p.textContent = "Plotting considers only start date";
+  }
+  p.onclick = () => {
+    byMinutes = !byMinutes;
+    start();
+  };
   makeDatas();
   data.sort(comparison);
   for (let i = 0; i < data.length; i++) {
@@ -45,10 +59,6 @@ function start() {
   console.log(
     "First entry (" + fve.title + ") day of week: " + daysOfWeek[offset1]
   );
-  myArray = [];
-  for (let i = 0; i < dayzero + 1; i++) {
-    myArray[i] = 0;
-  }
 
   let maxlen = Math.floor((dayzero + offset1) / 7) + 1;
   console.log(maxlen);
@@ -57,28 +67,50 @@ function start() {
     mainTable.innerHTML += "<tr style='height: 10px;' id='row" + i + "'></tr>";
   }
 
+  // row 1 is for entry lists, row 2 is for daily entry counts
+  myArray = [[], []];
+  for (let i = 0; i < dayzero + 1; i++) {
+    myArray[0][i] = [];
+    myArray[1][i] = 0;
+  }
+  maxwatched = 0;
   for (let i = data.indexOf(fve); i < data.length; i++) {
     const e = data[i];
     let x = dayzero - daycount(dte(e));
-    myArray[x]++;
-    if (myArray[x] > maxwatched) maxwatched = myArray[x];
+    if (byMinutes) {
+      if (e.enddate == "") e.enddate = curdate;
+      if (e.title == "The Disastrous Life of Saiki K.")
+        e.episodes = e.watchedepisodes = 24;
+      let y = dayzero - daycount(e.enddate);
+      let numDays = y - x + 1;
+      if (numDays >= 20) continue;
+      let eMinutes = e.determineLen();
+      let dailyMinutes = eMinutes / numDays;
+      for (let j = x; j <= y; j++) {
+        myArray[0][j].push(e);
+        myArray[1][j] += dailyMinutes;
+        if (myArray[1][j] > maxwatched) maxwatched = myArray[1][j];
+      }
+    } else {
+      myArray[0][x].push(e);
+      myArray[1][x]++;
+      if (myArray[1][x] > maxwatched) maxwatched = myArray[1][x];
+    }
   }
 
   let curstreak = 0;
   let curcount = 0;
   let curStreakEntries = [];
+  longeststreak = ["", "", 0, 0, []];
 
   let n = 0;
-  for (n = 0; n < myArray.length; n++) {
+  for (n = 0; n < myArray[0].length; n++) {
     let myDate = ndaysbefore(curdate, dayzero - n);
-    if (myArray[n] > 0) {
+    if (myArray[1][n] > 0) {
       curstreak++;
-      curcount += myArray[n];
-      for (let j = data.indexOf(fve); j < data.length; j++) {
-        const e = data[j];
-        if (e.startdate == myDate) {
-          curStreakEntries.push(e);
-        }
+      curcount += myArray[1][n];
+      for (let e of myArray[0][n]) {
+        if (!curStreakEntries.includes(e)) curStreakEntries.push(e);
       }
     } else {
       if (curstreak > longeststreak[2]) {
@@ -107,6 +139,7 @@ function start() {
     streakmins += e.determineLen();
   }
 
+  streakDiv.innerHTML = "";
   let pr = document.createElement("pre");
   pr.innerText = `Longest Streak: ${
     longeststreak[2]
@@ -119,27 +152,36 @@ function start() {
     localStorage.setItem("specialTransfer", JSON.stringify(longeststreak[4]));
     window.open("GroupDetails.html", "_blank").focus();
   };
-  insert(document.getElementById("mainbody"), pr);
+  pr.className = "streakText";
+  insert(streakDiv, pr);
 
   for (let j = 0; j < dayzero + offset1 + 1; j++) {
     let i = j - offset1;
     let col = j % 7;
     let row = Math.floor(j / 7);
     let currow = document.getElementById("row" + row);
-    let val = Math.ceil((myArray[i] / maxwatched) * 5);
-    currow.innerHTML +=
-      "<td title='" +
-      (defaultdatetoreadable(ndaysafter(dte(fve), i)) +
-        ", " +
-        myArray[i] +
-        " items watched") +
-      "' style='width: 10px;height: 10px;color:white;' data-level=\"" +
-      val +
-      "\" class='ContributionCalendar-day'  >" +
-      // parseInt(ndaysafter(dte(fve), i).substring(0, 2)) + // Uncomment this line to add day numbers to each box
-      "</td>";
+    let val = Math.ceil((myArray[1][i] / maxwatched) * 5);
+    if (i >= 0)
+      currow.innerHTML +=
+        "<td title='" +
+        (defaultdatetoreadable(ndaysafter(dte(fve), i)) +
+          ", " +
+          myArray[1][i] +
+          " items watched") +
+        "' style='width: 10px;height: 10px;' data-level=\"" +
+        val +
+        "\" class='ContributionCalendar-day'></td>";
+    else
+      currow.innerHTML +=
+        "<td title='" +
+        defaultdatetoreadable(ndaysafter(dte(fve), i)) +
+        "' style='width: 10px;height: 10px;' data-level=\"" +
+        val +
+        "\" class='ContributionCalendar-day'  ></td>";
     let curbox = currow.childNodes[col];
     let teenystring = '"' + ndaysafter(dte(fve), i) + '"';
+    if (byMinutes)
+      teenystring = teenystring.charAt(0) + "M" + teenystring.substring(1);
     if (val != 0 && !isNaN(val))
       curbox.setAttribute(
         "onclick",
@@ -179,7 +221,7 @@ function start() {
         parseInt(d.substring(0, 2)) <= 7
       ) {
         // add "Jan <year>" if the month is january
-        let str = "<pre style='font-size:10px;color:white;'>Jan ";
+        let str = "<pre style='font-size:10px;'>Jan ";
         if (parseInt(d.substring(6)) < 50) str += "20";
         else str += "19";
         str += parseInt(d.substring(6)) + "</pre>";
@@ -187,7 +229,7 @@ function start() {
       } else if (parseInt(d.substring(0, 2)) <= 7) {
         // add "<month>" if on the first saturday of the month
         currow.innerHTML +=
-          "<pre style='font-size:10px;color:white;'>" +
+          "<pre style='font-size:10px;'>" +
           mArr[parseInt(d.substring(3, 5)) - 1] +
           "</pre>";
       }
