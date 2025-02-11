@@ -25,7 +25,6 @@ const avgSP = 20;
 const avgONA = 20;
 const avgOVA = 20;
 var chosenSep = "&!";
-var dateMemo = new Object();
 const TOPBEND = String.fromCharCode(9484);
 const rn = new Date(Date.now());
 var curyear = rn.getFullYear() % 100;
@@ -1366,12 +1365,139 @@ function onedaybefore(e) {
   return "31-12-99";
 }
 
+function isLeapYear(yr) {
+  return yr % 4 == 0 && yr % 100 != 0;
+}
+
 function daycount(e) {
   if (e == "") return 0;
   if (e == curdate) return 0;
-  if (e in dateMemo) {
-    return dateMemo[e];
+  let yrbit = parseInt(e.substring(6, 8));
+  let mnbit = parseInt(e.substring(3, 5));
+  let dybit = parseInt(e.substring(0, 2));
+  if (yrbit <= 50) yrbit += 100;
+  if (mnbit == 0) mnbit = 10;
+  if (dybit == 0) dybit = 14;
+  let tempcy = curyear;
+  if (tempcy <= 50) tempcy += 100;
+  let tempcm = curmon;
+  let tempcd = curday;
+  let result = 0;
+  let rewinddaycounts = [
+    31, //jan
+    28 + isLeapYear(yrbit), //feb
+    31, //mar
+    30, //apr
+    31, //mai
+    30, //jun
+    31, //jul
+    31, //aug
+    30, //sep
+    31, //oct
+    30, //nov
+    31, //dec
+  ];
+  let rewinddaycounts1 = [
+    31, //jan
+    28 + isLeapYear(curyear), //feb
+    31, //mar
+    30, //apr
+    31, //mai
+    30, //jun
+    31, //jul
+    31, //aug
+    30, //sep
+    31, //oct
+    30, //nov
+    31, //dec
+  ];
+  result -= dybit - 1;
+  if (mnbit > 1) result -= sumArrToi(rewinddaycounts, mnbit - 2);
+  result += curday - 1;
+  if (curmon > 1) result += sumArrToi(rewinddaycounts1, curmon - 2);
+  result += 365 * (tempcy - yrbit);
+  if (yrbit < 100) result--;
+  let numyears = tempcy - yrbit;
+  if (numyears > 0 && isLeapYear(yrbit)) result++;
+  let myFunc = (n, a) => {
+    if (n < 0) return -Math.ceil((-n - 4 + (a % 4)) / 4);
+    return Math.ceil((n - 4 + (a % 4)) / 4);
+  };
+  if (numyears != 0) result += myFunc(numyears, Math.min(tempcy, yrbit));
+  return result;
+}
+
+function sumArrToi(arr, i) {
+  let result = 0;
+  if (i >= arr.length) i = arr.length - 1;
+  for (let j = 0; j <= i; j++) {
+    result += arr[j];
   }
+  return result;
+}
+
+function massTestDCW(startdate, enddate) {
+  let dcs = daycount(startdate);
+  let dce = daycount(enddate);
+  let myArray = [];
+  let starttime = new Date();
+  for (let i = dcs; i >= dce; i--) {
+    const e = ndaysbefore(curdate, i);
+    myArray.push(e);
+  }
+  let endtime = new Date();
+  console.log(endtime - starttime);
+  starttime = new Date();
+  for (let e of myArray) {
+    daycountworking(e);
+  }
+  endtime = new Date();
+  console.log(endtime - starttime);
+  starttime = new Date();
+  for (let e of myArray) {
+    daycount(e);
+  }
+  endtime = new Date();
+  console.log(endtime - starttime);
+}
+
+function testdaycount(e) {
+  let dw = daycountworking(e);
+  let dc = daycount(e);
+  if (dw == dc) {
+    console.log(
+      "daycountworking(e) works for date " + defaultdatetoreadable(e)
+    );
+  } else {
+    console.error(
+      "daycountworking(e) not working for date " +
+        defaultdatetoreadable(e) +
+        ", \n\tdaycountworking(" +
+        e +
+        ") = " +
+        dw +
+        "\n\tdaycount(" +
+        e +
+        ") = " +
+        dc +
+        "\n\tit gave the day count for " +
+        defaultdatetoreadable(ndaysbefore(curdate, dw))
+    );
+  }
+}
+
+function tdc(e) {
+  let dw = daycountworking(e);
+  let dc = daycount(e);
+  return dw == dc;
+}
+
+function daycountarchived(e) {
+  if (e == "") return 0;
+  if (e == curdate) return 0;
+  // if (e in dateMemo) {
+  //   return dateMemo[e];
+  // }
   let temp = e;
   let i = 0;
   let yrbit = parseInt(e.substring(6, 8));
@@ -1395,7 +1521,7 @@ function daycount(e) {
       temp = onedaybefore(temp);
     }
   }
-  dateMemo[e] = i;
+  // dateMemo[e] = i;
   return i;
 }
 
@@ -1504,9 +1630,9 @@ function defaultdatetoreadable(input) {
   if (input.substring(3, 5) != "00")
     result += mArr[parseInt(input.substring(3, 5)) - 1] + " ";
   if (input.substring(0, 2) != "00") result += input.substring(0, 2) + " ";
-  if (parseInt(input.substring(6, 8)) >= 40) result += "19";
-  if (parseInt(input.substring(6, 8)) < 40) result += "20";
-  if (input.substring(6, 8) != "00") result += input.substring(6, 8);
+  if (parseInt(input.substring(6, 8)) >= 50) result += "19";
+  if (parseInt(input.substring(6, 8)) < 50) result += "20";
+  /*if (input.substring(6, 8) != "00")*/ result += input.substring(6, 8);
   if (input.substring(3, 5) == "00") result += "\t";
   return result;
 }
@@ -1922,8 +2048,8 @@ function compareAirFinish(a, b) {
     parseInt(b.airenddate.substring(0, 2));
   if (acode < 400000) acode += 1000000;
   if (bcode < 400000) bcode += 1000000;
-  if (isNaN(acode)) acode = 0;
-  if (isNaN(bcode)) bcode = 0;
+  if (isNaN(acode)) acode = 100000000;
+  if (isNaN(bcode)) bcode = 100000000;
   if (acode % 10000 == 0) acode += 1014;
   if (bcode % 10000 == 0) bcode += 1014;
   if (acode % 100 == 0) acode += 14;
@@ -2316,14 +2442,6 @@ function parseAllMText() {
     }
   }
 
-  if (localStorage.getItem("dayzero") != daycount(dayzero)) {
-    specialdaycount(dayzero);
-    localStorage.setItem("dateMemo", JSON.stringify(dateMemo));
-    localStorage.setItem("dayzero", daycount(dayzero));
-  } else {
-    dateMemo = JSON.parse(localStorage.getItem("dateMemo"));
-  }
-
   return arrr;
 }
 
@@ -2617,14 +2735,6 @@ function parseAllText() {
       fve = e;
       break;
     }
-  }
-
-  if (localStorage.getItem("dayzero") != daycount(dayzero)) {
-    specialdaycount(dayzero);
-    localStorage.setItem("dateMemo", JSON.stringify(dateMemo));
-    localStorage.setItem("dayzero", daycount(dayzero));
-  } else {
-    dateMemo = JSON.parse(localStorage.getItem("dateMemo"));
   }
 
   return arrr;
