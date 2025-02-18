@@ -18,11 +18,6 @@ function start() {
     }
   });
 
-  p.onclick = () => {
-    sortChoice = !sortChoice;
-    testdisplay();
-  };
-
   testdisplay();
 }
 
@@ -32,10 +27,19 @@ function testdisplay() {
   if (sortChoice) {
     data.sort(compareScores).reverse();
   } else {
-    data.sort(compareWatchDate);
+    data.sort(compareWatchEnd);
   }
   data.sort(compareRewatched);
-  p.innerHTML = "<b>Watched\tScore\tTitle<b>";
+  // p.innerHTML = "<b>WatchedVScore\tTitle<b>";
+  if (sortChoice) {
+    p.innerHTML = "<b>Watched\tScore&nabla;\tTitle<b>";
+  } else {
+    p.innerHTML = "<b>Watched&nabla;Score\tTitle<b>";
+  }
+  p.lastChild.onclick = () => {
+    sortChoice = !sortChoice;
+    testdisplay();
+  };
   p.style.color = colors.Aired;
   for (let i = 0; i < data.length; i++) {
     const e = data[i];
@@ -45,7 +49,7 @@ function testdisplay() {
     let pr1 = document.createElement("pre");
     pr1.innerHTML =
       "<b>" +
-      ds2ymd(daycount(e.startdate)) +
+      ds2ymd(daycount(e.enddate)) +
       "\t" +
       e.score +
       "\t" +
@@ -54,29 +58,29 @@ function testdisplay() {
     switch (e.rewatched) {
       case true:
         if (sortChoice) {
-          if (daycount(e.startdate) < 187) {
+          if (daycount(e.enddate) < 187) {
             pr1.style.color = "rgb(27, 102, 33)";
-          } else if (daycount(e.startdate) < 366) {
+          } else if (daycount(e.enddate) < 366) {
             pr1.style.color = colors.Watching; //rgb(45,176,57)
           } else {
             pr1.style.color = "rgb(66, 255, 82)";
           }
         } else {
-          let x = (daycount(e.startdate) / 451) * 255;
+          let x = (daycount(e.enddate) / 451) * 255;
           pr1.style.color = `rgb(${x / 3},${x},${x / 3})`;
         }
         break;
       case false:
         if (sortChoice) {
-          if (daycount(e.startdate) < 187) {
-            pr1.style.color = colors.Dropped;
-          } else if (daycount(e.startdate) < 366) {
-            pr1.style.color = colors.Sequel;
+          if (daycount(e.enddate) < 187) {
+            pr1.style.color = colors.Dropped; //rgb(255,47,48)
+          } else if (daycount(e.enddate) < 366) {
+            pr1.style.color = colors.Sequel; // rgb(255,105,64)
           } else {
-            pr1.style.color = colors["On-Hold"];
+            pr1.style.color = colors["On-Hold"]; //rgb(241,200,62)
           }
         } else {
-          let y = (daycount(e.startdate) / 451) * 255;
+          let y = (daycount(e.enddate) / 451) * 255;
           pr1.style.color = `rgb(255,${y},20)`;
         }
         break;
