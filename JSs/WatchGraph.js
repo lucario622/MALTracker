@@ -161,17 +161,29 @@ function start() {
     let row = Math.floor(j / 7);
     let currow = document.getElementById("row" + row);
     let val = Math.ceil((myArray[1][i] / maxwatched) * 5);
-    if (i >= 0)
-      currow.innerHTML +=
-        "<td title='" +
-        (defaultdatetoreadable(ndaysafter(dte(fve), i)) +
-          ", " +
-          myArray[1][i] +
-          " items watched") +
-        "' style='width: 10px;height: 10px;' data-level=\"" +
-        val +
-        "\" class='ContributionCalendar-day'></td>";
-    else
+    if (i >= 0) {
+      if (byMinutes) {
+        currow.innerHTML +=
+          "<td title='" +
+          (defaultdatetoreadable(ndaysafter(dte(fve), i)) +
+            ", " +
+            myArray[1][i] +
+            " minutes watched") +
+          "' style='width: 10px;height: 10px;' data-level=\"" +
+          val +
+          "\" class='ContributionCalendar-day'></td>";
+      } else {
+        currow.innerHTML +=
+          "<td title='" +
+          (defaultdatetoreadable(ndaysafter(dte(fve), i)) +
+            ", " +
+            myArray[1][i] +
+            " items watched") +
+          "' style='width: 10px;height: 10px;' data-level=\"" +
+          val +
+          "\" class='ContributionCalendar-day'></td>";
+      }
+    } else
       currow.innerHTML +=
         "<td title='" +
         defaultdatetoreadable(ndaysafter(dte(fve), i)) +
