@@ -45,6 +45,7 @@ function start() {
     } ${defaultdatetoreadable(lats[k].airstartdate)}`;
     if (lats[k].rated == "R+") {
       p.lastChild.setAttribute("class", "R");
+      p.lastChild.hidden = true;
     }
     if (daycount(lats[k].airstartdate) > 7) {
       break;
@@ -80,6 +81,7 @@ function start() {
     } ${defaultdatetoreadable(lats[k].airenddate)}`;
     if (lats[k].rated == "R+") {
       p.lastChild.setAttribute("class", "R");
+      p.lastChild.hidden = true;
     }
     if (daycount(lats[k].airenddate) > 183) {
       break;
@@ -108,6 +110,7 @@ function start() {
     )}`;
     if (e.rated == "R+") {
       p.lastChild.setAttribute("class", "R");
+      p.lastChild.hidden = true;
     }
     if (daycount(e.airstartdate) < -31) {
       break;
@@ -136,6 +139,7 @@ function start() {
     } ${defaultdatetoreadable(e.airenddate)}`;
     if (e.rated == "R+") {
       p.lastChild.setAttribute("class", "R");
+      p.lastChild.hidden = true;
     }
     if (daycount(e.airenddate) < -31) {
       break;
@@ -582,7 +586,7 @@ function setCanvas(key, ctext) {
       }
       break;
     case "Graph4":
-      if (7 + 7 * graphIncrement >= myArray.length+7) {
+      if (7 + 7 * graphIncrement >= myArray.length + 7) {
         break;
       }
       let weekLen = 0;
