@@ -28,25 +28,6 @@ function start() {
 
   assembleGroups();
 
-  let ySpan = document.createElement("span");
-  ySpan.textContent = "Y Axis: ";
-  ySpan.style.color = "white";
-  insert(document.getElementById("selectdiv"), ySpan);
-
-  catSelect = document.createElement("select");
-  catSelect.name = "Y Axis Select";
-  catSelect.addEventListener("change", function () {
-    graphit();
-  });
-  insert(document.getElementById("selectdiv"), catSelect);
-
-  for (let i = 0; i < axisOptions.length; i++) {
-    const option = document.createElement("option");
-    option.textContent = axisOptions[i];
-    insert(catSelect, option);
-  }
-  catSelect.value = axisOptions[0];
-
   let xSpan = document.createElement("span");
   xSpan.textContent = "X Axis: ";
   xSpan.style.color = "white";
@@ -65,6 +46,25 @@ function start() {
     insert(xSelect, option);
   }
   xSelect.value = axisOptions[0];
+
+  let ySpan = document.createElement("span");
+  ySpan.textContent = "Y Axis: ";
+  ySpan.style.color = "white";
+  insert(document.getElementById("selectdiv"), ySpan);
+
+  catSelect = document.createElement("select");
+  catSelect.name = "Y Axis Select";
+  catSelect.addEventListener("change", function () {
+    graphit();
+  });
+  insert(document.getElementById("selectdiv"), catSelect);
+
+  for (let i = 0; i < axisOptions.length; i++) {
+    const option = document.createElement("option");
+    option.textContent = axisOptions[i];
+    insert(catSelect, option);
+  }
+  catSelect.value = axisOptions[0];
 
   mainCanvas = document.createElement("canvas");
   mainContext = mainCanvas.getContext("2d");
