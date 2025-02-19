@@ -9,8 +9,110 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 
-<body onload="init()" id="mainbody">
-    <a href="HTMLs/index.html">Here</a>
+<body onload="init()" id="mainbody" style="background-color:rgb(18,18,18);color:white;"> 
+    <a href="HTMLs/index.html" style="font-size: 50px;">Click Here to go to main page</a>
+    <h1 id="mal-tracker">MAL Tracker</h1>
+    <h3 id="information">Information</h3>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This project takes the data shown when viewing your profile on <a
+            href="https://MyAnimeList.net/">MyAnimeList</a>, and parses it into a list of entries. The data is then used
+        to create multiple different visualizations. It takes the form of a site that has you input a text file of an
+        entire MyAnimeList profile page, found at &quot;myanimelist.net/animelist/&lt;username>&quot;</p>
+    <h3 id="features">Features</h3>
+    <ul>
+        <li>List of entries, can be sorted and partially filtered <details>
+                <summary>Image</summary><img src="images/readme/mainpage.png"
+                    alt="List of sorted entries, found on the starting page of the site" title="Main Page">
+            </details>
+        </li>
+        <li>List of entries with advanced filtering, sorting, and display options <details>
+                <summary>Image</summary><img src="images/readme/filter.png" alt="" title="Advanced Filtering">
+            </details>
+        </li>
+        <li>List of series, can be sorted by group attributes <details>
+                <summary>Image</summary><img src="images/readme/grouping.png" alt="List of grouped series"
+                    title="Grouping">
+            </details>
+        </li>
+        <li>Timeline of entries grouped by month <details>
+                <summary>Image</summary><img src="images/readme/timeline.png" alt="Timeline of entries"
+                    title="Timeline">
+            </details>
+        </li>
+        <li>Timeline of entries, plotted by day only <details>
+                <summary>Image</summary><img src="images/readme/timelineD.png" alt="Timeline of entries by day"
+                    title="Day Timeline">
+            </details>
+        </li>
+        <li>Timeline of entries by day, plotted by watch date instead of air date <details>
+                <summary>Image</summary><img src="images/readme/timelineW.png" alt="Timeline of entries by watch day"
+                    title="Watch Day Timeline">
+            </details>
+        </li>
+        <li>Graph showing how many entries were watched on each day <details>
+                <summary>Image</summary><img src="images/readme/watchgraph.png" alt="Calendar graph of entry watch days"
+                    title="Watch Graph">
+            </details>
+        </li>
+        <li>Page showing recent updates, suggesting next watches, and shows a variety of colored graphs <details>
+                <summary>Image</summary><img src="images/readme/recent.png"
+                    alt="Relevant information related to current data" title="Recent">
+            </details>
+        </li>
+        <li>List of entries organized by rewatch status, click on an entry to mark as rewatched, pushing it to the
+            bottom of the list <details>
+                <summary>Image</summary><img src="images/readme/rewatched.png" alt="Rewatched entries"
+                    title="Rewatched">
+            </details>
+        </li>
+        <li>Custom graph, allowing you to choose x and y axis values <details>
+                <summary>Image</summary><img src="images/readme/customgraph.png" alt="Custom Graph"
+                    title="Custom Graph">
+            </details>
+        </li>
+        <li>Count graph, allowing you to choose x axis and plots the number of entries that match each category
+            <details>
+                <summary>Image</summary><img src="images/readme/countgraph.png" alt="Count Graph" title="Count Graph">
+            </details>
+        </li>
+        <li>Stats view, showing many stats, as well as an input field, which will then display what needs to happen for
+            the stat to reach that number <details>
+                <summary>Image</summary><img src="images/readme/stats.png" alt="Stats" title="Stats">
+            </details>
+        </li>
+    </ul>
+    <h3 id="how-to-use">How to use</h3>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As of right now, the text parser is configured to only read
+        properly when your anime list is set to a specific setting. To make it match, you need to match these settings
+        exactly:<br><img src="images/readme/listcolumns.png" alt="List Settings"
+            title="List Columns"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This can be found by navigating to
+        your profile at &quot;myanimelist.net/profile/&lt;username>&quot;, then &quot;Profile Settings&quot; in the top
+            right, then to the &quot;List&quot; tab and scroll down. Setting your manga list to the same settings and
+            loading it will work, but probably has some small issues. Make sure to hit &quot;Submit&quot; at the top or
+            bottom of the settings page before closing it.
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Next, open your anime list by going to
+            &quot;myanimelist.net/animelist/&lt;username>&quot;. Make sure to load the entire page by scrolling to the
+                bottom, or holding the &quot;End&quot; key until everything is loaded (the page only loads 300 entries
+                to start). Use Ctrl+A to select all text on the page, Ctrl+C or right-click -&gt; copy to copy all text
+                to the clipboard, and then paste it all into a text file. You can input this file into the site by
+                clickint &quot;Change File&quot; then &quot;Choose file&quot; then selecting your text file. Then press
+                &quot;Continue&quot;. If any of the buttons don&#39;t appear, reloading will likely solve it. Any time
+                you submit a new file, the site will try to compare the old data with the new data, and report any
+                differences.</p>
+    <h2 id="notes">Notes</h2>
+    <p>Since the project is made for my own use primarily, several things are assumed.</p>
+    <ul>
+        <li>The &quot;On-Hold&quot; section of the list is used for plan-to-watch entries that don&#39;t currently have
+            an english dub.</li>
+        <li>The &quot;Dropped&quot; section is unused, but should at the very least display entries as red in the main
+            list</li>
+        <li>All completed entries are scored, and have a watch start and watch end date recorded, although not having
+            any of those shouldn&#39;t cause any significant error</li>
+        <li>All minute lengths of entries are calculated assuming that you watch in 2x speed</li>
+        <li>Several entries are hard coded to be grouped together in the &quot;Groups&quot; section, but not having
+            these entries won&#39;t cause any error</li>
+    </ul>
+
 </body>
 
 </html>
