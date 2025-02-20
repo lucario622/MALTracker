@@ -167,8 +167,8 @@ function start() {
           "<td title='" +
           (defaultdatetoreadable(ndaysafter(dte(fve), i)) +
             ", " +
-            myArray[1][i] +
-            " minutes watched") +
+            mns2dhm(myArray[1][i]) +
+            " watched") +
           "' style='width: 10px;height: 10px;' data-level=\"" +
           val +
           "\" class='ContributionCalendar-day'></td>";
