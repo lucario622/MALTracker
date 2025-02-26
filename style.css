@@ -138,6 +138,10 @@ button {
   color: white;
 }
 
+input {
+  text-align: right;
+}
+
 a {
   color: blue;
   text-decoration-line: none;
@@ -149,6 +153,16 @@ a {
 
 .ranges {
   color: white;
+}
+
+.statsInput {
+  background-color: rgb(18, 18, 18);
+  color: white;
+  font-family: monospace;
+  font-size: 14px;
+  border:none;
+  border-bottom: 1px white dashed;
+  width:12ch;
 }
 
 section.range-slider {

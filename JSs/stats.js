@@ -237,6 +237,7 @@ function start() {
     let inp = document.createElement("input");
     // inp.type = "number";
     inp.id = stat[0];
+    inp.className = "statsInput";
     inp.onchange = () => {
       document.getElementById(stat[0] + "out").textContent = stat[2](
         document.getElementById(stat[0]).value
