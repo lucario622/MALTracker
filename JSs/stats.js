@@ -5,6 +5,8 @@ var dayssince = 0;
 var statsList = [];
 var totalCount = 0;
 var rewatchCount = 0;
+var scoredCount = 0;
+var avgScore = 0;
 
 function init() {
   generalinit();
@@ -21,6 +23,9 @@ function start() {
     statusCount[filtboxarray[2].indexOf(data[i].status)]++;
     totalCount++;
     if (data[i].rewatched) rewatchCount++;
+    if (data[i].score != 0) {
+      avgScore = (avgScore * scoredCount++ + data[i].score) / scoredCount;
+    }
     if (data[i].status == "Completed") {
       cmplTotal++;
       cmplLen += data[i].determineLen() * (data[i].rewatched + 1);
@@ -104,6 +109,13 @@ function start() {
         mns2dhm((val / 100) * (60 * 24 * dayssince) - cmplLen) +
         " more today"
       );
+    },
+  ]);
+  statsList.push([
+    "Mean Score",
+    (Math.round(avgScore * 100) / 100).toFixed(2),
+    (val) => {
+      return "Score n more things 10 / m more things 9 / p more things 8 / q more things 7 / r more things 6 / s more things 5.";
     },
   ]);
   statsList.push([
