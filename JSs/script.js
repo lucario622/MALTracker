@@ -2247,7 +2247,7 @@ function rep(str, index, str2) {
 function parseThisText(txt) {
   let temp = rawfiledata;
   rawfiledata = txt;
-  let ar = parseAllText();
+  let ar = parseAllTextGen();
   rawfiledata = temp;
   return ar;
 }
@@ -2445,6 +2445,408 @@ function parseAllMText() {
   return arrr;
 }
 
+function parseAllTextGen() {
+  data = [];
+  let arrr = [];
+  let tempsplitdata = rawfiledata.split("\n");
+  if (tempsplitdata[0] == "Viewing Your Manga List\r") {
+    return parseAllMTextGen();
+  }
+  let temp1splitdata = [];
+  let x = 0;
+  for (x = 0; x < tempsplitdata.length; x++) {
+    if (tempsplitdata[x] == "ALL ANIME Stats  Filters\r") {
+      break;
+    }
+  }
+  // use content in tempsplitdata[x+1] to determine what parts exist
+  let headerdata = tempsplitdata[x + 1].split("\t");
+  headerdata[headerdata.length - 1] = headerdata[
+    headerdata.length - 1
+  ].substring(0, headerdata[headerdata.length - 1].length - 1);
+
+  for (let i = x + 2; i < tempsplitdata.length - 2; i++) {
+    if (tempsplitdata[i].split(/Edit - More|Add - More/).length == 2) {
+      temp1splitdata.push("^" + tempsplitdata[i]);
+    } else {
+      temp1splitdata.push(tempsplitdata[i]);
+    }
+  }
+  let temp = temp1splitdata.join("\n");
+  let stopWatching = false;
+  let splitdata = temp.split("^");
+  let special = false;
+  splitdata.shift();
+  for (let i = 0; i < splitdata.length; i++) {
+    const e = splitdata[i];
+    let item = new Entry();
+    let temp = e;
+    let index1 = 0;
+    if (headerdata.includes("#")) {
+      // Number present
+      index1 = temp.indexOf("\t");
+      temp = temp.substring(index1 + 1);
+    }
+    if (headerdata.includes("Image")) {
+      // Image "present" (obviously doesn't display in text, but it does add an extra tab)
+      temp = temp.substring(1);
+    }
+    // let index2 = e.indexOf(/Edit - More|Add - More/);
+    index1 = temp.split(/Edit - More|Add - More/)[0].length;
+    if (temp.substring(index1 - 6, index1) == "Airing") {
+      item.airStatus = "Airing";
+      index1 -= 7;
+    } else if (temp.substring(index1 - 13, index1) == "Not Yet Aired") {
+      item.airStatus = "Not Yet Aired";
+      index1 -= 14;
+    } else {
+      item.airStatus = "Aired";
+    }
+    item.title = temp.substring(0, index1 - 1);
+    if (item.title.charAt(item.title.length - 1) == "Ⅱ") {
+      item.title = item.title.substring(0, item.title.length - 1) + "II";
+    }
+    for (let j = 0; j < item.title.length; j++) {
+      const c = item.title[j];
+      if (c.charCodeAt(0) == 8217) {
+        item.title = setCharAt(item.title, j, "'");
+      }
+    }
+    index1 = temp.split(/Edit - More|Add - More/)[0].length;
+    temp = temp.substring(index1 + 11);
+    if (
+      temp.charAt(0) == "\r" &&
+      (headerdata.includes("Score") || headerdata.includes("Type"))
+    ) {
+      // Notes
+      index1 = temp.indexOf("\r\n");
+      temp = temp.substring(index1 + 2);
+    } else {
+      temp = temp.substring(1);
+    }
+
+    if (temp.substring(0, 9) == "Add notes") {
+      index1 = temp.indexOf("\r\n");
+      temp = temp.substring(index1 + 2);
+    }
+
+    if (headerdata.includes("Score")) {
+      // score
+      index1 = temp.indexOf("\t");
+      if (isNaN(temp.substring(0, index1))) {
+        item.score = 0;
+      } else {
+        item.score = Number(temp.substring(0, index1));
+      }
+
+      temp = temp.substring(index1 + 1);
+    }
+    if (headerdata.includes("Type")) {
+      // Type
+      index1 = temp.indexOf("\t");
+      item.type = temp.substring(0, index1);
+      temp = temp.substring(index1 + 1);
+    }
+    if (headerdata.includes("Progress")) {
+      // Progress
+      temp = temp.substring(2);
+      if (temp.indexOf(" / ") != -1) {
+        // Either Unwatched or Watching
+        index1 = temp.indexOf(" / ");
+        if (temp[0] == "-" && stopWatching) {
+          // Only for Unwatched things
+          item.status = "Plan to Watch";
+          item.watchedepisodes = 0;
+        } else {
+          // Only for Watching things
+          item.status = "Watching";
+          item.watchedepisodes = temp.substring(0, index1);
+          if (isNaN(temp.substring(0, index1))) {
+            item.watchedepisodes = 0;
+          } else {
+            item.watchedepisodes = Number(temp.substring(0, index1));
+          }
+        }
+        let index2 = temp.indexOf("\n");
+        if (isNaN(temp.substring(index1 + 3, index2 - 2))) {
+          item.episodes = item.watchedepisodes;
+        } else {
+          item.episodes = Number(temp.substring(index1 + 3, index2 - 2));
+        }
+        temp = temp.substring(index2 + 1);
+      } else {
+        // Completed
+        stopWatching = true;
+        item.status = "Completed";
+        index1 = temp.indexOf("\n");
+        item.watchedepisodes = Number(temp.substring(0, index1));
+        item.episodes = Number(temp.substring(0, index1));
+        temp = temp.substring(index1 + 1);
+      }
+      if (item.watchedepisodes > maxWepisodes)
+        maxWepisodes = item.watchedepisodes;
+      if (item.episodes > maxEpisodes) maxEpisodes = item.episodes;
+    }
+    if (headerdata.includes("Started Date")) {
+      // startdate
+      index1 = temp.indexOf("\t");
+      if (isDate(temp.substring(0, 8))) {
+        if (index1 == 0) {
+          item.startdate = "";
+        } else {
+          item.startdate = temp.substring(0, index1);
+        }
+        temp = temp.substring(index1 + 1);
+      } else {
+        item.startdate = "";
+      }
+    }
+    if (headerdata.includes("Finished Date")) {
+      // enddate
+      index1 = temp.indexOf("\t");
+      if (isDate(temp.substring(0, 8)) || index1 == 0) {
+        if (index1 == 0) {
+          item.enddate = "";
+        } else {
+          item.enddate = temp.substring(0, index1);
+        }
+        temp = temp.substring(index1 + 1);
+      } else {
+        item.enddate = "";
+      }
+    }
+    if (headerdata.includes("Days")) {
+      // useless information
+      index1 = temp.indexOf("\t");
+      if (!isNaN(temp.substring(0, index1))) {
+        temp = temp.substring(index1 + 1);
+      }
+    }
+    
+    if (headerdata.includes("Premiered")) {
+      // premiered
+      index1 = temp.indexOf("\t");
+      if (
+        isNaN(temp.substring(index1 - 4, index1)) ||
+        temp.substring(index1 - 4, index1) == ""
+      ) {
+        // No premiere date available
+        item.premiered = "";
+      } else {
+        // Premiere data available
+        item.premiered = temp.substring(0, index1);
+        temp = temp.substring(index1 + 1);
+      }
+    }
+    if (headerdata.includes("Tags")) {
+      // useless information
+      index1 = temp.indexOf("\r\n", 1);
+      temp = temp.substring(index1 + 2);
+    }
+    let concern = false;
+    if (headerdata.includes("Genres")) {
+      // genres
+      index1 = temp.indexOf("\t");
+      let temp1 = temp.substring(0, index1);
+      if (!lookslikegenre(temp1)) {
+        // bro dont have any genre
+        concern = true;
+        item.genres = [];
+      } else {
+        if (index1 == 0) {
+          // No genre(s) available
+          item.genres = [];
+        } else {
+          // At least one genre available
+          item.genres = temp.substring(0, index1).split(", ");
+          if (index1 > longestgenres) longestgenres = index1;
+        }
+        temp = temp.substring(index1 + 1);
+      }
+    }
+    if (headerdata.includes("Demogr.")) {
+      // demog
+      index1 = temp.indexOf("\t");
+      let temp1 = temp.substring(0, index1);
+      if (!lookslikedemog(temp1) && concern) {
+        // no demog :(
+        item.demog = [];
+      } else {
+        if (index1 == 0) {
+          // No demographic available
+          item.demog = [];
+        } else {
+          // demographic available
+          item.demog = temp.substring(0, index1).split(", ");
+          if (index1 > longestdemog) longestdemog = index1;
+        }
+        temp = temp.substring(index1 + 1);
+      }
+    }
+    if (headerdata.includes("Studios")) {
+      // studios
+      index1 = temp.indexOf("\t");
+      if (index1 == 0) {
+        // No studio(s) available
+        item.studios = [];
+      } else {
+        // At least one studio available
+        item.studios = temp.substring(0, index1).split(", ");
+        if (index1 > longeststudios) longeststudios = index1;
+      }
+      temp = temp.substring(index1 + 1);
+    }
+    if (headerdata.includes("Licensors")) {
+      // licensors
+      index1 = temp.indexOf("\t");
+      if (index1 == 0) {
+        // No licensors(s) available
+        item.licensors = [];
+      } else {
+        // At least one licensor available
+        item.licensors = temp.substring(0, index1).split(", ");
+        if (index1 > longestlicensors) longestlicensors = index1;
+      }
+      temp = temp.substring(index1 + 1);
+    }
+    if (headerdata.includes("Storage")) {
+      // useless information
+      index1 = temp.indexOf("\t");
+      temp = temp.substring(index1 + 1);
+    }
+    if (headerdata.includes("Air Start")) {
+      // airstartdate
+      index1 = temp.indexOf("\t");
+      if (index1 == 0) {
+        // No air start available
+        item.airstartdate = "";
+      } else {
+        // air start available
+        item.airstartdate = temp.substring(0, index1);
+      }
+      temp = temp.substring(index1 + 1);
+    } else {
+      item.airstartdate = "";
+    }
+    if (headerdata.includes("Air End")) {
+      // airenddate
+      index1 = temp.indexOf("\t");
+      // Default air finish to undefined
+      item.airenddate = "";
+      if (index1 == 0) {
+        // No air end available
+        if (item.airStatus == "Airing") {
+          // Item is airing
+          if (item.episodes != 0) {
+            // Episode Count is known, so count out how long it will be until it finishes, assuming one episode releases every 7 days
+            if (
+              daycount(
+                ndaysafter(item.airstartdate, (item.episodes - 1) * 7)
+              ) >= 0 &&
+              item.airStatus == "Airing"
+            ) {
+              // Predicted end date already passed, but item is not complete yet, obviously prediction was wrong
+            } else {
+              item.airenddate = ndaysafter(
+                item.airstartdate,
+                (item.episodes - 1) * 7
+              );
+            }
+          } else {
+            // Episode Count is not known, assume that there will be 12 episodes and count out from there
+            if (daycount(item.airstartdate) < 75) {
+              // Started less than 12 weeks ago, assume 12 episodes such that it will end at some point in the future
+              item.airenddate = ndaysafter(item.airstartdate, 11 * 7);
+            } else {
+              // Difficult to say how many episodes there will be
+            }
+          }
+          // Make one up if airing (REMOVED)
+          // item.airenddate = curdate;
+        } else if (item.airStatus == "Not Yet Aired") {
+          // item is not yet aired
+          if (
+            item.airstartdate.substring(3, 5) != "00" &&
+            item.airstartdate != ""
+          ) {
+            // At the very least the month is defined, which allows us to usually be within 7 days of the correct value
+            if (item.episodes != 0) {
+              // Despite not existing yet, we already know the number of episodes and the start date
+              item.airenddate = ndaysafter(
+                item.airstartdate,
+                (item.episodes - 1) * 7
+              );
+            } else {
+              // We know the start date but not the number of episodes, use 12
+              item.airenddate = ndaysafter(item.airstartdate, 11 * 7);
+            }
+          }
+        }
+      } else {
+        // air end available
+        item.airenddate = temp.substring(0, index1);
+      }
+      temp = temp.substring(index1 + 1);
+    } else {
+      item.airenddate = "";
+    }
+    if (headerdata.includes("Rated")) {
+      // rated
+      index1 = temp.indexOf("\t");
+      if (index1 == 0) {
+        // No rating available
+        item.rated = "";
+      } else {
+        // rating available
+        item.rated = temp.substring(0, index1);
+      }
+      temp = temp.substring(index1 + 1);
+    }
+    if (headerdata.includes("MAL Score")) {
+      // MALscore
+      index1 = temp.split(/\t|\r\n/)[0].length;
+      let temp1 = temp.substring(0, index1);
+      if (isNaN(temp1)) {
+        item.MALscore = 0;
+      } else {
+        item.MALscore = Number(temp1);
+      }
+      temp = temp.substring(index1 + 1);
+    }
+    arrr.push(item);
+  }
+  let redict = localStorage.getItem("rewatched");
+  if (redict != null) {
+    redict = JSON.parse(redict);
+  } else {
+    redict = {};
+  }
+  // arrr.sort(compareMALScore).reverse();
+  // let i = 1;
+  arrr.forEach((e) => {
+    // e.ranking = i++;
+    e.genres.sort();
+    if (redict[e.title] != undefined) {
+      e.rewatched = redict[e.title];
+    } else {
+      redict[e.title] = false;
+    }
+  });
+  localStorage.setItem("rewatched", JSON.stringify(redict));
+
+  let temparrr = arrr.toSorted(compareAirStart);
+  for (let i = 0; i < temparrr.length; i++) {
+    const e = temparrr[i];
+    if (e.airstartdate != "") {
+      dayzero = e.airstartdate;
+      fve = e;
+      break;
+    }
+  }
+
+  return arrr;
+}
+
 function parseAllText() {
   data = [];
   let arrr = [];
@@ -2461,10 +2863,7 @@ function parseAllText() {
       temp1splitdata.push(e);
     }
   }
-  let temp = "";
-  for (let i = 0; i < temp1splitdata.length; i++) {
-    temp += temp1splitdata[i] + "\n";
-  }
+  let temp = temp1splitdata.join("\n");
   let stopWatching = false;
   let splitdata = temp.split("^");
   splitdata.shift();
@@ -2738,6 +3137,32 @@ function parseAllText() {
   }
 
   return arrr;
+}
+
+function lookslikedemog(str) {
+  if (str.length == 0) {
+    return true;
+  }
+  result = true;
+  for (let word of str.split(", ")) {
+    if (!["Shounen", "Seinen", "Shoujo", "Josei"].includes(word)) {
+      result = false;
+    }
+  }
+  return result;
+}
+
+function lookslikegenre(str) {
+  if (str.length == 0) {
+    return true;
+  }
+  result = true;
+  for (let word of str.split(", ")) {
+    if (!filtboxarray[4].includes(word)) {
+      result = false;
+    }
+  }
+  return result;
 }
 
 function placeSortSelector() {
@@ -3152,7 +3577,7 @@ function insert(container, item) {
 }
 
 function makeDatas() {
-  let arrr = parseAllText();
+  let arrr = parseAllTextGen();
   let prevE = arrr[0];
   let onholding = false;
   let counter = 0;

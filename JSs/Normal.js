@@ -5,7 +5,7 @@ function start() {
   inputfile.hidden = true;
   foldselector.innerHTML = "";
   sortselector.innerHTML = "";
-  let arrr = parseAllText();
+  let arrr = parseAllTextGen();
   let prevE = arrr[0];
   let onholding = false;
   for (let i = 0; i < arrr.length; i++) {
