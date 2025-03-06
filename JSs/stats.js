@@ -113,9 +113,17 @@ function start() {
   ]);
   statsList.push([
     "Mean Score",
+    // avgScore,
     (Math.round(avgScore * 100) / 100).toFixed(2),
     (val) => {
-      return "Score n more things 10 / m more things 9 / p more things 8 / q more things 7 / r more things 6 / s more things 5.";
+      let resultString = "";
+      for (let i = 10; i > 0; i--) {
+        let x = (val * scoredCount - avgScore * scoredCount) / (i - val);
+        x = Math.round(x * 1000) / 1000;
+        if (x >= 0 && x != Infinity)
+          resultString += x + " thing" + yns(x) + " " + i + " / ";
+      }
+      return resultString;
     },
   ]);
   statsList.push([
