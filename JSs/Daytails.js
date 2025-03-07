@@ -1,6 +1,7 @@
 var elementlist = [];
 var baseformat;
 var mainbd;
+var byMinutes = false;
 
 function init() {
   generalinit();
@@ -14,10 +15,16 @@ function start() {
   let allboxes = document.getElementsByClassName("information");
 
   let myDate = localStorage.getItem("transfer");
-  mainbd.innerHTML =
-    "<p id='outputp' style='color:white;'>" + defaultdatetoreadable(myDate) + "</p>";
   if (myDate.charAt(0) == "M") {
+    byMinutes = true;
     myDate = myDate.substring(1);
+  }
+  console.log(myDate);
+  mainbd.innerHTML =
+    "<p id='outputp' style='color:white;'>" +
+    defaultdatetoreadable(myDate) +
+    "</p>";
+  if (byMinutes) {
     for (const element of data) {
       if (
         daycount(element.startdate) >= daycount(myDate) &&
