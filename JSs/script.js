@@ -1160,6 +1160,63 @@ function ds2ymd(ds) {
   }
 }
 
+function isOptimizedDate(str) {
+  if (str.charAt(0) == "-") {
+    return inversemns2dhm(str.substring(1));
+  }
+  let result = true;
+  if (str.indexOf("Y") != -1) {
+    //has years number, remove it as year number is always valid
+    str = str.substring(str.indexOf("Y") + 1);
+  }
+  if (str.indexOf("M") != -1) {
+    //has months number
+    let monthstring = str.substring(0,str.indexOf("M"))
+    let x = parseInt(monthstring)
+    if (x > 11) {
+      result = false;
+    }
+    str = str.substring(str.indexOf("M") + 1);
+  }
+  if (str.indexOf("d") != -1) {
+    //has days number
+    let yearstring = str.substring(0,str.indexOf("d"))
+    let x = parseInt(yearstring)
+    if (x > 30) {
+      result = false;
+    }
+    str = str.substring(str.indexOf("d") + 1);
+  }
+  if (str.indexOf("h") != -1) {
+    // has hours number
+    let hourstring = str.substring(0,str.indexOf("h"))
+    let x = parseInt(hourstring)
+    if (x > 23) {
+      result = false;
+    }
+    str = str.substring(str.indexOf("h") + 1);
+  }
+  if (str.indexOf("m") != -1) {
+    // has minutes number
+    let minutestring = str.substring(0,str.indexOf("m"))
+    let x = parseInt(minutestring)
+    if (x > 59) {
+      result = false;
+    }
+    str = str.substring(str.indexOf("m") + 1);
+  }
+  if (str.indexOf("s") != -1) {
+    // has seconds number
+    let secondstring = str.substring(0,str.indexOf("s"))
+    let x = parseInt(secondstring)
+    if (x > 59) {
+      result = false;
+    }
+    str = str.substring(str.indexOf("s") + 1);
+  }
+  return result;
+}
+
 function inversemns2dhm(str) {
   // Takes string of form 58d7h20m and returns correct number of minutes (83960 in this case)
   if (str.charAt(0) == "-") {

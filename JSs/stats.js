@@ -42,22 +42,22 @@ function start() {
     "Days since start",
     dayssince,
     (val) => {
-      return (val>=dayssince)?(
-        "Wait " + (val - dayssince) + " more day" + yns(val - dayssince) + "!"
-      ):((dayssince-val)+" day"+yns(dayssince-val)+" too late!");  
+      return val >= dayssince
+        ? "Wait " + (val - dayssince) + " more day" + yns(val - dayssince) + "!"
+        : dayssince - val + " day" + yns(dayssince - val) + " too late!";
     },
   ]);
   statsList.push([
     "Total Entries Watched",
     cmplTotal,
     (val) => {
-      return (cmplTotal<val)?(
-        "Watch " +
-        (val - cmplTotal) +
-        " more Entr" +
-        ynes(val - cmplTotal) +
-        "!"
-      ):(cmplTotal-val + " too many watched!");
+      return cmplTotal < val
+        ? "Watch " +
+            (val - cmplTotal) +
+            " more Entr" +
+            ynes(val - cmplTotal) +
+            "!"
+        : cmplTotal - val + " too many watched!";
     },
   ]);
   statsList.push([
@@ -68,23 +68,30 @@ function start() {
       if (isnumeric(inputElement.value)) {
         inputElement.value = mns2dhm(val);
       } else {
-        // inputElement.value = inversemns2dhm(val);
-        val = inversemns2dhm(val);
+        if (isOptimizedDate(val)) {
+          // date is good and cool
+          val = inversemns2dhm(val);
+        } else {
+          val = inversemns2dhm(val);
+          inputElement.value = mns2dhm(val);
+        }
       }
-      return (val>=cmplLen)?("Watch " + mns2dhm(val - cmplLen) + " more!"):(mns2dhm(cmplLen-val)+" too much!");
+      return val >= cmplLen
+        ? "Watch " + mns2dhm(val - cmplLen) + " more!"
+        : mns2dhm(cmplLen - val) + " too much!";
     },
   ]);
   statsList.push([
     "Daily Average",
     Math.floor((cmplTotal / dayssince) * 10000) / 10000,
     (val) => {
-      return (val * dayssince - cmplTotal >= 0)?(
-        "Watch " +
-        Math.ceil(val * dayssince - cmplTotal) +
-        " more Entr" +
-        ynes(Math.ceil(val * dayssince - cmplTotal)) +
-        " today"
-      ):("Wait "+ds2ymd(Math.ceil(cmplTotal/val - dayssince)) + " longer");
+      return val * dayssince - cmplTotal >= 0
+        ? "Watch " +
+            Math.ceil(val * dayssince - cmplTotal) +
+            " more Entr" +
+            ynes(Math.ceil(val * dayssince - cmplTotal)) +
+            " today"
+        : "Wait " + ds2ymd(Math.ceil(cmplTotal / val - dayssince)) + " longer";
     },
   ]);
   statsList.push([
@@ -95,20 +102,34 @@ function start() {
       if (isnumeric(inputElement.value)) {
         inputElement.value = mns2dhm(val);
       } else {
-        val = inversemns2dhm(val);
+        // input is likely in valid date format
+        // quite possible has invalid parts though (ex. 1d54h75m)
+        // TODO: Write function in script.js that checks each part of a date for a number over the limit
+        if (isOptimizedDate(val)) {
+          // date is good and cool
+          val = inversemns2dhm(val);
+        } else {
+          val = inversemns2dhm(val);
+          inputElement.value = mns2dhm(val);
+        }
+        // val = inversemns2dhm(val);
       }
-      return (val * dayssince - cmplLen >= 0)?("Watch " + mns2dhm(val * dayssince - cmplLen) + " more today!"):("Wait "+ds2ymd(Math.ceil(cmplLen/val - dayssince)) + " longer");
+      return val * dayssince - cmplLen >= 0
+        ? "Watch " + mns2dhm(val * dayssince - cmplLen) + " more today!"
+        : "Wait " + ds2ymd(Math.ceil(cmplLen / val - dayssince)) + " longer";
     },
   ]);
   statsList.push([
     "Percentage of time spent watching",
     Math.floor((cmplLen / (60 * 24 * dayssince)) * 100000) / 1000 + "%",
     (val) => {
-      return ((val / 100) * (60 * 24 * dayssince) - cmplLen >= 0)?(
-        "Watch " +
-        mns2dhm((val / 100) * (60 * 24 * dayssince) - cmplLen) +
-        " more today"
-      ):("Wait "+ds2ymd(Math.ceil(5/72*cmplLen/val - dayssince)) + " longer");
+      return (val / 100) * (60 * 24 * dayssince) - cmplLen >= 0
+        ? "Watch " +
+            mns2dhm((val / 100) * (60 * 24 * dayssince) - cmplLen) +
+            " more today"
+        : "Wait " +
+            ds2ymd(Math.ceil(((5 / 72) * cmplLen) / val - dayssince)) +
+            " longer";
     },
   ]);
   statsList.push([
@@ -130,103 +151,116 @@ function start() {
     "Watching",
     statusCount[1],
     (val) => {
-      return (val - statusCount[1]>=0)?(
-        "Start watching " +
-        (val - statusCount[1]) +
-        " more Entr" +
-        ynes(val - statusCount[1]) +
-        "!"
-      ):("Finish watching "+(statusCount[1] - val) +
-      " more Entr" +
-      ynes(statusCount[1] - val) +
-      "!");
+      return val - statusCount[1] >= 0
+        ? "Start watching " +
+            (val - statusCount[1]) +
+            " more Entr" +
+            ynes(val - statusCount[1]) +
+            "!"
+        : "Finish watching " +
+            (statusCount[1] - val) +
+            " more Entr" +
+            ynes(statusCount[1] - val) +
+            "!";
     },
   ]);
   statsList.push([
     "Completed",
     statusCount[0],
     (val) => {
-      return (val - statusCount[0] >=0)?(
-        "Watch " +
-        (val - statusCount[0]) +
-        " more Entr" +
-        ynes(val - statusCount[0]) +
-        "!"
-      ):((statusCount[0] - val)+" too many watched!");
+      return val - statusCount[0] >= 0
+        ? "Watch " +
+            (val - statusCount[0]) +
+            " more Entr" +
+            ynes(val - statusCount[0]) +
+            "!"
+        : statusCount[0] - val + " too many watched!";
     },
   ]);
   statsList.push([
     "On-Hold",
     statusCount[2],
     (val) => {
-      return ((val - statusCount[2] >= 0))?(
-        "Add " +
-        (val - statusCount[2]) +
-        " more Entr" +
-        ynes(val - statusCount[2]) +
-        ' to "On-Hold"!'
-      ):("Watch "+(statusCount[2] - val)+" more \"On-Hold\" Entr"+ynes(statusCount[2] - val)+"!");
+      return val - statusCount[2] >= 0
+        ? "Add " +
+            (val - statusCount[2]) +
+            " more Entr" +
+            ynes(val - statusCount[2]) +
+            ' to "On-Hold"!'
+        : "Watch " +
+            (statusCount[2] - val) +
+            ' more "On-Hold" Entr' +
+            ynes(statusCount[2] - val) +
+            "!";
     },
   ]);
   statsList.push([
     "Dropped",
     statusCount[3],
     (val) => {
-      return ((val - statusCount[3])>=0)?(
-        "Drop " +
-        (val - statusCount[3]) +
-        " more Entr" +
-        ynes(val - statusCount[3]) +
-        "!"
-      ):((statusCount[3] - val)+" too many!");
+      return val - statusCount[3] >= 0
+        ? "Drop " +
+            (val - statusCount[3]) +
+            " more Entr" +
+            ynes(val - statusCount[3]) +
+            "!"
+        : statusCount[3] - val + " too many!";
     },
   ]);
   statsList.push([
     "Plan to Watch",
     statusCount[4],
     (val) => {
-      return ((val - statusCount[4])>=0)?(
-        "Add " +
-        (val - statusCount[4]) +
-        " more Entr" +
-        ynes(val - statusCount[4]) +
-        ' to "Plan to Watch"!'
-      ):("Watch "+(statusCount[4] - val)+" more Entr"+ynes(statusCount[4]-val)+" from \"Plan to Watch\"!");
+      return val - statusCount[4] >= 0
+        ? "Add " +
+            (val - statusCount[4]) +
+            " more Entr" +
+            ynes(val - statusCount[4]) +
+            ' to "Plan to Watch"!'
+        : "Watch " +
+            (statusCount[4] - val) +
+            " more Entr" +
+            ynes(statusCount[4] - val) +
+            ' from "Plan to Watch"!';
     },
   ]);
   statsList.push([
     "Total Entries",
     totalCount,
     (val) => {
-      return (val - totalCount>=0)?(
-        "Add " +
-        (val - totalCount) +
-        " more Entr" +
-        ynes(val - totalCount) +
-        "!"
-      ):((totalCount-val)+" too many!");
+      return val - totalCount >= 0
+        ? "Add " +
+            (val - totalCount) +
+            " more Entr" +
+            ynes(val - totalCount) +
+            "!"
+        : totalCount - val + " too many!";
     },
   ]);
   statsList.push([
     "Rewatched",
     rewatchCount,
     (val) => {
-      return (val - rewatchCount>=0)?(
-        "Rewatch " +
-        (val - rewatchCount) +
-        " more Entr" +
-        ynes(val - rewatchCount) +
-        "!"
-      ):(rewatchCount-val + " too many!");
+      return val - rewatchCount >= 0
+        ? "Rewatch " +
+            (val - rewatchCount) +
+            " more Entr" +
+            ynes(val - rewatchCount) +
+            "!"
+        : rewatchCount - val + " too many!";
     },
   ]);
   statsList.push([
     "Episodes Completed",
     cmplEps,
     (val) => {
-      return (val-cmplEps>=0)?(
-        "Watch " + (val - cmplEps) + " more Episode" + yns(val - cmplEps) + "!"
-      ):(cmplEps-val + " too many!");
+      return val - cmplEps >= 0
+        ? "Watch " +
+            (val - cmplEps) +
+            " more Episode" +
+            yns(val - cmplEps) +
+            "!"
+        : cmplEps - val + " too many!";
     },
   ]);
 
