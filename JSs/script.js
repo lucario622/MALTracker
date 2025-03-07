@@ -1092,6 +1092,7 @@ function fixtitle(str) {
 }
 
 function ds2ymd(ds) {
+  if (!isnumeric(ds) || ds == Infinity) return ds;
   if (ds == Math.floor(ds)) {
     // whole number of days
     if (ds < 31) return ds + "d";
