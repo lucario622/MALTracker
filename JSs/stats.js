@@ -72,6 +72,7 @@ function start() {
           // date is good and cool
           val = inversemns2dhm(val);
         } else {
+          // date needs correction
           val = inversemns2dhm(val);
           inputElement.value = mns2dhm(val);
         }
@@ -104,11 +105,11 @@ function start() {
       } else {
         // input is likely in valid date format
         // quite possible has invalid parts though (ex. 1d54h75m)
-        // TODO: Write function in script.js that checks each part of a date for a number over the limit
         if (isOptimizedDate(val)) {
           // date is good and cool
           val = inversemns2dhm(val);
         } else {
+          // date needs correction
           val = inversemns2dhm(val);
           inputElement.value = mns2dhm(val);
         }
