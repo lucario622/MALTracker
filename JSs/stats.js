@@ -296,9 +296,12 @@ function start() {
     inp.id = stat[0];
     inp.className = "statsInput";
     inp.onchange = () => {
-      document.getElementById(stat[0] + "out").textContent = stat[2](
-        document.getElementById(stat[0]).value
-      );
+      if (document.getElementById(stat[0]).value == "")
+        document.getElementById(stat[0] + "out").textContent = "";
+      else
+        document.getElementById(stat[0] + "out").textContent = stat[2](
+          document.getElementById(stat[0]).value
+        );
     };
     let outputpre = document.createElement("pre");
     outputpre.textContent = "";
