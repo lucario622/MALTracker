@@ -22,7 +22,7 @@ function start() {
   for (let i = 0; i < data.length; i++) {
     statusCount[filtboxarray[2].indexOf(data[i].status)]++;
     totalCount++;
-    if (data[i].rewatched) rewatchCount++;
+    if (data[i].rewatched >= 1) rewatchCount+=data[i].rewatched;
     if (data[i].score != 0) {
       avgScore = (avgScore * scoredCount++ + data[i].score) / scoredCount;
     }

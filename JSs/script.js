@@ -900,7 +900,7 @@ class Entry {
   startdate = "";
   enddate = "";
   isNext = false;
-  rewatched = false;
+  rewatched = 0;
 
   constructor() {
     this.title = "Placeholder Title";
@@ -924,7 +924,7 @@ class Entry {
     this.position = "";
     this.len = 0;
     this.isNext = false;
-    this.rewatched = false;
+    this.rewatched = 0;
     this.ranking = 0;
   }
 
@@ -2887,7 +2887,7 @@ function parseAllTextGen() {
     if (redict[e.title] != undefined) {
       e.rewatched = redict[e.title];
     } else {
-      redict[e.title] = false;
+      redict[e.title] = 0;
     }
   });
   localStorage.setItem("rewatched", JSON.stringify(redict));
@@ -3179,7 +3179,7 @@ function parseAllText() {
     if (redict[e.title] != undefined) {
       e.rewatched = redict[e.title];
     } else {
-      redict[e.title] = false;
+      redict[e.title] = 0;
     }
   });
   localStorage.setItem("rewatched", JSON.stringify(redict));
@@ -3673,11 +3673,10 @@ function markRewatched(title) {
     let dict = localStorage.getItem("rewatched");
     if (dict == null) {
       dict = {};
-      dict[title] = true;
     } else {
       dict = JSON.parse(dict);
-      dict[title] = true;
     }
+    dict[title] = 1;
     let output = JSON.stringify(dict);
     localStorage.setItem("rewatched", output);
   } else {

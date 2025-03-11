@@ -11,10 +11,10 @@ function start() {
   assembleGroups();
 
   data.forEach((e) => {
-    if (e.rewatched == true) {
-      rewaDict[e.title] = true;
+    if (e.rewatched == true || e.rewatched >= 1) {
+      rewaDict[e.title] = 1;
     } else {
-      rewaDict[e.title] = false;
+      rewaDict[e.title] = 0;
     }
   });
 
@@ -23,6 +23,7 @@ function start() {
 
 function testdisplay() {
   d.innerHTML = "";
+  p.innerHTML = "";
   data.sort(compareTitles);
   if (sortChoice) {
     data.sort(compareScores).reverse();
@@ -32,9 +33,9 @@ function testdisplay() {
   data.sort(compareRewatched);
   // p.innerHTML = "<b>WatchedVScore\tTitle<b>";
   if (sortChoice) {
-    p.innerHTML = "<b>Watched\tScore&nabla;\tTitle<b>";
+    p.innerHTML = "<b>Watched\tScore&nabla;\tWatches\tTitle<b>";
   } else {
-    p.innerHTML = "<b>Watched&nabla;Score\tTitle<b>";
+    p.innerHTML = "<b>Watched&nabla;Score\tWatches\tTitle<b>";
   }
   p.lastChild.onclick = () => {
     sortChoice = !sortChoice;
@@ -53,48 +54,50 @@ function testdisplay() {
       "\t" +
       e.score +
       "\t" +
+      e.rewatched + 
+      "\t" + 
       e.title +
       "</b>";
-    switch (e.rewatched) {
-      case true:
-        if (sortChoice) {
-          if (daycount(e.enddate) < 187) {
-            pr1.style.color = "rgb(27, 102, 33)";
-          } else if (daycount(e.enddate) < 366) {
-            pr1.style.color = colors.Watching; //rgb(45,176,57)
-          } else {
-            pr1.style.color = "rgb(66, 255, 82)";
-          }
+    if (e.rewatched >= 1) {
+      if (sortChoice) {
+        if (daycount(e.enddate) < 187) {
+          pr1.style.color = "rgb(27, 102, 33)";
+        } else if (daycount(e.enddate) < 366) {
+          pr1.style.color = colors.Watching; //rgb(45,176,57)
         } else {
-          let x = (daycount(e.enddate) / 451) * 255;
-          pr1.style.color = `rgb(${x / 3},${x},${x / 3})`;
+          pr1.style.color = "rgb(66, 255, 82)";
         }
-        break;
-      case false:
-        if (sortChoice) {
-          if (daycount(e.enddate) < 187) {
-            pr1.style.color = colors.Dropped; //rgb(255,47,48)
-          } else if (daycount(e.enddate) < 366) {
-            pr1.style.color = colors.Sequel; // rgb(255,105,64)
-          } else {
-            pr1.style.color = colors["On-Hold"]; //rgb(241,200,62)
-          }
+      } else {
+        let x = (daycount(e.enddate) / 451) * 255;
+        pr1.style.color = `rgb(${x / 3},${x},${x / 3})`;
+      }
+    } else {
+      if (sortChoice) {
+        if (daycount(e.enddate) < 187) {
+          pr1.style.color = colors.Dropped; //rgb(255,47,48)
+        } else if (daycount(e.enddate) < 366) {
+          pr1.style.color = colors.Sequel; // rgb(255,105,64)
         } else {
-          let y = (daycount(e.enddate) / 451) * 255;
-          pr1.style.color = `rgb(255,${y},20)`;
+          pr1.style.color = colors["On-Hold"]; //rgb(241,200,62)
         }
-        break;
-      default:
-        pr1.style.color = color.NotAired;
-        break;
+      } else {
+        let y = (daycount(e.enddate) / 451) * 255;
+        pr1.style.color = `rgb(255,${y},20)`;
+      }
     }
     pr1.lastChild.onclick = function () {
-      e.rewatched = !e.rewatched;
-      if (e.rewatched) {
-        rewaDict[e.title] = true;
+      e.rewatched ++;
+      if (e.rewatched >= 1) {
+        rewaDict[e.title]++;
       } else {
-        rewaDict[e.title] = false;
+        rewaDict[e.title] = 1;
       }
+      localStorage.setItem("rewatched", JSON.stringify(rewaDict));
+      testdisplay();
+    };
+    pr1.lastChild.oncontextmenu = function () {
+      e.rewatched = 0
+      rewaDict[e.title] = 0;
       localStorage.setItem("rewatched", JSON.stringify(rewaDict));
       testdisplay();
     };
