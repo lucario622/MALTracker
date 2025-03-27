@@ -340,6 +340,45 @@ class EntryGroup {
     return result;
   }
 
+  refresh() {
+    this.size = this.entries.length;
+    let scoreSum = 0;
+    let scoreCount = 0;
+    this.entries.forEach((element) => {
+      if (element.score != 0) {
+        scoreCount++;
+        scoreSum += element.score;
+      }
+    });
+    if (scoreCount >= 1) {
+      this.avgScore = scoreSum / scoreCount;
+    } else {
+      this.avgScore = 0.0;
+    }
+
+    let ratingSum = 0;
+    let ratingCount = 0;
+    this.entries.forEach((element) => {
+      if (element.MALscore != 0) {
+        ratingCount++;
+        ratingSum += element.MALscore;
+      }
+    });
+    if (ratingCount >= 1) {
+      this.avgRating = ratingSum / ratingCount;
+    } else {
+      this.avgRating = 0.0;
+    }
+
+    this.totalEpisodes = 0;
+    this.watchedEpisodes = 0;
+    this.entries.forEach((element) => {
+      if (element.airStatus == "Aired") this.totalEpisodes += element.episodes;
+      this.watchedEpisodes += element.watchedepisodes;
+    });
+    this.determinestatus();
+  }
+
   add(e) {
     if (this.size == 0) {
       this.mainEntry = e;
@@ -501,6 +540,27 @@ function forceGroup(name, itemname) {
     }
   }
   groups[groups.length - 1].groupName = name;
+}
+
+function forceUnGroup(itemname) {
+  let grindex = -1;
+  let itindex = -1;
+  for (let i = 0; i < groups.length; i++) {
+    if (grindex != -1) break
+    for (let j = 0;j<groups[i].entries.length;j++) {
+      if (groups[i].entries[j].title == itemname) {
+        grindex = i;
+        itindex = j;
+        break
+      }
+    }
+  }
+  if (grindex == -1) {
+    console.log(gname + " failed to find and therefore failed to remove");
+    return;
+  }
+  groups[grindex].entries.splice(itindex, 1);
+  groups[grindex].refresh()
 }
 
 function buildNewGroup(name, entris) {
@@ -724,6 +784,7 @@ function assembleGroups() {
     }
   }
   // gotta love some hard coding
+  forceUnGroup("Magic Maker: How to Make Magic in Another World");
   disbandGroup("The Melancholy of Haruhi Suzumiya");
   massPutInGroup("The Disappearance of Haruhi Suzumiya", [
     "The Melancholy of Haruhi Suzumiya",
