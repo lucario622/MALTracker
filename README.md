@@ -1,5 +1,7 @@
 # MAL Tracker
 
+(https://lucario622.github.io/MALTracker/HTMLs/index.html)
+
 ### Information
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This project takes the data shown when viewing your profile on [MyAnimeList](https://MyAnimeList.net/), and parses it into a list of entries. The data is then used to create multiple different visualizations. It takes the form of a site that has you input a text file of an entire MyAnimeList profile page, found at "myanimelist.net/animelist/\<username>"
