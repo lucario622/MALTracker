@@ -27,36 +27,6 @@ function start() {
   let lats = [];
   let k = 0;
   while (true) {
-    lats[k] = data[0];
-    for (let i = 0; i < data.length; i++) {
-      const e = data[i];
-      if (
-        !lats.includes(e) &&
-        e.airstartdate != "" &&
-        daycount(e.airstartdate) >= 0 &&
-        daycount(e.airstartdate) <= daycount(lats[k].airstartdate)
-      ) {
-        lats[k] = e;
-      }
-    }
-    p.innerHTML += `<pre></pre>`;
-    p.lastChild.innerText = `Latest Start: ${
-      lats[k].title
-    } ${defaultdatetoreadable(lats[k].airstartdate)}`;
-    if (lats[k].rated == "R+") {
-      p.lastChild.setAttribute("class", "R");
-      p.lastChild.hidden = true;
-    }
-    if (daycount(lats[k].airstartdate) > 7) {
-      break;
-    }
-    k++;
-  }
-  p.innerHTML += "<hr>";
-
-  lats = [];
-  k = 0;
-  while (true) {
     lats[k] = new Entry();
     lats[k].airenddate = ndaysbefore(curdate, 10000);
     for (let i = 0; i < data.length; i++) {
