@@ -516,9 +516,18 @@ function allratedempty() {
   return pass;
 }
 
-function allgenreempty() {
+function alldemogempty() {
   let pass = true;
   for (let i = sublen2d(4); i < sublen2d(5); i++) {
+    const element = filtboxes[i];
+    if (element.checked) pass = false;
+  }
+  return pass;
+}
+
+function allgenreempty() {
+  let pass = true;
+  for (let i = sublen2d(5); i < sublen2d(6); i++) {
     const element = filtboxes[i];
     if (element.checked) pass = false;
   }
@@ -545,6 +554,8 @@ function certaincondition(n, i, e) {
     case 4:
       return e.rated == filtboxarray.flat()[i];
     case 5:
+      return e.demog.includes(filtboxarray.flat()[i]);
+    case 6:
       return !e.genres.includes(filtboxarray.flat()[i]);
   }
 }
@@ -570,6 +581,7 @@ function passfail(element) {
     allairempty,
     allgroupempty,
     allratedempty,
+    alldemogempty,
     allgenreempty,
   ];
   let pass = [];
@@ -578,14 +590,15 @@ function passfail(element) {
   pass[2] = false;
   pass[3] = false;
   pass[4] = false;
-  pass[5] = true;
+  pass[5] = false;
+  pass[6] = true;
 
   let k = 0;
   for (let i = 0; i < filtboxarray.length; i++) {
     for (let j = 0; j < filtboxarray[i].length; j++) {
       if (filtboxes[k].checked && certaincondition(i + 1, k, element)) {
         pass[i + 1] = true;
-        if (i == 4) pass[i + 1] = false;
+        if (i == 5) pass[i + 1] = false;
       }
       k++;
     }

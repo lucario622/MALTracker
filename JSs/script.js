@@ -117,6 +117,7 @@ var filtboxarray = [
   ["Aired", "Airing", "Not Yet Aired"],
   ["Completed", "Watching", "On-Hold", "Dropped", "Plan to Watch"],
   ["G", "PG", "PG-13", "R", "R+", "Rx"],
+  ["Shounen","Seinen","Shoujo","Josei"],
   [
     "Action",
     "Adventure",
@@ -3277,7 +3278,7 @@ function lookslikegenre(str) {
   }
   result = true;
   for (let word of str.split(", ")) {
-    if (!filtboxarray[4].includes(word)) {
+    if (!filtboxarray[5].includes(word)) {
       result = false;
     }
   }
