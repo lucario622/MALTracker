@@ -19,6 +19,7 @@ function start() {
 
   data.sort(compareWatchDate);
   let statusCount = [0, 0, 0, 0, 0];
+  let purcmpl = [0,0,0]
   for (let i = 0; i < data.length; i++) {
     statusCount[filtboxarray[2].indexOf(data[i].status)]++;
     totalCount++;
@@ -27,6 +28,9 @@ function start() {
       avgScore = (avgScore * scoredCount++ + data[i].score) / scoredCount;
     }
     if (data[i].status == "Completed") {
+      if (data[i].genres.indexOf(filtboxarray[5][7]) != -1) purcmpl[0]++;
+      if (data[i].genres.indexOf(filtboxarray[5][8]) != -1) purcmpl[1]++;
+      if (data[i].genres.indexOf(filtboxarray[5][12]) != -1) purcmpl[2]++;
       cmplTotal++;
       cmplLen += data[i].determineLen() * (data[i].rewatched + 1);
     } else if (data[i].status == "Watching") {
@@ -37,6 +41,7 @@ function start() {
     if (dayssince == 0 && data[i].startdate != "")
       dayssince = daycount(data[i].startdate);
   }
+  console.log(purcmpl)
 
   statsList.push([
     "Days since start",
@@ -133,6 +138,14 @@ function start() {
             " longer";
     },
   ]);
+  statsList.push([
+    "score",
+    Math.floor(1000/cmplTotal*(purcmpl[0]*2+purcmpl[1]*3+purcmpl[2]*4))/1000
+    ,
+    (val) => {
+      return val;
+    }
+  ])
   statsList.push([
     "Mean Score",
     // avgScore,
