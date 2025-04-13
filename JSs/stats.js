@@ -140,10 +140,10 @@ function start() {
   ]);
   statsList.push([
     "score",
-    Math.floor(1000/cmplTotal*(purcmpl[0]*2+purcmpl[1]*3+purcmpl[2]*4))/1000
-    ,
+    Math.floor(1000/cmplTotal*(purcmpl[0]*2+purcmpl[1]*3+purcmpl[2]*4))/1000,
     (val) => {
-      return val;
+      purtotal = (purcmpl[0]*2+purcmpl[1]*3+purcmpl[2]*4)
+      return (val > 1/cmplTotal*(purcmpl[0]*2+purcmpl[1]*3+purcmpl[2]*4))?("Watch "+Math.ceil((purtotal-cmplTotal*val)/(val-2))+" more \"entries\""):("Watch "+Math.ceil(purtotal/val-cmplTotal)+" more normal entries");
     }
   ])
   statsList.push([
