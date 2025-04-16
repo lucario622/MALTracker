@@ -1,6 +1,7 @@
 var mainCanvas;
 var mainContext = null;
 var catSelect;
+var curSelected;
 var cw;
 var ch;
 const axisOptions = [
@@ -16,6 +17,10 @@ const axisOptions = [
   "year",
 ];
 function init() {
+  let myvar = window.location.search
+  myvar = new URLSearchParams(myvar)
+  curSelected = myvar.get('selected')
+  if (curSelected == null) curSelected = axisOptions[0]
   generalinit();
 }
 
@@ -32,6 +37,7 @@ function start() {
   catSelect = document.createElement("select");
   catSelect.name = "Cat Select";
   catSelect.addEventListener("change", function () {
+    window.location.search = "selected="+catSelect.value
     graphit();
   });
   insert(document.getElementById("selectdiv"), catSelect);
@@ -41,7 +47,7 @@ function start() {
     option.textContent = axisOptions[i];
     insert(catSelect, option);
   }
-  catSelect.value = axisOptions[0];
+  catSelect.value = curSelected;
 
   mainCanvas = document.createElement("canvas");
   mainContext = mainCanvas.getContext("2d");

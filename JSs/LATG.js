@@ -1,6 +1,8 @@
 var mainCanvas;
 var mainContext = null;
 var catSelect;
+var curX;
+var curY;
 var xSelect;
 const axisOptions = [
   "MALscore",
@@ -20,6 +22,12 @@ const axisOptions = [
 const mins = [5, 1, 5, 0, 0];
 const maxs = [10, 866, 10, 1096, 1096];
 function init() {
+  let myvar = window.location.search
+  myvar = new URLSearchParams(myvar)
+  curX = myvar.get('curX')
+  curY = myvar.get('curY')
+  if (curX == null) curX = axisOptions[0];
+  if (curY == null) curY = axisOptions[1];
   generalinit();
 }
 
@@ -36,6 +44,7 @@ function start() {
   xSelect = document.createElement("select");
   xSelect.name = "X Axis Select";
   xSelect.addEventListener("change", function () {
+    window.location.search = "curX="+xSelect.value+"&curY="+catSelect.value
     graphit();
   });
   insert(document.getElementById("selectdiv"), xSelect);
@@ -45,7 +54,7 @@ function start() {
     option.textContent = axisOptions[i];
     insert(xSelect, option);
   }
-  xSelect.value = axisOptions[0];
+  xSelect.value = curX;
 
   let ySpan = document.createElement("span");
   ySpan.textContent = "Y Axis: ";
@@ -55,6 +64,7 @@ function start() {
   catSelect = document.createElement("select");
   catSelect.name = "Y Axis Select";
   catSelect.addEventListener("change", function () {
+    window.location.search = "curX="+xSelect.value+"&curY="+catSelect.value
     graphit();
   });
   insert(document.getElementById("selectdiv"), catSelect);
@@ -64,7 +74,7 @@ function start() {
     option.textContent = axisOptions[i];
     insert(catSelect, option);
   }
-  catSelect.value = axisOptions[0];
+  catSelect.value = curY;
 
   mainCanvas = document.createElement("canvas");
   mainContext = mainCanvas.getContext("2d");
