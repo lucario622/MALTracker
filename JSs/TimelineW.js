@@ -1,7 +1,7 @@
 var lineabove;
 var linebelow;
 var dayzero;
-var rows = 100;
+var rows = 76;
 var neededrows = 0;
 var tryagain = false;
 var mytimeline;
