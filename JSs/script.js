@@ -2633,6 +2633,9 @@ function parseAllTextGen() {
       if (c.charCodeAt(0) == 8217) {
         item.title = setCharAt(item.title, j, "'");
       }
+      if (c.charCodeAt(0) == 9733) {
+        item.title = setCharAt(item.title, j, "*");
+      }
     }
     index1 = temp.split(/Edit - More|Add - More/)[0].length;
     temp = temp.substring(index1 + 11);
