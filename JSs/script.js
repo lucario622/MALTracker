@@ -812,7 +812,7 @@ function assembleGroups() {
     "Rascal Does Not Dream of Bunny Girl Senpai",
     "Seishun Buta Yarou wa Santa Claus no Yume wo Minai"
   );
-  putInGroup("JoJo's Bizarre Adventure", "Thus Spoke Kishibe Rohan");
+  massPutInGroup("JoJo's Bizarre Adventure", ["Thus Spoke Kishibe Rohan","JoJo no Kimyou na Bouken Part 7: Steel Ball Run"]);
   disbandGroup("Boruto");
   putInGroup("Naruto", "Boruto: Naruto the Movie");
   putInGroup("Naruto", "Boruto: Naruto Next Generations");
@@ -853,6 +853,8 @@ function assembleGroups() {
   disbandGroup("Food Wars! The Third Plate");
   rerecruit("Food Wars!");
   disbandGroup("Fate/Zero");
+  disbandGroup("Fate/Extra");
+  disbandGroup("Fate/Grand Order");
   renameGroup("Fate/stay night", "Fate");
   rerecruit("Fate");
   disbandGroup("Kizumonogatari Part 1");
