@@ -2628,6 +2628,9 @@ function parseAllTextGen() {
     if (item.title.charAt(item.title.length - 1) == "Ⅱ") {
       item.title = item.title.substring(0, item.title.length - 1) + "II";
     }
+    if (item.title.startsWith("Shinjiteita Nakama-tachi ni Dungeon Okuchi") || item.title.startsWith("Backstabbed in a Backwater Dungeon")) {
+      item.title = "Backstabbed in a Backwater Dungeon"
+    }
     for (let j = 0; j < item.title.length; j++) {
       const c = item.title[j];
       if (c.charCodeAt(0) == 8217) {
