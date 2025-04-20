@@ -796,6 +796,7 @@ function assembleGroups() {
     "2.5 Dimensional Seduction",
     "2.5-jigen no Ririsa 2nd Season",
   ]);
+  buildNewGroup("Monster Musume: Everyday Life with Monster Girls",["Monster Musume: Everyday Life with Monster Girls","Monster Musume: Everyday Life with Monster Girls OVA"])
   putInGroup("Laid-Back Camp", "Room Camp");
   putInGroup(
     "Laid-Back Camp",
