@@ -492,21 +492,41 @@ function setCanvas(key, ctext) {
   switch (key) {
     case "Graph1":
       data.sort(compareScores).reverse();
-      let x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      let x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      let minscore = 10;
+      let maxscore = 1;
+      let maxcount = 0;
       for (let i = 0; i < data.length; i++) {
         const e = data[i];
+        if (e.score == 0) break;
+        if (minscore > e.score) minscore = e.score;
+        if (maxscore < e.score) maxscore = e.score;
         x[e.score]++;
+        if (maxcount < x[e.score]) maxcount = x[e.score];
       }
+      console.log(minscore + " " + maxscore);
       x[0] = 0;
       let y = sum(x);
-      for (let i = 5; i <= 10; i++) {
-        drawRect(5, 155 - 15 * i, x[i], 10, "red");
+      let leftgap = 25;
+      let topgap = 5;
+      for (let i = minscore; i <= maxscore; i++) {
         drawText(
-          10 + x[i],
-          165 - 15 * i,
-          i + ": " + x[i] + " (" + Math.round((x[i] / y) * 100) + "%)",
-          15
+          leftgap - 9 * ("" + i).length - 5,
+          topgap + 160 - 15 * i,
+          i,
+          15,
+          "rgb(158,158,158)"
         );
+        let barspace = cvas.width - 75 - leftgap
+        let rectwidth = x[i]/maxcount*barspace - 2
+        drawCircle(rectwidth+leftgap,topgap + 151 - 15 * i,2,"rgb(45,66,118)")
+        drawCircle(rectwidth+leftgap,topgap + 159 - 15 * i,2,"rgb(45,66,118)")
+        drawRect(rectwidth+leftgap-1, topgap + 151 - 15 * i, 3, 8, "rgb(45,66,118)");
+        drawRect(leftgap, topgap + 149 - 15 * i, Math.max(rectwidth,0), 12, "rgb(45,66,118)");
+        let percentstring = "("+Math.round((x[i] / y) * 100)+"%)"
+        drawText(cvas.width-9*percentstring.length,topgap + 160 - 15 * i,percentstring,15,"rgb(158,158,158)")
+        let countstring = x[i]+""
+        drawText(cvas.width-45-9*countstring.length,topgap + 160 - 15 * i,countstring,15,"rgb(158,158,158)")
       }
       break;
     case "Graph2":
@@ -693,6 +713,10 @@ function drawEllipse(x, y, w, h, color = "red", degrees = 360) {
   ctx.beginPath();
   ctx.ellipse(x, y, w, h, 0, 0, (degrees / 180) * Math.PI);
   ctx.fill();
+}
+
+function drawCircle(x,y,r,color="red") {
+  drawEllipse(x,y,r,r,color)
 }
 
 function drawText(x, y, str, size, color = "red") {
