@@ -853,6 +853,7 @@ function assembleGroups() {
   renameGroup("Food Wars! The Second Plate", "Food Wars!");
   disbandGroup("Food Wars! The Third Plate");
   rerecruit("Food Wars!");
+  disbandGroup("Fate/strange Fake");
   disbandGroup("Fate/Zero");
   disbandGroup("Fate/Extra");
   disbandGroup("Fate/Grand Order");
