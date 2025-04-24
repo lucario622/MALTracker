@@ -117,41 +117,9 @@ function start() {
       break;
     }
   }
-  // lats = [];
-  // k = 0;
-  // while (true) {
-  //   lats[k] = new Entry();
-  //   lats[k].airenddate = ndaysafter(curdate, 1000);
-  //   for (let i = 0; i < data.length; i++) {
-  //     const e = data[i];
-  //     if (
-  //       e.airStatus == "Airing" &&
-  //       !lats.includes(e) &&
-  //       e.airenddate != "" &&
-  //       daycount(e.airenddate) < 0 &&
-  //       daycount(e.airenddate) >= daycount(lats[k].airenddate)
-  //     ) {
-  //       lats[k] = e;
-  //     }
-  //   }
-  //   p.innerHTML += `<pre>Upcoming Finish: ${
-  //     lats[k].title
-  //   } ${defaultdatetoreadable(lats[k].airenddate)}</pre>`;
-  //   if (lats[k].rated == "R+") {
-  //     p.lastChild.setAttribute("class", "R");
-  //   }
-  //   if (daycount(lats[k].airenddate) < -100) {
-  //     break;
-  //   }
-  //   if (k == 10) {
-  //     break;
-  //   }
-  //   k++;
-  // }
   p.innerHTML += "<hr>";
 
   groups.sort(compareGroupRating).reverse();
-  // groups.sort(compareGroupTimeCom);
   groups.sort(compareGroupStatus);
   data.sort(compareMALScore).reverse();
   p.innerHTML +=
@@ -625,7 +593,7 @@ function setCanvas(key, ctext) {
           );
       }
       break;
-    case "Graph4":
+    case "GraphN":
       if (7 + 7 * graphIncrement >= myArray.length + 7) {
         break;
       }
@@ -670,6 +638,18 @@ function setCanvas(key, ctext) {
           fontsiz,
           "white"
         );
+        let somedate = ndaysbefore(curdate, i + 7 * graphIncrement);
+        if (somedate.substring(0, 2) == "01") {
+          drawText(
+            (cvas.width / 7) * (i + 1) - (fontsiz / 1.6) * 3,
+            fontsiz / 1.4,
+            mArr[parseInt(somedate.substring(3, 5)) - 1],
+            fontsiz,
+            "white"
+          );
+          drawRect((cvas.width / 7) * (i + 1) - 2, 0, 2, cvas.height, "white");
+        }
+        console.log(somedate);
       }
       drawLine(
         0,
@@ -724,16 +704,6 @@ function partialSum(arr, n) {
   return sum;
 }
 
-function clearAll() {
-  for (let s of canvi) {
-    clear(s.id);
-  }
-}
-
-function clear(ctext) {
-  setCanvas("Clear", ctext);
-}
-
 function drawLine(x1, y1, x2, y2, color = "red") {
   ctx.strokeStyle = color;
 
@@ -760,8 +730,8 @@ function drawEllipse(x, y, w, h, color = "red", degrees = 360) {
   ctx.fill();
 }
 
-function drawCircle(x,y,r,color="red") {
-  drawEllipse(x,y,r,r,color)
+function drawCircle(x, y, r, color = "red") {
+  drawEllipse(x, y, r, r, color);
 }
 
 function drawText(x, y, str, size, color = "red") {
