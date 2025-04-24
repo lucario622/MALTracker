@@ -2,6 +2,8 @@ var canvi = [];
 var ccc = [];
 var ctx;
 
+var megacv;
+
 var cmplTotal = 0;
 var cmplLen = 0;
 var cmplEps = 0;
@@ -454,7 +456,7 @@ function start() {
     if (dayssince == 0 && data[i].startdate != "")
       dayssince = daycount(data[i].startdate);
   }
-  p.innerHTML += `<hr><pre><span onclick='toggleAll()'>Since starting ${dayssince} days ago, you've watched ${cmplTotal} entries (${cmplEps} eps | ${mns2dhm(
+  p.innerHTML += `<hr><pre><span onclick='toggleCanvi()'>Since starting ${dayssince} days ago, you've watched ${cmplTotal} entries (${cmplEps} eps | ${mns2dhm(
     cmplLen
   )}), which is about ${
     Math.floor((cmplTotal / dayssince) * 1000) / 1000
@@ -465,6 +467,17 @@ function start() {
   let ah = document.getElementsByTagName("a")[0].clientHeight;
   ah = 0;
   let v = innerHeight - p.clientHeight - ah;
+  megacv = document.createElement("canvas");
+  megacv.height = v - 40;
+  megacv.width = (v - 30) * 2;
+  megacv.width = u - 30;
+  megacv.setAttribute("id", "megacv");
+  megacv.hidden = true;
+  insert(document.getElementById("mainbody"), megacv);
+  megacv.onclick = function () {
+    megacv.hidden = true;
+    toggleCanvi();
+  };
   for (let i = 0; i < Math.floor(u / 300) * Math.floor(v / 150); i++) {
     let cv = document.createElement("canvas");
     cv.setAttribute("id", "canvas" + (i + 1));
@@ -474,16 +487,15 @@ function start() {
   }
   graphIncrement = 0;
   for (let i = 1; i <= canvi.length; i++) {
+    setCanvas("Graph" + i, "canvas" + i);
     canvi[i - 1].onclick = function () {
-      if (ccc[i - 1]) {
-        setCanvas("Graph" + i, "canvas" + i);
-      } else {
-        graphIncrement = 0;
-        clear("canvas" + i);
-      }
-      ccc[i - 1] = !ccc[i - 1];
+      toggleCanvi();
+      setCanvas("Clear", "megacv");
+      setCanvas("Graph" + i, "megacv");
+      megacv.hidden = false;
     };
   }
+  toggleCanvi();
 }
 
 function setCanvas(key, ctext) {
@@ -659,15 +671,9 @@ function setCanvas(key, ctext) {
   }
 }
 
-function toggleAll() {
+function toggleCanvi() {
   for (let c of canvi) {
-    c.onclick();
-  }
-}
-
-function toggleR() {
-  for (let n of document.getElementsByClassName("R")) {
-    n.hidden = !n.hidden;
+    c.hidden = !c.hidden;
   }
 }
 
