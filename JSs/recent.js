@@ -696,6 +696,12 @@ function toggleCanvi() {
   }
 }
 
+function toggleR() {
+  for (let n of document.getElementsByClassName("R")) {
+    n.hidden = !n.hidden;
+  }
+}
+
 function partialSum(arr, n) {
   let sum = 0;
   for (let i = 0; i < n; i++) {
