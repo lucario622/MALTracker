@@ -704,8 +704,8 @@ function setCanvas(key, ctext) {
       ctx.clearRect(0, 0, cvas.width, cvas.height);
       break;
     default:
-      graphIncrement++;
-      setCanvas("Graph4", ctext);
+      graphIncrement = parseInt(key.substring(5)) - 4;
+      setCanvas("GraphN", ctext);
       break;
   }
 }
