@@ -519,26 +519,64 @@ function setCanvas(key, ctext) {
       console.log(minscore + " " + maxscore);
       x[0] = 0;
       let y = sum(x);
-      let leftgap = 25;
-      let topgap = 5;
+      let leftgap = cvas.width / 12;
+      let topgap = cvas.height / 30;
+      let fontsz = cvas.height / 10;
       for (let i = minscore; i <= maxscore; i++) {
         drawText(
-          leftgap - 9 * ("" + i).length - 5,
-          topgap + 160 - 15 * i,
+          leftgap - (fontsz / 1.6) * ("" + i).length - cvas.width / 60,
+          topgap + (cvas.height / 15) * 16 - (cvas.height / 10) * i,
           i,
-          15,
+          fontsz,
           "rgb(158,158,158)"
         );
-        let barspace = cvas.width - 75 - leftgap
-        let rectwidth = x[i]/maxcount*barspace - 2
-        drawCircle(rectwidth+leftgap,topgap + 151 - 15 * i,2,"rgb(45,66,118)")
-        drawCircle(rectwidth+leftgap,topgap + 159 - 15 * i,2,"rgb(45,66,118)")
-        drawRect(rectwidth+leftgap-1, topgap + 151 - 15 * i, 3, 8, "rgb(45,66,118)");
-        drawRect(leftgap, topgap + 149 - 15 * i, Math.max(rectwidth,0), 12, "rgb(45,66,118)");
-        let percentstring = "("+Math.round((x[i] / y) * 100)+"%)"
-        drawText(cvas.width-9*percentstring.length,topgap + 160 - 15 * i,percentstring,15,"rgb(158,158,158)")
-        let countstring = x[i]+""
-        drawText(cvas.width-45-9*countstring.length,topgap + 160 - 15 * i,countstring,15,"rgb(158,158,158)")
+        let barspace = cvas.width * 0.75 - leftgap;
+        let rectwidth = (x[i] / maxcount) * barspace - cvas.width / 150;
+        drawCircle(
+          rectwidth + leftgap,
+          topgap + cvas.height + cvas.height / 150 - (cvas.height / 10) * i,
+          cvas.height / 75,
+          "rgb(45,66,118)"
+        );
+        drawCircle(
+          rectwidth + leftgap,
+          topgap +
+            cvas.height +
+            (9 * cvas.height) / 150 -
+            (cvas.height / 10) * i,
+          cvas.height / 75,
+          "rgb(45,66,118)"
+        );
+        drawRect(
+          rectwidth + leftgap - 1,
+          topgap + cvas.height + cvas.height / 150 - (cvas.height / 10) * i,
+          1 + cvas.height / 75,
+          cvas.height / 18.75,
+          "rgb(45,66,118)"
+        );
+        drawRect(
+          leftgap,
+          topgap + cvas.height - cvas.height / 150 - (cvas.height / 10) * i,
+          Math.max(rectwidth, 0),
+          cvas.height / 12.5,
+          "rgb(45,66,118)"
+        );
+        let percentstring = "(" + Math.round((x[i] / y) * 100) + "%)";
+        drawText(
+          cvas.width - (fontsz / 1.6) * percentstring.length,
+          topgap + (cvas.height / 15) * 16 - (cvas.height / 10) * i,
+          percentstring,
+          fontsz,
+          "rgb(158,158,158)"
+        );
+        let countstring = x[i] + "";
+        drawText(
+          cvas.width - (fontsz / 1.6) * 5 - (fontsz / 1.6) * countstring.length,
+          topgap + (cvas.height / 15) * 16 - (cvas.height / 10) * i,
+          countstring,
+          fontsz,
+          "rgb(158,158,158)"
+        );
       }
       break;
     case "Graph2":
@@ -592,6 +630,7 @@ function setCanvas(key, ctext) {
         break;
       }
       let weekLen = 0;
+      let fontsiz = cvas.height / 10;
       for (let i = 0; i < 7; i++) {
         if (i + 7 * graphIncrement >= myArray.length) {
           continue;
@@ -610,25 +649,25 @@ function setCanvas(key, ctext) {
         );
         drawText(
           (cvas.width / 7) * i,
-          15,
+          fontsiz,
           myArray[myArray.length - (i + 7 * graphIncrement) - 1].length,
-          15,
+          fontsiz,
           "white"
         );
         drawText(
           (cvas.width / 7) * i,
-          30,
+          fontsiz * 2,
           daysOfWeek[
             (myArray.length - (i + 7 * graphIncrement) + 2) % 7
           ].substring(0, 3),
-          15,
+          fontsiz,
           "white"
         );
         drawText(
           (cvas.width / 7) * i,
-          45,
+          fontsiz * 3,
           Math.round((timecount / 60) * 10) / 10 + "h",
-          15,
+          fontsiz,
           "white"
         );
       }
@@ -643,7 +682,7 @@ function setCanvas(key, ctext) {
         0,
         cvas.height - (cmplLen / dayssince / 960) * cvas.height,
         "Avg: " + mns2dhm(cmplLen / dayssince),
-        15,
+        fontsiz,
         "blue"
       );
       drawLine(
@@ -657,7 +696,7 @@ function setCanvas(key, ctext) {
         0,
         cvas.height - (weekLen / 7 / 960) * cvas.height,
         "WeekAvg: " + mns2dhm(weekLen / 7),
-        15,
+        fontsiz,
         "green"
       );
       break;
