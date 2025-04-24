@@ -10,6 +10,8 @@ function init() {
 function start() {
   makeDatas();
 
+  assembleGroups();
+
   mainbd = document.getElementById("mainbody");
   baseformat = mainbd.childNodes[2];
   let allboxes = document.getElementsByClassName("information");

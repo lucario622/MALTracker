@@ -894,6 +894,27 @@ function assembleGroups() {
     e.entries.sort(compareAirStart);
     for (let j = 0; j < e.entries.length; j++) {
       const element = e.entries[j];
+      let iofs = element.title.indexOf("Season");
+      // Season 5 Part 2
+      if (iofs != -1) {
+        for (let seasonNumber = 1; seasonNumber < 10; seasonNumber++) {
+          if (element.title.substring(iofs) == "Season "+ seasonNumber) {
+            n = seasonNumber + 1;
+            element.position = "Season "+seasonNumber;
+            break;
+          }
+          for (let partnumber = 1; partnumber < 10; partnumber++) {
+            if (
+              element.title.substring(iofs, iofs + 15) ==
+              "Season " + seasonNumber + " Part " + partnumber
+            ) {
+              n = seasonNumber + 1;
+              element.position = "Season " + seasonNumber + " Part " + partnumber;
+            }
+          }
+        }
+      }
+      if (element.position != "") continue;
       if (j > 0 && bispartnofa(e.entries[j - 1], element)) {
         let x = bispartnofa(e.entries[j - 1], element);
         if (x) {
@@ -919,21 +940,6 @@ function assembleGroups() {
         if (n > 1) element.position = "Season " + (n - 1) + " Special";
         else element.position = "Special";
       }
-      let iofs = element.title.indexOf("Season");
-      // Season 5 Part 2
-      if (iofs != -1) {
-        for (let ii = 1; ii < 6; ii++) {
-          for (let iii = 1; iii < 4; iii++) {
-            if (
-              element.title.substring(iofs, iofs + 15) ==
-              "Season " + ii + " Part " + iii
-            ) {
-              n = ii + 1;
-              element.position = "Season " + ii + " Part " + iii;
-            }
-          }
-        }
-      }
     }
   }
 }
@@ -956,7 +962,7 @@ class Entry {
   demog = "";
   rated = "";
 
-  position = "Season 1";
+  position = "";
   ranking = 0;
   // user-Specific information
   status = "Completed";

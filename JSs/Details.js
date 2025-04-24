@@ -4,6 +4,9 @@ function init() {
 
 function start() {
   makeDatas();
+  
+  assembleGroups();
+
   let curName = localStorage.getItem("transfer");
   console.log(curName);
   console.log(entryFromTitle(curName));
@@ -22,6 +25,7 @@ function start() {
   }
   let i = 0;
   allboxes[i++].innerText = curEntry.title;
+  allboxes[i++].innerText = curEntry.position + " of " + gfrome(curEntry).groupName;
 
   if (data.indexOf(curEntry) > lastscored) {
     allboxes[i++].innerText = "-";
