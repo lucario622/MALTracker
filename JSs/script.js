@@ -234,6 +234,14 @@ class EntryGroup {
     if (this.determineRemLen() != 0) {
       result += "Time Committment: " + mns2dhm(this.determineRemLen());
     }
+    if (this.size == 0) {
+      let cumlen = 0
+      for (let e of this.entries) {
+        cumlen += e.determineLen();
+      }
+      this.remLen = cumlen
+      result += "Total Length: " + mns2dhm(cumlen);
+    }
     return result;
   }
 
@@ -1064,22 +1072,24 @@ class Entry {
   }
 
   determineRemLen() {
-    this.remLen = 0;
-    if (this.type == "TV") {
-      this.remLen += (this.episodes - this.watchedepisodes) * avgTV;
-    } else if (this.type == "Movie") {
-      this.remLen += (this.episodes - this.watchedepisodes) * avgMovie;
-    } else if (this.type == "ONA") {
-      this.remLen += (this.episodes - this.watchedepisodes) * avgONA;
-    } else if (this.type == "OVA") {
-      this.remLen += (this.episodes - this.watchedepisodes) * avgOVA;
-    } else if (this.type == "TV Special") {
-      this.remLen += (this.episodes - this.watchedepisodes) * avgTVSP;
-    } else if (this.type == "Special") {
-      this.remLen += (this.episodes - this.watchedepisodes) * avgSP;
+    if (this.remLen != 0) {
+      this.remLen = 0;
+      if (this.type == "TV") {
+        this.remLen += (this.episodes - this.watchedepisodes) * avgTV;
+      } else if (this.type == "Movie") {
+        this.remLen += (this.episodes - this.watchedepisodes) * avgMovie;
+      } else if (this.type == "ONA") {
+        this.remLen += (this.episodes - this.watchedepisodes) * avgONA;
+      } else if (this.type == "OVA") {
+        this.remLen += (this.episodes - this.watchedepisodes) * avgOVA;
+      } else if (this.type == "TV Special") {
+        this.remLen += (this.episodes - this.watchedepisodes) * avgTVSP;
+      } else if (this.type == "Special") {
+        this.remLen += (this.episodes - this.watchedepisodes) * avgSP;
+      }
+      this.remLen /= 2;
+      this.remLen = Math.floor(this.remLen * 100) / 100;
     }
-    this.remLen /= 2;
-    this.remLen = Math.floor(this.remLen * 100) / 100;
     return this.remLen;
   }
 
