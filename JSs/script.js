@@ -111,6 +111,7 @@ const sortOptions = [
   "by Run Length",
   "by Air Finish",
   "by Pickup Time",
+  "by Title Length",
 ];
 var filtboxarray = [
   ["TV", "ONA", "OVA", "Movie", "Special", "TV Special", "Unknown"],
@@ -1916,6 +1917,28 @@ function compareGroupType(a, b) {
   return 0;
 }
 
+function compareGroupPickup(a, b) {
+  let ad = daycount(a.entries[0].airenddate) - daycount(a.entries[0].enddate);
+  let bd = daycount(b.entries[0].airenddate) - daycount(b.entries[0].enddate);
+  if (ad > bd) {
+    return 1;
+  } else if (ad < bd) {
+    return -1;
+  }
+  return 0;
+}
+
+function compareGroupTLength(a, b) {
+  let al = a.groupName.length;
+  let bl = b.groupName.length;
+  if (al > bl) {
+    return 1;
+  } else if (al < bl) {
+    return -1;
+  }
+  return 0;
+}
+
 function compareGroupSize(a, b) {
   if (a.size > b.size) {
     return 1;
@@ -2355,6 +2378,17 @@ function comparePickupTime(a, b) {
   if (ad > bd) {
     return 1;
   } else if (ad < bd) {
+    return -1;
+  }
+  return 0;
+}
+
+function compareTitleLength(a, b) {
+  let al = a.title.length;
+  let bl = b.title.length;
+  if (al > bl) {
+    return 1;
+  } else if (al < bl) {
     return -1;
   }
   return 0;

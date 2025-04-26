@@ -225,6 +225,10 @@ function display() {
       break;
     case "by Pickup Time":
       data[headers.indexOf(target)][1].sort(comparePickupTime);
+      break;
+    case "by Title Length":
+      data[headers.indexOf(target)][1].sort(compareTitleLength);
+      break;
     default:
       break;
   }
@@ -271,6 +275,9 @@ function display() {
       break;
     case "by Pickup Time":
       tempstr1 += "Pickup\tTitle\n";
+      break;
+    case "by Title Length":
+      tempstr1 += "Length\tTitle\n";
       break;
     default:
       break;
@@ -359,6 +366,10 @@ function display() {
       case "by Pickup Time":
         tempstr +=
           daycount(element.airenddate) - daycount(element.enddate) + "\t";
+        break;
+      case "by Title Length":
+        tempstr +=
+          element.title.length+"\t";
         break;
       case "Long List":
         tempstr += element.score + "/10\t" + element.type;

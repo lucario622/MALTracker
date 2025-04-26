@@ -252,6 +252,9 @@ function display() {
     case "by Pickup Time":
       data.sort(comparePickupTime);
       break;
+    case "by Title Length":
+      data.sort(compareTitleLength);
+      break;
     default:
       break;
   }

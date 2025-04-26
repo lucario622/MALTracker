@@ -78,6 +78,13 @@ function display() {
       break;
     case "by RemLen":
       groups.sort(compareGroupTimeCom);
+      break;
+    case "by Pickup Time":
+      groups.sort(compareGroupPickup);
+      break;
+    case "by Title Length":
+      groups.sort(compareGroupTLength);
+      break;
     default:
       break;
   }
