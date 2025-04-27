@@ -15,6 +15,7 @@ function init() {
   linebelow = document.getElementById("timelinebelow");
   lineabove = document.getElementById("timelineabove");
   generalinit();
+  p.innerText = "Last episode air date"
 }
 
 function dte(e) {
@@ -181,7 +182,6 @@ class TimeLine {
 function start() {
   makeDatas();
 
-  p.innerText = "Last episode air date"
   p.onclick = () => {
     if (bystart) {
       p.innerText = "Last episode air date"
