@@ -794,6 +794,7 @@ function assembleGroups() {
     }
   }
   // gotta love some hard coding
+  putInGroup("The Irregular at Magic High School","The Honor Student at Magic High School")
   forceUnGroup("Magic Maker: How to Make Magic in Another World");
   disbandGroup("The Melancholy of Haruhi Suzumiya");
   massPutInGroup("The Disappearance of Haruhi Suzumiya", [
