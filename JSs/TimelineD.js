@@ -1,13 +1,15 @@
 var lineabove;
 var linebelow;
 var dayzero;
-var rows = 24;
+var rows = 30;
 var neededrows = 0;
 var tryagain = false;
 var mytimeline;
 var fve;
 var fthidx = 0;
 var fthe;
+
+var bystart = false;
 
 function init() {
   linebelow = document.getElementById("timelinebelow");
@@ -16,10 +18,11 @@ function init() {
 }
 
 function dte(e) {
-  return e.airstartdate;
+  if (bystart) {
+    return e.airstartdate;
+  }
+  return e.airenddate;
 }
-
-var timecomp = compareAirStart;
 
 class TimeLine {
   constructor(length) {
@@ -178,7 +181,22 @@ class TimeLine {
 function start() {
   makeDatas();
 
-  data.sort(timecomp);
+  p.innerText = "Last episode air date"
+  p.onclick = () => {
+    if (bystart) {
+      p.innerText = "Last episode air date"
+    } else {
+      p.innerText = "First episode air date"
+    }
+    start()
+    bystart = !bystart
+  }
+
+  if (bystart) {
+    data.sort(compareAirStart);
+  } else {
+    data.sort(compareAirFinish);
+  }
   for (let i = 0; i < data.length; i++) {
     const e = data[i];
     if (dte(e) != "") {
