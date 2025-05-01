@@ -424,7 +424,7 @@ function start() {
     if (dayssince == 0 && data[i].startdate != "")
       dayssince = daycount(data[i].startdate);
   }
-  p.innerHTML += `<hr><pre><span onclick='toggleCanvi()'>Since starting ${dayssince} days ago, you've watched ${cmplTotal} entries (${cmplEps} eps | ${mns2dhm(
+  p.innerHTML += `<hr><pre><span onclick='toggleCanvi()'>Since starting ${dayssince} days ago, you've watched ${Math.floor(cmplTotal*100)/100} entries (${cmplEps} eps | ${mns2dhm(
     cmplLen
   )}), which is about ${
     Math.floor((cmplTotal / dayssince) * 1000) / 1000

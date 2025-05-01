@@ -54,7 +54,7 @@ function start() {
   ]);
   statsList.push([
     "Total Entries Watched",
-    cmplTotal,
+    Math.floor(cmplTotal*100)/100,
     (val) => {
       return cmplTotal < val
         ? "Watch " +
