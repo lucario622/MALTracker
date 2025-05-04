@@ -424,9 +424,9 @@ function start() {
     if (dayssince == 0 && data[i].startdate != "")
       dayssince = daycount(data[i].startdate);
   }
-  p.innerHTML += `<hr><pre><span onclick='toggleCanvi()'>Since starting ${dayssince} days ago, you've watched ${Math.floor(cmplTotal*100)/100} entries (${cmplEps} eps | ${mns2dhm(
-    cmplLen
-  )}), which is about ${
+  p.innerHTML += `<hr><pre><span onclick='toggleCanvi()'>Since starting ${dayssince} days ago, you've watched ${
+    Math.floor(cmplTotal * 100) / 100
+  } entries (${cmplEps} eps | ${mns2dhm(cmplLen)}), which is about ${
     Math.floor((cmplTotal / dayssince) * 1000) / 1000
   } (${mns2dhm(cmplLen / dayssince)}) per day. Alternatively, that is ${
     Math.floor((cmplLen / (60 * 24 * dayssince)) * 100000) / 1000
@@ -484,7 +484,6 @@ function setCanvas(key, ctext) {
         x[e.score]++;
         if (maxcount < x[e.score]) maxcount = x[e.score];
       }
-      console.log(minscore + " " + maxscore);
       x[0] = 0;
       let y = sum(x);
       let leftgap = cvas.width / 12;
@@ -580,17 +579,104 @@ function setCanvas(key, ctext) {
       }
       break;
     case "Graph3":
+      data.sort(compareWatchEnd).reverse();
+      let ftsz = cvas.height / 20;
       drawLine(5, cvas.height - 5, cvas.width - 5, 5, "red");
+      let taken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       for (let i = 0; i < data.length; i++) {
         const e = data[i];
-        if (e.score != 0 && e.MALscore != 0)
+        if (e.score != 0 && e.MALscore != 0) {
           drawEllipse(
             ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
             cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
-            1,
-            1,
+            ftsz / 15,
+            ftsz / 15,
             "red"
           );
+          if (taken[e.score] != 2) {
+            if (e.score == 10) {
+              drawTextRA(
+                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                cvas.height -
+                  (((e.score - 5) / 5) * (cvas.height - 10) +
+                    5 -
+                    cvas.height / 15),
+                e.title,
+                ftsz,
+                "white"
+              );
+              drawLine(
+                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
+                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                cvas.height -
+                  (((e.score - 5) / 5) * (cvas.height - 10) +
+                    5 -
+                    cvas.height / 15),
+                "green"
+              );
+              taken[e.score]++;
+            } else if (e.score == 5) {
+              drawText(
+                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                cvas.height -
+                  (((e.score - 5) / 5) * (cvas.height - 10) +
+                    5 +
+                    cvas.height / 15),
+                e.title,
+                ftsz,
+                "white"
+              );
+              drawLine(
+                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
+                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                cvas.height -
+                  (((e.score - 5) / 5) * (cvas.height - 10) +
+                    5 +
+                    cvas.height / 15),
+                "green"
+              );
+              taken[e.score] ++;
+            } else {
+              let aboveorbelow = 1
+              if (taken[e.score] == 1) aboveorbelow = -1
+              if (e.MALscore < e.score) {
+                drawTextRA(
+                  ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                  cvas.height -
+                    (((e.score - 5) / 5) * (cvas.height - 10) +
+                      5 +
+                      aboveorbelow*cvas.height / 15),
+                  e.title,
+                  ftsz,
+                  "white"
+                );
+              } else
+                drawText(
+                  ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                  cvas.height -
+                    (((e.score - 5) / 5) * (cvas.height - 10) +
+                      5 +
+                      aboveorbelow*cvas.height / 15),
+                  e.title,
+                  ftsz,
+                  "white"
+                );
+              drawLine(
+                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
+                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+                cvas.height -
+                  (((e.score - 5) / 5) * (cvas.height - 10) +
+                    5 +
+                    aboveorbelow*cvas.height / 15),
+                "green"
+              );
+            }
+            taken[e.score] += 1;
+          }
+        }
       }
       break;
     case "GraphN":
@@ -649,7 +735,6 @@ function setCanvas(key, ctext) {
           );
           drawRect((cvas.width / 7) * (i + 1) - 2, 0, 2, cvas.height, "white");
         }
-        console.log(somedate);
       }
       drawLine(
         0,
@@ -744,6 +829,15 @@ function drawText(x, y, str, size, color = "red") {
   ctx.fillStyle = color;
   ctx.font = size + "px Arial";
   ctx.fillText(str, x, y);
+}
+
+function drawTextRA(x, y, str, size, color = "red") {
+  // let strwidth = str.length * (size / 2.05);
+  // let newX = x - strwidth;
+  // drawText(newX, y, str, size, color);
+  ctx.textAlign = "right"
+  drawText(x, y, str, size, color)
+  ctx.textAlign = "left"
 }
 
 function sum(x) {
