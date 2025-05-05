@@ -566,7 +566,7 @@ function forceUnGroup(itemname) {
     }
   }
   if (grindex == -1) {
-    console.log(gname + " failed to find and therefore failed to remove");
+    console.log(itemname + " failed to find and therefore failed to remove");
     return;
   }
   groups[grindex].entries.splice(itindex, 1);
@@ -2625,7 +2625,8 @@ function parseAllTextGen() {
   let arrr = [];
   let tempsplitdata = rawfiledata.split("\n");
   if (tempsplitdata[0] == "Viewing Your Manga List\r") {
-    return parseAllMTextGen();
+    // return parseAllMTextGen();
+    return parseAllMText();
   }
   let temp1splitdata = [];
   let x = 0;
