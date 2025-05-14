@@ -163,7 +163,7 @@ function graphit() {
   // drawRect(ch/1.15, 0, 100, ch, "red");
   // text width = text height * 0.86956 or 20/23
   // text size = text height * 1.6
-  // text size = text width * 1.4
+  // text size = text width * 1.818
   if (cats.length <= 10) {
     for (let i = 0; i < cats.length; i++) {
       if (cats[i] == "") cats[i] = "None";

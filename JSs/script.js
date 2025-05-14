@@ -608,6 +608,25 @@ function disbandGroup(gname) {
   groups.splice(grindex, 1);
 }
 
+function migrateGroup(gname,newgname) {
+  let grindex = -1;
+  for (let i = 0; i < groups.length; i++) {
+    if (groups[i].groupName == gname) {
+      grindex = i;
+    }
+  }
+  if (grindex == -1) {
+    console.log(gname + " failed to find and therefore failed to disband");
+    return;
+  }
+  let entris = []
+  for (let e of groups[grindex].entries) {
+    entris.push(e.title)
+  }
+  groups.splice(grindex, 1);
+  massPutInGroup(newgname,entris);
+}
+
 function massPutInGroup(grouptitle, entris) {
   for (let i = 0; i < entris.length; i++) {
     const e = entris[i];
@@ -824,9 +843,7 @@ function assembleGroups() {
     "Seishun Buta Yarou wa Santa Claus no Yume wo Minai"
   );
   massPutInGroup("JoJo's Bizarre Adventure", ["Thus Spoke Kishibe Rohan","JoJo no Kimyou na Bouken Part 7: Steel Ball Run"]);
-  disbandGroup("Boruto");
-  putInGroup("Naruto", "Boruto: Naruto the Movie");
-  putInGroup("Naruto", "Boruto: Naruto Next Generations");
+  migrateGroup("Boruto","Naruto")
   putInGroup(
     "Anohana",
     "Ano Hi Mita Hana no Namae wo Bokutachi wa Mada Shiranai.: Menma e no Tegami"
@@ -865,10 +882,11 @@ function assembleGroups() {
   rerecruit("Food Wars!");
   disbandGroup("Fate/strange Fake");
   disbandGroup("Fate/Zero");
-  disbandGroup("Fate/Extra");
-  disbandGroup("Fate/Grand Order");
+  putInGroup("Fate/Grand Order","Fate/Grand Order -First Order-")
+  putInGroup("Fate/Grand Order","Fate/Grand Carnival")
   renameGroup("Fate/stay night", "Fate");
   rerecruit("Fate");
+  forceUnGroup("Fate/Apocrypha")
   disbandGroup("Kizumonogatari Part 1");
   massPutInGroup("Monogatari", [
     "Kizumonogatari Part 1: Iron-Blooded",

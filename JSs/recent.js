@@ -491,8 +491,8 @@ function setCanvas(key, ctext) {
       let fontsz = cvas.height / 10;
       for (let i = minscore; i <= maxscore; i++) {
         drawText(
-          leftgap - (fontsz / 1.6) * ("" + i).length - cvas.width / 60,
-          topgap + (cvas.height / 15) * 16 - (cvas.height / 10) * i,
+          leftgap - (fontsz / 1.84) * ("" + i).length - cvas.width / 60,
+          topgap + cvas.height - cvas.height / 150 - (cvas.height / 10) * i,
           i,
           fontsz,
           "rgb(158,158,158)"
@@ -530,16 +530,18 @@ function setCanvas(key, ctext) {
         );
         let percentstring = "(" + Math.round((x[i] / y) * 100) + "%)";
         drawText(
-          cvas.width - (fontsz / 1.6) * percentstring.length,
-          topgap + (cvas.height / 15) * 16 - (cvas.height / 10) * i,
+          cvas.width - (fontsz / 1.84) * percentstring.length,
+          topgap + cvas.height - cvas.height / 150 - (cvas.height / 10) * i,
           percentstring,
           fontsz,
           "rgb(158,158,158)"
         );
         let countstring = x[i] + "";
         drawText(
-          cvas.width - (fontsz / 1.6) * 5 - (fontsz / 1.6) * countstring.length,
-          topgap + (cvas.height / 15) * 16 - (cvas.height / 10) * i,
+          cvas.width -
+            (fontsz / 1.84) * 5 -
+            (fontsz / 1.84) * countstring.length,
+          topgap + cvas.height - cvas.height / 150 - (cvas.height / 10) * i,
           countstring,
           fontsz,
           "rgb(158,158,158)"
@@ -579,102 +581,189 @@ function setCanvas(key, ctext) {
       }
       break;
     case "Graph3":
+      data.sort(compareTitles);
       data.sort(compareWatchEnd).reverse();
       let ftsz = cvas.height / 20;
       drawLine(5, cvas.height - 5, cvas.width - 5, 5, "red");
-      let taken = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      let takentop = [[], [], [], [], [], [], [], [], [], [], []];
+      let takenbottom = [[], [], [], [], [], [], [], [], [], [], []];
+      for (let i = 0; i < 5; i++) {
+        takentop[i] = [0, cvas.width];
+        takenbottom[i] = [0, cvas.width];
+      }
+      for (let i = 5; i <= 10; i++) {
+        takentop[i] = [-10, -5, cvas.width + 5, cvas.width + 10];
+        takenbottom[i] = [-10, -5, cvas.width + 5, cvas.width + 10];
+      }
+      takentop[10] = [0, cvas.width];
+      takenbottom[5] = [0, cvas.width];
       for (let i = 0; i < data.length; i++) {
         const e = data[i];
         if (e.score != 0 && e.MALscore != 0) {
-          drawEllipse(
+          drawCircle(
             ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
             cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
             ftsz / 15,
-            ftsz / 15,
             "red"
           );
-          if (taken[e.score] != 2) {
-            if (e.score == 10) {
-              drawTextRA(
-                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                cvas.height -
-                  (((e.score - 5) / 5) * (cvas.height - 10) +
-                    5 -
-                    cvas.height / 15),
-                e.title,
-                ftsz,
-                "white"
-              );
-              drawLine(
-                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
-                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                cvas.height -
-                  (((e.score - 5) / 5) * (cvas.height - 10) +
-                    5 -
-                    cvas.height / 15),
-                "green"
-              );
-              taken[e.score]++;
-            } else if (e.score == 5) {
-              drawText(
-                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                cvas.height -
-                  (((e.score - 5) / 5) * (cvas.height - 10) +
-                    5 +
-                    cvas.height / 15),
-                e.title,
-                ftsz,
-                "white"
-              );
-              drawLine(
-                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
-                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                cvas.height -
-                  (((e.score - 5) / 5) * (cvas.height - 10) +
-                    5 +
-                    cvas.height / 15),
-                "green"
-              );
-              taken[e.score] ++;
-            } else {
-              let aboveorbelow = 1
-              if (taken[e.score] == 1) aboveorbelow = -1
-              if (e.MALscore < e.score) {
-                drawTextRA(
-                  ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                  cvas.height -
-                    (((e.score - 5) / 5) * (cvas.height - 10) +
-                      5 +
-                      aboveorbelow*cvas.height / 15),
-                  e.title,
-                  ftsz,
-                  "white"
-                );
-              } else
-                drawText(
-                  ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                  cvas.height -
-                    (((e.score - 5) / 5) * (cvas.height - 10) +
-                      5 +
-                      aboveorbelow*cvas.height / 15),
-                  e.title,
-                  ftsz,
-                  "white"
-                );
-              drawLine(
-                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
-                ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
-                cvas.height -
-                  (((e.score - 5) / 5) * (cvas.height - 10) +
-                    5 +
-                    aboveorbelow*cvas.height / 15),
-                "green"
-              );
+          if (i > 30) {
+            continue;
+          }
+          let doesFitifleft = true;
+          let doesFitifright = true;
+          let newleftifleft =
+            ((e.MALscore - 5) / 5) * (cvas.width - 10) +
+            5 -
+            ftsz * 0.55 * e.title.length;
+          let newrightifleft = ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5;
+          let newleftifright = ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5;
+          let newrightifright =
+            ((e.MALscore - 5) / 5) * (cvas.width - 10) +
+            5 +
+            ftsz * 0.55 * e.title.length;
+          for (let j = 0; j < takentop[e.score].length; j += 2) {
+            if (
+              !(
+                newrightifleft < takentop[e.score][j] ||
+                newleftifleft > takentop[e.score][j + 1]
+              )
+            ) {
+              doesFitifleft = false;
             }
-            taken[e.score] += 1;
+            if (
+              !(
+                newrightifright < takentop[e.score][j] ||
+                newleftifright > takentop[e.score][j + 1]
+              )
+            ) {
+              doesFitifright = false;
+            }
+          }
+          if (doesFitifleft && doesFitifright) doesFitifleft = false;
+          if (doesFitifleft) {
+            drawText(
+              newleftifleft,
+              cvas.height -
+                (((e.score - 5) / 5) * (cvas.height - 10) +
+                  5 +
+                  cvas.height / 15),
+              e.title,
+              ftsz,
+              "white",
+              "middle"
+            );
+            drawLine(
+              ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+              cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
+              ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+              cvas.height -
+                (((e.score - 5) / 5) * (cvas.height - 10) +
+                  5 +
+                  cvas.height / 15),
+              "green"
+            );
+            takentop[e.score].push(newleftifleft);
+            takentop[e.score].push(newrightifleft);
+            continue;
+          }
+          if (doesFitifright) {
+            drawText(
+              newleftifright,
+              cvas.height -
+                (((e.score - 5) / 5) * (cvas.height - 10) +
+                  5 +
+                  cvas.height / 15),
+              e.title,
+              ftsz,
+              "white",
+              "middle"
+            );
+            drawLine(
+              ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+              cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
+              ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+              cvas.height -
+                (((e.score - 5) / 5) * (cvas.height - 10) +
+                  5 +
+                  cvas.height / 15),
+              "green"
+            );
+            takentop[e.score].push(newleftifright);
+            takentop[e.score].push(newrightifright);
+            continue;
+          }
+          doesFitifleft = true;
+          doesFitifright = true;
+          for (let j = 0; j < takenbottom[e.score].length; j += 2) {
+            if (
+              !(
+                newrightifright < takenbottom[e.score][j] ||
+                newleftifright > takenbottom[e.score][j + 1]
+              )
+            ) {
+              doesFitifright = false;
+            }
+            if (
+              !(
+                newrightifleft < takenbottom[e.score][j] ||
+                newleftifleft > takenbottom[e.score][j + 1]
+              )
+            ) {
+              doesFitifleft = false;
+            }
+          }
+          if (doesFitifleft && doesFitifright) doesFitifleft = false;
+          if (doesFitifright) {
+            drawText(
+              newleftifright,
+              cvas.height -
+                (((e.score - 5) / 5) * (cvas.height - 10) +
+                  5 -
+                  cvas.height / 15),
+              e.title,
+              ftsz,
+              "white",
+              "middle"
+            );
+            drawLine(
+              ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+              cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
+              ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+              cvas.height -
+                (((e.score - 5) / 5) * (cvas.height - 10) +
+                  5 -
+                  cvas.height / 15),
+              "green"
+            );
+            takenbottom[e.score].push(newleftifright);
+            takenbottom[e.score].push(newrightifright);
+            continue;
+          }
+          if (doesFitifleft) {
+            drawText(
+              newleftifleft,
+              cvas.height -
+                (((e.score - 5) / 5) * (cvas.height - 10) +
+                  5 -
+                  cvas.height / 15),
+              e.title,
+              ftsz,
+              "white",
+              "middle"
+            );
+            drawLine(
+              ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+              cvas.height - (((e.score - 5) / 5) * (cvas.height - 10) + 5),
+              ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5,
+              cvas.height -
+                (((e.score - 5) / 5) * (cvas.height - 10) +
+                  5 -
+                  cvas.height / 15),
+              "green"
+            );
+            takenbottom[e.score].push(newleftifleft);
+            takenbottom[e.score].push(newrightifleft);
+            continue;
           }
         }
       }
@@ -703,14 +792,14 @@ function setCanvas(key, ctext) {
         );
         drawText(
           (cvas.width / 7) * i,
-          fontsiz,
+          0,
           myArray[myArray.length - (i + 7 * graphIncrement) - 1].length,
           fontsiz,
           "white"
         );
         drawText(
           (cvas.width / 7) * i,
-          fontsiz * 2,
+          fontsiz,
           daysOfWeek[
             (myArray.length - (i + 7 * graphIncrement) + 2) % 7
           ].substring(0, 3),
@@ -719,7 +808,7 @@ function setCanvas(key, ctext) {
         );
         drawText(
           (cvas.width / 7) * i,
-          fontsiz * 3,
+          fontsiz * 2,
           Math.round((timecount / 60) * 10) / 10 + "h",
           fontsiz,
           "white"
@@ -728,7 +817,7 @@ function setCanvas(key, ctext) {
         if (somedate.substring(0, 2) == "01") {
           drawText(
             (cvas.width / 7) * (i + 1) - (fontsiz / 1.6) * 3,
-            fontsiz / 1.4,
+            0,
             mArr[parseInt(somedate.substring(3, 5)) - 1],
             fontsiz,
             "white"
@@ -745,7 +834,7 @@ function setCanvas(key, ctext) {
       );
       drawText(
         0,
-        cvas.height - (cmplLen / dayssince / 960) * cvas.height,
+        -fontsiz + cvas.height - (cmplLen / dayssince / 960) * cvas.height,
         "Avg: " + mns2dhm(cmplLen / dayssince),
         fontsiz,
         "blue"
@@ -759,7 +848,7 @@ function setCanvas(key, ctext) {
       );
       drawText(
         0,
-        cvas.height - (weekLen / 7 / 960) * cvas.height,
+        -fontsiz + cvas.height - (weekLen / 7 / 960) * cvas.height,
         "WeekAvg: " + mns2dhm(weekLen / 7),
         fontsiz,
         "green"
@@ -813,6 +902,15 @@ function drawRect(x, y, w, h, color = "red") {
   ctx.fill();
 }
 
+function drawEmptyRect(x, y, w, h, color = "red") {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = "1";
+  ctx.fillStyle;
+  ctx.beginPath();
+  ctx.strokeRect(x, y, w, h);
+  ctx.fill();
+}
+
 function drawEllipse(x, y, w, h, color = "red", degrees = 360) {
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
@@ -825,19 +923,20 @@ function drawCircle(x, y, r, color = "red") {
   drawEllipse(x, y, r, r, color);
 }
 
-function drawText(x, y, str, size, color = "red") {
+function drawText(x, y, str, size, color = "red", bsl = "top") {
+  ctx.textAlign = "left";
+  ctx.textBaseline = bsl;
   ctx.fillStyle = color;
-  ctx.font = size + "px Arial";
+  ctx.font = size + "px monospace";
   ctx.fillText(str, x, y);
 }
 
-function drawTextRA(x, y, str, size, color = "red") {
-  // let strwidth = str.length * (size / 2.05);
-  // let newX = x - strwidth;
-  // drawText(newX, y, str, size, color);
-  ctx.textAlign = "right"
-  drawText(x, y, str, size, color)
-  ctx.textAlign = "left"
+function drawTextRA(x, y, str, size, color = "red", bsl = "top") {
+  ctx.textAlign = "right";
+  ctx.textBaseline = bsl;
+  ctx.fillStyle = color;
+  ctx.font = size + "px monospace";
+  ctx.fillText(str, x, y);
 }
 
 function sum(x) {
