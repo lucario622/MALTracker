@@ -611,16 +611,21 @@ function setCanvas(key, ctext) {
           }
           let doesFitifleft = true;
           let doesFitifright = true;
+          let displaytext = e.title
+          let maxlength = 16
+          // if (displaytext.length > maxlength) {
+          //   displaytext = displaytext.substring(0,maxlength-3)+"..."
+          // }
           let newleftifleft =
             ((e.MALscore - 5) / 5) * (cvas.width - 10) +
             5 -
-            ftsz * 0.55 * e.title.length;
+            ftsz * 0.55 * displaytext.length;
           let newrightifleft = ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5;
           let newleftifright = ((e.MALscore - 5) / 5) * (cvas.width - 10) + 5;
           let newrightifright =
             ((e.MALscore - 5) / 5) * (cvas.width - 10) +
             5 +
-            ftsz * 0.55 * e.title.length;
+            ftsz * 0.55 * displaytext.length;
           for (let j = 0; j < takentop[e.score].length; j += 2) {
             if (
               !(
@@ -647,7 +652,7 @@ function setCanvas(key, ctext) {
                 (((e.score - 5) / 5) * (cvas.height - 10) +
                   5 +
                   cvas.height / 15),
-              e.title,
+              displaytext,
               ftsz,
               "white",
               "middle"
@@ -673,7 +678,7 @@ function setCanvas(key, ctext) {
                 (((e.score - 5) / 5) * (cvas.height - 10) +
                   5 +
                   cvas.height / 15),
-              e.title,
+              displaytext,
               ftsz,
               "white",
               "middle"
@@ -720,7 +725,7 @@ function setCanvas(key, ctext) {
                 (((e.score - 5) / 5) * (cvas.height - 10) +
                   5 -
                   cvas.height / 15),
-              e.title,
+              displaytext,
               ftsz,
               "white",
               "middle"
@@ -746,7 +751,7 @@ function setCanvas(key, ctext) {
                 (((e.score - 5) / 5) * (cvas.height - 10) +
                   5 -
                   cvas.height / 15),
-              e.title,
+              displaytext,
               ftsz,
               "white",
               "middle"

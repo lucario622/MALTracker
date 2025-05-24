@@ -587,7 +587,7 @@ function buildNewGroup(name, entris) {
     for (let i = 0; i < entris.length; i++) {
       const e = entris[i];
       if (!(e in groups[groups.length - 1].entries)) {
-        console.log(e.title + " not found in list (likely due to name change)");
+        console.log(name + " not found in list (likely due to name change)");
       }
     }
   }
@@ -821,10 +821,6 @@ function assembleGroups() {
     "The Melancholy of Haruhi Suzumiya Season 2",
   ]);
   putInGroup("One Piece", "Monsters: 103 Mercies Dragon Damnation");
-  buildNewGroup("2.5 Dimensional Seduction", [
-    "2.5 Dimensional Seduction",
-    "2.5-jigen no Ririsa 2nd Season",
-  ]);
   buildNewGroup("Monster Musume: Everyday Life with Monster Girls",["Monster Musume: Everyday Life with Monster Girls","Monster Musume: Everyday Life with Monster Girls OVA"])
   putInGroup("Laid-Back Camp", "Room Camp");
   putInGroup(
