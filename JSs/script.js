@@ -118,7 +118,7 @@ var filtboxarray = [
   ["Aired", "Airing", "Not Yet Aired"],
   ["Completed", "Watching", "On-Hold", "Dropped", "Plan to Watch"],
   ["G", "PG", "PG-13", "R", "R+", "Rx"],
-  ["Shounen","Seinen","Shoujo","Josei"],
+  ["Shounen", "Seinen", "Shoujo", "Josei"],
   [
     "Action",
     "Adventure",
@@ -235,11 +235,11 @@ class EntryGroup {
       result += "Time Committment: " + mns2dhm(this.determineRemLen());
     }
     if (this.size == 0) {
-      let cumlen = 0
+      let cumlen = 0;
       for (let e of this.entries) {
         cumlen += e.determineLen();
       }
-      this.remLen = cumlen
+      this.remLen = cumlen;
       result += "Total Length: " + mns2dhm(cumlen);
     }
     return result;
@@ -556,12 +556,12 @@ function forceUnGroup(itemname) {
   let grindex = -1;
   let itindex = -1;
   for (let i = 0; i < groups.length; i++) {
-    if (grindex != -1) break
-    for (let j = 0;j<groups[i].entries.length;j++) {
+    if (grindex != -1) break;
+    for (let j = 0; j < groups[i].entries.length; j++) {
       if (groups[i].entries[j].title == itemname) {
         grindex = i;
         itindex = j;
-        break
+        break;
       }
     }
   }
@@ -570,7 +570,7 @@ function forceUnGroup(itemname) {
     return;
   }
   groups[grindex].entries.splice(itindex, 1);
-  groups[grindex].refresh()
+  groups[grindex].refresh();
 }
 
 function buildNewGroup(name, entris) {
@@ -608,7 +608,7 @@ function disbandGroup(gname) {
   groups.splice(grindex, 1);
 }
 
-function migrateGroup(gname,newgname) {
+function migrateGroup(gname, newgname) {
   let grindex = -1;
   for (let i = 0; i < groups.length; i++) {
     if (groups[i].groupName == gname) {
@@ -619,12 +619,12 @@ function migrateGroup(gname,newgname) {
     console.log(gname + " failed to find and therefore failed to disband");
     return;
   }
-  let entris = []
+  let entris = [];
   for (let e of groups[grindex].entries) {
-    entris.push(e.title)
+    entris.push(e.title);
   }
   groups.splice(grindex, 1);
-  massPutInGroup(newgname,entris);
+  massPutInGroup(newgname, entris);
 }
 
 function massPutInGroup(grouptitle, entris) {
@@ -813,7 +813,10 @@ function assembleGroups() {
     }
   }
   // gotta love some hard coding
-  putInGroup("The Irregular at Magic High School","The Honor Student at Magic High School")
+  putInGroup(
+    "The Irregular at Magic High School",
+    "The Honor Student at Magic High School"
+  );
   forceUnGroup("Magic Maker: How to Make Magic in Another World");
   disbandGroup("The Melancholy of Haruhi Suzumiya");
   massPutInGroup("The Disappearance of Haruhi Suzumiya", [
@@ -821,7 +824,10 @@ function assembleGroups() {
     "The Melancholy of Haruhi Suzumiya Season 2",
   ]);
   putInGroup("One Piece", "Monsters: 103 Mercies Dragon Damnation");
-  buildNewGroup("Monster Musume: Everyday Life with Monster Girls",["Monster Musume: Everyday Life with Monster Girls","Monster Musume: Everyday Life with Monster Girls OVA"])
+  buildNewGroup("Monster Musume: Everyday Life with Monster Girls", [
+    "Monster Musume: Everyday Life with Monster Girls",
+    "Monster Musume: Everyday Life with Monster Girls OVA",
+  ]);
   putInGroup("Laid-Back Camp", "Room Camp");
   putInGroup(
     "Laid-Back Camp",
@@ -838,8 +844,11 @@ function assembleGroups() {
     "Rascal Does Not Dream of Bunny Girl Senpai",
     "Seishun Buta Yarou wa Santa Claus no Yume wo Minai"
   );
-  massPutInGroup("JoJo's Bizarre Adventure", ["Thus Spoke Kishibe Rohan","JoJo no Kimyou na Bouken Part 7: Steel Ball Run"]);
-  migrateGroup("Boruto","Naruto")
+  massPutInGroup("JoJo's Bizarre Adventure", [
+    "Thus Spoke Kishibe Rohan",
+    "JoJo no Kimyou na Bouken Part 7: Steel Ball Run",
+  ]);
+  migrateGroup("Boruto", "Naruto");
   putInGroup(
     "Anohana",
     "Ano Hi Mita Hana no Namae wo Bokutachi wa Mada Shiranai.: Menma e no Tegami"
@@ -878,11 +887,11 @@ function assembleGroups() {
   rerecruit("Food Wars!");
   disbandGroup("Fate/strange Fake");
   disbandGroup("Fate/Zero");
-  putInGroup("Fate/Grand Order","Fate/Grand Order -First Order-")
-  putInGroup("Fate/Grand Order","Fate/Grand Carnival")
+  putInGroup("Fate/Grand Order", "Fate/Grand Order -First Order-");
+  putInGroup("Fate/Grand Order", "Fate/Grand Carnival");
   renameGroup("Fate/stay night", "Fate");
   rerecruit("Fate");
-  forceUnGroup("Fate/Apocrypha")
+  forceUnGroup("Fate/Apocrypha");
   disbandGroup("Kizumonogatari Part 1");
   massPutInGroup("Monogatari", [
     "Kizumonogatari Part 1: Iron-Blooded",
@@ -922,9 +931,9 @@ function assembleGroups() {
       // Season 5 Part 2
       if (iofs != -1) {
         for (let seasonNumber = 1; seasonNumber < 10; seasonNumber++) {
-          if (element.title.substring(iofs) == "Season "+ seasonNumber) {
+          if (element.title.substring(iofs) == "Season " + seasonNumber) {
             n = seasonNumber + 1;
-            element.position = "Season "+seasonNumber;
+            element.position = "Season " + seasonNumber;
             break;
           }
           for (let partnumber = 1; partnumber < 10; partnumber++) {
@@ -933,7 +942,8 @@ function assembleGroups() {
               "Season " + seasonNumber + " Part " + partnumber
             ) {
               n = seasonNumber + 1;
-              element.position = "Season " + seasonNumber + " Part " + partnumber;
+              element.position =
+                "Season " + seasonNumber + " Part " + partnumber;
             }
           }
         }
@@ -2696,8 +2706,11 @@ function parseAllTextGen() {
     if (item.title.charAt(item.title.length - 1) == "Ⅱ") {
       item.title = item.title.substring(0, item.title.length - 1) + "II";
     }
-    if (item.title.startsWith("Shinjiteita Nakama-tachi ni Dungeon Okuchi") || item.title.startsWith("Backstabbed in a Backwater Dungeon")) {
-      item.title = "Backstabbed in a Backwater Dungeon"
+    if (
+      item.title.startsWith("Shinjiteita Nakama-tachi ni Dungeon Okuchi") ||
+      item.title.startsWith("Backstabbed in a Backwater Dungeon")
+    ) {
+      item.title = "Backstabbed in a Backwater Dungeon";
     }
     for (let j = 0; j < item.title.length; j++) {
       const c = item.title[j];
@@ -3453,6 +3466,8 @@ function compareDatas(olddata, newdata) {
   // datold = rankThisAll(datold);
   let datnew = makeThisDatas(newdata);
   // datnew = rankThisAll(datnew);
+  ood = datold.toSorted(compareTitles).toSorted(compareMALScore).reverse();
+  ond = datnew.toSorted(compareTitles).toSorted(compareMALScore).reverse();
   if (datold.length > datnew.length) {
     console.log("bro removed an entri(es)");
   }
@@ -3496,7 +3511,14 @@ function compareDatas(olddata, newdata) {
       // res == true means no difference between e1 and e2
       // res == [] means at least one change
       if (res != true) {
-        if (justMALDiff(res)) {
+        oldplace = ood.indexOf(e1);
+        newplace = ond.indexOf(e2);
+        if (
+          justMALDiff(res) &&
+          (oldplace == newplace ||
+            Math.abs(Math.round((e1.MALscore - e2.MALscore) * 100) / 100) <
+              0.02)
+        ) {
           // item only differs in MALScore :(
           MALChangeList.push([
             e1.title,
@@ -3512,6 +3534,26 @@ function compareDatas(olddata, newdata) {
           let pr = document.createElement("pre");
           pr.innerText = e1.title;
           insert(d, pr);
+          if (
+            oldplace != newplace &&
+            Math.abs(Math.round((e1.MALscore - e2.MALscore) * 100) / 100) >=
+              0.02
+          ) {
+            // ranking change
+            let pr1 = document.createElement("pre");
+            let mystr = "";
+            mystr += "#" + oldplace + " ";
+            if (oldplace > newplace) {
+              mystr += "up";
+              pr1.style.color = colors.Watching;
+            } else {
+              mystr += "down";
+              pr1.style.color = "red";
+            }
+            mystr += " to #" + newplace;
+            pr1.innerText = "\t" + mystr;
+            insert(d, pr1);
+          }
           for (let i = 0; i < res.length; i++) {
             let elem = res[i];
             if (elem == false) {
@@ -3607,6 +3649,8 @@ function justMALDiff(MALIter) {
   }
   return false;
 }
+
+function placeChange(odat, ndat, e) {}
 
 function isDate(str) {
   if (str[2] == "-" && str[5] == "-") {
