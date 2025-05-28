@@ -8,6 +8,7 @@ var cmplTotal = 0;
 var cmplLen = 0;
 var cmplEps = 0;
 var dayssince = 0;
+var chain = [];
 
 var graphIncrement = 0;
 
@@ -411,6 +412,136 @@ function start() {
       p.lastChild.hidden = true;
     }
   }
+  let minsremaining = 480;
+  let norepeats = [];
+  while (minsremaining > 0) {
+    if (chain.length == 0) {
+      // find a starting item
+      // look for mid-watch entries first
+      for (let i = 0; i < data.length; i++) {
+        const e = data[i];
+        if (e.status == "Watching" && e.airStatus == "Aired") {
+          let startep = e.watchedepisodes + 1;
+          let endep = e.episodes;
+          if (e.determineRemLen() > minsremaining) {
+            endep =
+              e.watchedepisodes +
+              Math.floor((minsremaining / e.determineLen()) * e.episodes);
+            minsremaining = 0;
+          }
+          minsremaining -=
+            (endep - startep + 1) * (e.determineLen() / e.episodes);
+          chain.push([e, startep, endep]);
+          norepeats.push(e);
+          break;
+        }
+      }
+      if (chain.length == 0) {
+        // no mid-watch entries
+        // check for mid-series entries
+        for (let i = 0; i < groups.length; i++) {
+          const g = groups[i];
+          if (g.curStatus == "Partially Watched") {
+            if (groupNextWatchEntry(g).airStatus == "Aired") {
+              const e = groupNextWatchEntry(g);
+              let startep = e.watchedepisodes + 1;
+              let endep = e.episodes;
+              if (e.determineRemLen() > minsremaining) {
+                endep =
+                  e.watchedepisodes +
+                  Math.floor((minsremaining / e.determineLen()) * e.episodes);
+                minsremaining = 0;
+              }
+              minsremaining -=
+                (endep - startep + 1) * (e.determineLen() / e.episodes);
+              chain.push([e, startep, endep]);
+              norepeats.push(e);
+              break;
+            }
+          }
+        }
+      }
+      if (chain.length == 0) {
+        // no mid-series entries
+        // take lowest rated entry released at least a year ago
+        for (let i = 0; i < data.length; i++) {
+          const e = data[i];
+          if (
+            isEntryNextWatch(e) &&
+            e.airStatus == "Aired" &&
+            e.status != "Completed" &&
+            (e.status != "On-Hold" || daycount(e.airenddate) >= 365)
+          ) {
+            let startep = e.watchedepisodes + 1;
+            let endep = e.episodes;
+            if (e.determineRemLen() > minsremaining) {
+              endep =
+                e.watchedepisodes +
+                Math.floor((minsremaining / e.determineLen()) * e.episodes);
+              minsremaining = 0;
+            }
+            minsremaining -=
+              (endep - startep + 1) * (e.determineLen() / e.episodes);
+            chain.push([e, startep, endep]);
+            norepeats.push(e);
+            break;
+          }
+        }
+      }
+    } else {
+      // already items
+      const lastitem = chain[chain.length - 1][0];
+      // find next item
+      // first check if there is a logical next one
+      let e = getNext(lastitem);
+      if (e != null) {
+        let startep = e.watchedepisodes + 1;
+        let endep = e.episodes;
+        if (e.determineRemLen() > minsremaining) {
+          endep =
+            e.watchedepisodes +
+            Math.floor((minsremaining / e.determineLen()) * e.episodes);
+          minsremaining = 0;
+        }
+        minsremaining -=
+          (endep - startep + 1) * (e.determineLen() / e.episodes);
+        chain.push([e, startep, endep]);
+        norepeats.push(e);
+        continue;
+      } else {
+        // last item was a dead end (end of a series)
+        // search again for a low rated entry to fill the spot
+        for (let i = 0; i < data.length; i++) {
+          const e = data[i];
+          if (
+            isEntryNextWatch(e) &&
+            e.airStatus == "Aired" &&
+            e.status != "Completed" &&
+            (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
+            !norepeats.includes(e)
+          ) {
+            let startep = e.watchedepisodes + 1;
+            let endep = e.episodes;
+            if (e.determineRemLen() > minsremaining) {
+              endep =
+                e.watchedepisodes +
+                Math.floor((minsremaining / e.determineLen()) * e.episodes);
+              minsremaining = 0;
+            }
+            minsremaining -=
+              (endep - startep + 1) * (e.determineLen() / e.episodes);
+            chain.push([e, startep, endep]);
+            norepeats.push(e);
+            break;
+          }
+        }
+      }
+    }
+  }
+  console.log(chain);
+  if (chain.length == 0) {
+    console.log("chainless");
+  }
   data.sort(compareWatchDate);
   for (let i = 0; i < data.length; i++) {
     if (data[i].status == "Completed") {
@@ -611,8 +742,8 @@ function setCanvas(key, ctext) {
           }
           let doesFitifleft = true;
           let doesFitifright = true;
-          let displaytext = e.title
-          let maxlength = 16
+          let displaytext = e.title;
+          let maxlength = 16;
           // if (displaytext.length > maxlength) {
           //   displaytext = displaytext.substring(0,maxlength-3)+"..."
           // }
@@ -773,6 +904,22 @@ function setCanvas(key, ctext) {
         }
       }
       break;
+    case "Graph4":
+      let ftsz4 = cvas.height / 10;
+      let downage = 0;
+      for (let e of chain) {
+        let mystr = e[0].title + " " + e[1] + "-" + e[2];
+        if (e[0].episodes == 1) {
+          mystr = e[0].title;
+        } else if (e[2] == e[0].episodes && e[1] == 1) {
+          mystr = e[0].title + " (all)";
+        } else if (e[1] == e[2]) {
+          mystr = e[0].title + " " + e[1];
+        }
+        drawText(0, downage, mystr, ftsz4, "white");
+        downage += ftsz4;
+      }
+      break;
     case "GraphN":
       if (7 + 7 * graphIncrement >= myArray.length + 7) {
         break;
@@ -785,8 +932,8 @@ function setCanvas(key, ctext) {
         }
         let timecount = 0;
         for (let e of myArray[myArray.length - (i + 7 * graphIncrement) - 1]) {
-          timecount += e.determineLen();
-          weekLen += e.determineLen();
+          timecount += e.determineLen() - e.determineRemLen();
+          weekLen += e.determineLen() - e.determineRemLen();
         }
         drawRect(
           (cvas.width / 7) * i,
@@ -863,7 +1010,7 @@ function setCanvas(key, ctext) {
       ctx.clearRect(0, 0, cvas.width, cvas.height);
       break;
     default:
-      graphIncrement = parseInt(key.substring(5)) - 4;
+      graphIncrement = parseInt(key.substring(5)) - 5;
       setCanvas("GraphN", ctext);
       break;
   }

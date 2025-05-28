@@ -765,6 +765,16 @@ function groupNextWatchEntry(g) {
   return choice;
 }
 
+function getNext(e) {
+  let dagroup = gfrome(e);
+  let thisindex = dagroup.entries.indexOf(e);
+  if (thisindex != dagroup.entries.length - 1) {
+    return dagroup.entries[thisindex + 1];
+  } else {
+    return null;
+  }
+}
+
 function isEntryNextWatch(e) {
   if (e == null) {
     throw new Error("Null");
