@@ -4090,3 +4090,10 @@ function startQS(comparison) {
   QSComparison = comparison;
   quickSort(0, data.length - 1);
 }
+
+function overwritedate(str) {
+  curdate = str;
+  curday = parseInt(str.substring(0,2))
+  curmon = parseInt(str.substring(3,5))
+  curyear = parseInt(str.substring(6,8))
+}
