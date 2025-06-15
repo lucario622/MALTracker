@@ -11,6 +11,7 @@ var dayssince = 0;
 var chain = [];
 var minsremaining = 480;
 var norepeats = [];
+var candidates = 0;
 
 var graphIncrement = 0;
 
@@ -87,7 +88,7 @@ function start() {
       p.lastChild.setAttribute("class", "R");
       p.lastChild.hidden = true;
     }
-    if (daycount(e.airstartdate) < -31) {
+    if (daycount(e.airstartdate) < -7) {
       break;
     }
   }
@@ -414,88 +415,106 @@ function start() {
       p.lastChild.hidden = true;
     }
   }
-  while (minsremaining > 0) {
-    console.log(minsremaining)
-    if (chain.length == 0) {
-      // find a starting item
-      // look for mid-watch entries first
-      for (let i = 0; i < data.length; i++) {
-        const e = data[i];
-        if (e.status == "Watching" && e.airStatus == "Aired") {
+
+  for (let i = 0; i < data.length; i++) {
+    if (
+      data[i].airStatus == "Aired" &&
+      data[i].status != "Completed" &&
+      (data[i].status != "On-Hold" || daycount(data[i].airenddate) >= 365)
+    ) {
+      candidates++;
+    }
+  }
+
+  // find a starting item
+  // look for mid-watch entries first
+  for (let i = 0; i < data.length; i++) {
+    const e = data[i];
+    if (e.status == "Watching" && e.airStatus == "Aired") {
+      intothechain(e);
+      break;
+    }
+  }
+  if (chain.length == 0) {
+    // no mid-watch entries
+    // check for mid-series entries
+    for (let i = 0; i < groups.length; i++) {
+      const g = groups[i];
+      if (g.curStatus == "Partially Watched") {
+        if (groupNextWatchEntry(g).airStatus == "Aired") {
+          const e = groupNextWatchEntry(g);
           intothechain(e);
           break;
         }
       }
-      if (chain.length == 0) {
-        // no mid-watch entries
-        // check for mid-series entries
-        for (let i = 0; i < groups.length; i++) {
-          const g = groups[i];
-          if (g.curStatus == "Partially Watched") {
-            if (groupNextWatchEntry(g).airStatus == "Aired") {
-              const e = groupNextWatchEntry(g);
-              intothechain(e);
-              break;
-            }
-          }
-        }
-      }
-      if (chain.length == 0) {
-        // no mid-series entries
-        // take lowest rated entry released at least a year ago
-        for (let i = 0; i < data.length; i++) {
-          const e = data[i];
-          if (
-            isEntryNextWatch(e) &&
-            e.airStatus == "Aired" &&
-            e.status != "Completed" &&
-            (e.status != "On-Hold" || daycount(e.airenddate) >= 365)
-          ) {
-            intothechain(e);
-            break;
-          }
-        }
-      }
-    } else {
-      // already items
-      const lastitem = chain[chain.length - 1][0];
-      // find next item
-      // first check if there is a logical next one
-      let e = getNext(lastitem);
-      if (e != null) {
+    }
+  }
+  if (chain.length == 0) {
+    // no mid-series entries
+    // take lowest rated entry released at least a year ago
+    for (let i = 0; i < data.length; i++) {
+      const e = data[i];
+      if (
+        isEntryNextWatch(e) &&
+        e.airStatus == "Aired" &&
+        e.status != "Completed" &&
+        (e.status != "On-Hold" || daycount(e.airenddate) >= 365)
+      ) {
         intothechain(e);
-      } else {
-        // last item was a dead end (end of a series)
-        // search again for a low rated entry to fill the spot
-        for (let i = 0; i < data.length; i++) {
-          const e = data[i];
-          if (
-            isEntryNextWatch(e) &&
-            e.airStatus == "Aired" &&
-            e.status != "Completed" &&
-            (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
-            !norepeats.includes(e)
-          ) {
-            intothechain(e);
-            break;
-          }
+        break;
+      }
+    }
+  }
+  while (minsremaining > 0) {
+    console.log(minsremaining);
+    let lastitem = chain[chain.length - 1][0];
+    if (lastitem == 0) {
+      lastitem = chain[chain.length - 2][0];
+    }
+    // find next item
+    // first check if there is a logical next one
+    let e = getNext(lastitem);
+    if (e != null) {
+      intothechain(e);
+    } else {
+      // last item was a dead end (end of a series)
+      // search again for a low rated entry to fill the spot
+      for (let i = 0; i < data.length; i++) {
+        const e = data[i];
+        if (
+          isEntryNextWatch(e) &&
+          e.airStatus == "Aired" &&
+          e.status != "Completed" &&
+          (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
+          !norepeats.includes(e)
+        ) {
+          intothechain(e);
+          break;
         }
       }
     }
-    console.log(chain[chain.length-1])
+    console.log(chain[chain.length - 1]);
   }
   if (chain.length >= 2) {
-    if (chain[chain.length-1] != [0,0] && chain[chain.length-2] != [0,0]) {
-      chain.push([0,0])
+    if (
+      chain[chain.length - 1].length != 2 &&
+      chain[chain.length - 2].length != 2
+    ) {
+      chain.push([0, 0]);
     }
   } else if (chain.length == 1) {
-    if (chain[chain.length-1] != [0,0]) {
-      chain.push([0,0])
+    if (chain[chain.length - 1].length != 2) {
+      chain.push([0, 0]);
     }
   }
-  minsremaining = 48000;
+
+  minsremaining = 480000;
   while (minsremaining > 0) {
-    console.log(minsremaining)
+    if (norepeats.length >= candidates + 3) {
+      console.log("super cool break condition");
+      break;
+    }
+    console.log(minsremaining);
     let lastitem = chain[chain.length - 1][0];
     if (lastitem == 0) {
       lastitem = chain[chain.length - 2][0];
@@ -522,6 +541,7 @@ function start() {
         }
       }
     }
+    console.log(chain[chain.length - 1]);
   }
   console.log(chain);
   if (chain.length == 0) {
@@ -899,7 +919,7 @@ function setCanvas(key, ctext) {
       let thecolor = "white";
       for (let e of chain) {
         if (
-          downage >= cvas.height &&
+          downage >= cvas.height - ftsz4 &&
           leftage + rightest < cvas.width &&
           ftsz4 != cvas.height / 10
         ) {
@@ -911,9 +931,9 @@ function setCanvas(key, ctext) {
           break;
         }
         if (e.length != 3 && leftage == 0) {
-          drawLine(0, downage-2, cvas.width, downage-2, "white");
+          drawLine(0, downage - 2, cvas.width, downage - 2, "white");
           thecolor = "rgb(60, 60, 60)";
-          ftsz4 /= 3;
+          ftsz4 = cvas.height / 40;
           saveddownage = downage;
           rightest = 0;
           continue;
