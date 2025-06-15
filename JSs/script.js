@@ -17,6 +17,7 @@ var countarray = [];
 var maxwatched = 0;
 var fve;
 var myArray;
+var myArraysplit;
 var dayzero;
 const avgTV = 20;
 const avgMovie = 100;
@@ -1104,6 +1105,17 @@ class Entry {
     this.len /= 2;
     this.len = Math.floor(this.len * 100) / 100;
     return this.len;
+  }
+
+  determineDayCount() {
+    if (this.startdate == "") {
+      return 1;
+    }
+    if (this.enddate == "") {
+      return daycount(this.startdate)+1
+    }
+    let elapseddays = daycount(this.startdate)-daycount(this.enddate)+1
+    return elapseddays;
   }
 
   determineRemLen() {
@@ -3905,6 +3917,7 @@ function rankThisAll(dat) {
 
 function distByWatchDate() {
   myArray = [];
+  myArraysplit = [];
   let dayzero1;
   let fve1;
   data.sort(compareWatchDate);
@@ -3918,11 +3931,16 @@ function distByWatchDate() {
   }
   for (let i = 0; i <= dayzero1; i++) {
     myArray[i] = [];
+    myArraysplit[i] = [];
   }
   for (let i = data.indexOf(fve1); i < data.length; i++) {
     const e = data[i];
     let x = dayzero1 - daycount(e.startdate);
+    let y = dayzero1 - daycount(e.enddate);
     myArray[x].push(e);
+    for (let j = x;j<=y;j++) {
+      myArraysplit[j].push(e);
+    }
     if (myArray[x].length > maxwatched) maxwatched = myArray[x].length;
   }
 }

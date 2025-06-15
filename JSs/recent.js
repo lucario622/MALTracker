@@ -580,6 +580,7 @@ function start() {
     };
   }
   toggleCanvi();
+  console.log(myArraysplit)
 }
 
 function setCanvas(key, ctext) {
@@ -944,9 +945,10 @@ function setCanvas(key, ctext) {
           continue;
         }
         let timecount = 0;
-        for (let e of myArray[myArray.length - (i + 7 * graphIncrement) - 1]) {
-          timecount += e.determineLen() - e.determineRemLen();
-          weekLen += e.determineLen() - e.determineRemLen();
+        for (let e of myArraysplit[myArraysplit.length - (i + 7 * graphIncrement) - 1]) {
+          if (e.determineDayCount()>=20) continue;
+          timecount += (e.determineLen() - e.determineRemLen())/e.determineDayCount();
+          weekLen += (e.determineLen() - e.determineRemLen())/e.determineDayCount();
         }
         drawRect(
           (cvas.width / 7) * i,

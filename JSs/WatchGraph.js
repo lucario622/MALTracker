@@ -84,7 +84,7 @@ function start() {
       let y = dayzero - daycount(e.enddate);
       let numDays = y - x + 1;
       if (numDays >= 20) continue;
-      let eMinutes = e.determineLen();
+      let eMinutes = e.determineLen()-e.determineRemLen();
       let dailyMinutes = eMinutes / numDays;
       for (let j = x; j <= y; j++) {
         myArray[0][j].push(e);
