@@ -562,8 +562,7 @@ function start() {
       let tempcount = 0
       for (let j = 0; j < groups[i].entries.length;j++) {
         const e = groups[i].entries[j];
-        if (e.status == "Completed") tempcount += e.determineLen();
-        if (e.status == "Watching") tempcount += e.determineLen() - e.determineRemLen();
+        if (e.status == "Completed" || e.status == "Watching") tempcount += e.determineLen();
       }
       itemsCount.push(tempcount)
     }
@@ -586,7 +585,6 @@ function start() {
   }
   items = newitems;
   itemsCount = newitemsCount;
-  console.log(items)
   if (miscitemsCount > 0) {
     items.push("<1%")
     itemsCount.push(miscitemsCount)

@@ -258,7 +258,6 @@ class EntryGroup {
       const e = this.entries[i];
       this.totalLen += e.determineLen();
     }
-    this.totalLen /= 2;
     this.totalLen = Math.floor(this.totalLen * 100) / 100;
     return this.totalLen;
   }
