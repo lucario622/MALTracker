@@ -572,7 +572,7 @@ function start() {
   for (let i = 0; i < items.length; i++) {
     total += itemsCount[i];
   }
-  let cutoff = total/200;
+  let cutoff = total/100;
   let newitems = []
   let newitemsCount = []
   let miscitemsCount = 0
@@ -588,7 +588,7 @@ function start() {
   itemsCount = newitemsCount;
   console.log(items)
   if (miscitemsCount > 0) {
-    items.push("<0.5%")
+    items.push("<1%")
     itemsCount.push(miscitemsCount)
   }
   for (let i = 0; i < items.length; i++) {
