@@ -252,6 +252,17 @@ class EntryGroup {
     return result;
   }
 
+  determineLen() {
+    this.totalLen = 0;
+    for (let i = 0; i < this.entries.length; i++) {
+      const e = this.entries[i];
+      this.totalLen += e.determineLen();
+    }
+    this.totalLen /= 2;
+    this.totalLen = Math.floor(this.totalLen * 100) / 100;
+    return this.totalLen;
+  }
+
   determineRemLen() {
     this.remLen = 0;
     for (let i = 0; i < this.entries.length; i++) {
@@ -331,8 +342,13 @@ class EntryGroup {
       this.curStatus = "Yet to Start";
     } else if (compCount + NYACount + airingCount == this.size) {
       this.curStatus = "Waiting for next part";
+    } else if (
+      OHCount + compCount + NYACount + airingCount == this.size &&
+      compCount > 0
+    ) {
+      this.curStatus = "Waiting for latest dub";
     } else if (OHCount + compCount + NYACount + airingCount == this.size) {
-      this.curStatus = "Waiting for dub";
+      this.curStatus = "Waiting for first dub";
     } else if (compCount + OHCount + ptwCount == this.size && airedCount > 0) {
       this.curStatus = "Partially Watched";
     }
@@ -1096,19 +1112,42 @@ class Entry {
 
   determineLen() {
     this.len = 0;
-    if (this.type == "TV") {
-      this.len += this.episodes * avgTV;
-    } else if (this.type == "Movie") {
-      this.len += this.episodes * avgMovie;
-    } else if (this.type == "ONA") {
-      this.len += this.episodes * avgONA;
-    } else if (this.type == "OVA") {
-      this.len += this.episodes * avgOVA;
-    } else if (this.type == "TV Special") {
-      this.len += this.episodes * avgTVSP;
-    } else if (this.type == "Special") {
-      this.len += this.episodes * avgSP;
+    if (this.title == "The Disastrous Life of Saiki K.") {
+      this.len = 20 * avgTV;
+      this.len /= 2;
+      this.len = Math.floor(this.len * 100) / 100;
+      return this.len;
     }
+    if (this.episodes == 0) {
+      if (this.type == "TV") {
+        this.len += 12 * avgTV;
+      } else if (this.type == "Movie") {
+        this.len += avgMovie;
+      } else if (this.type == "ONA") {
+        this.len += 12 * avgONA;
+      } else if (this.type == "OVA") {
+        this.len += 12 * avgOVA;
+      } else if (this.type == "TV Special") {
+        this.len += 1 * avgTVSP;
+      } else if (this.type == "Special") {
+        this.len += 6 * avgSP;
+      } else {
+        this.len += 12 * avgTV;
+      }
+    } else {
+      if (this.type == "TV") {
+        this.len += this.episodes * avgTV;
+      } else if (this.type == "Movie") {
+        this.len += this.episodes * avgMovie;
+      } else if (this.type == "ONA") {
+        this.len += this.episodes * avgONA;
+      } else if (this.type == "OVA") {
+        this.len += this.episodes * avgOVA;
+      } else if (this.type == "TV Special") {
+        this.len += this.episodes * avgTVSP;
+      } else if (this.type == "Special") {
+        this.len += this.episodes * avgSP;
+      }
     }
 
     this.len /= 2;
@@ -1839,7 +1878,8 @@ function compareGroupStatus(a, b) {
     "Currently Watching",
     "Partially Watched",
     "Yet to Start",
-    "Waiting for dub",
+    "Waiting for first dub",
+    "Waiting for latest dub",
     "Waiting for next part",
     "All Completed",
     "Default",
@@ -1868,6 +1908,23 @@ function compareGroupRemEp(a, b) {
 function compareGroupTimeCom(a, b) {
   acode = a.determineRemLen();
   bcode = b.determineRemLen();
+  if (acode == 0) {
+    acode = 10000000;
+  }
+  if (bcode == 0) {
+    bcode = 10000000;
+  }
+  if (acode > bcode) {
+    return 1;
+  } else if (acode < bcode) {
+    return -1;
+  }
+  return 0;
+}
+
+function compareGroupTotalLength(a, b) {
+  acode = a.determineLen();
+  bcode = b.determineLen();
   if (acode == 0) {
     acode = 10000000;
   }

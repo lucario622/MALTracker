@@ -15,6 +15,11 @@ var minsremaining = 480;
 var norepeats = [];
 var candidates = 0;
 
+var items = [];
+var itemsCount = [];
+var colorarr = [];
+var total = 0;
+
 var graphIncrement = 0;
 
 function init() {
@@ -220,7 +225,7 @@ function start() {
   unsafechoice = null;
   for (let i = 0; i < groups.length; i++) {
     const g = groups[i];
-    if (g.curStatus == "Waiting for dub") {
+    if (g.curStatus == "Waiting for latest dub" || g.curStatus == "Waiting for first dub") {
       choice = groupNextWatchEntry(g);
       if (choice.rated >= "R+") {
         unsafechoice = choice;
@@ -351,7 +356,7 @@ function start() {
   unsafechoice = null;
   for (let i = 0; i < groups.length; i++) {
     const g = groups[i];
-    if (g.curStatus == "Waiting for dub") {
+    if (g.curStatus == "Waiting for latest dub" || g.curStatus == "Waiting for first dub") {
       choice = groupNextWatchEntry(g);
       if (choice.rated >= "R+") {
         unsafechoice = choice;
@@ -418,6 +423,7 @@ function start() {
     }
   }
 
+  // Next Entries Panel
   for (let i = 0; i < data.length; i++) {
     if (
       data[i].airStatus == "Aired" &&
@@ -540,11 +546,60 @@ function start() {
         }
       }
     }
-    console.log(chain[chain.length - 1]);
   }
-  console.log(chain);
-  if (chain.length == 0) {
-    console.log("chainless");
+
+  // Series Pie Chart
+  groups.sort(compareGroupTotalLength).reverse();
+  for (let i = 0; i < groups.length; i++) {
+    if (
+      (groups[i].curStatus == "All Completed" || groups[i].curStatus == "Waiting for next part") &&
+      groups[i].groupName != "Individuals"
+    ) {
+      items.push(groups[i].groupName);
+      itemsCount.push(groups[i].determineLen());
+    } else if (groups[i].curStatus == "Partially Watched" || groups[i].curStatus == "Waiting for latest dub" || groups[i].curStatus == "Currently Watching") {
+      items.push(groups[i].groupName);
+      let tempcount = 0
+      for (let j = 0; j < groups[i].entries.length;j++) {
+        const e = groups[i].entries[j];
+        if (e.status == "Completed") tempcount += e.determineLen();
+        if (e.status == "Watching") tempcount += e.determineLen() - e.determineRemLen();
+      }
+      itemsCount.push(tempcount)
+    }
+  }
+  
+  for (let i = 0; i < items.length; i++) {
+    total += itemsCount[i];
+  }
+  let cutoff = total/200;
+  let newitems = []
+  let newitemsCount = []
+  let miscitemsCount = 0
+  for (let i = 0;i<items.length;i++) {
+    if (itemsCount[i] >= cutoff) {
+      newitems.push(items[i]);
+      newitemsCount.push(itemsCount[i])
+    } else {
+      miscitemsCount += itemsCount[i];
+    }
+  }
+  items = newitems;
+  itemsCount = newitemsCount;
+  console.log(items)
+  if (miscitemsCount > 0) {
+    items.push("<0.5%")
+    itemsCount.push(miscitemsCount)
+  }
+  for (let i = 0; i < items.length; i++) {
+    colorarr[i] =
+      "rgb(" +
+      Math.random() * 255 +
+      "," +
+      Math.random() * 255 +
+      "," +
+      Math.random() * 255 +
+      ")";
   }
 
   data.sort(compareWatchDate);
@@ -964,6 +1019,115 @@ function setCanvas(key, ctext) {
         downage += ftsz4;
       }
       break;
+    case "Graph5":
+      let cw = cvas.width;
+      let ch = cvas.height;
+      // outline drawing
+      drawEllipse(
+        cw * 0.75,
+        ch * 0.5,
+        ch * 0.4 + 1,
+        ch * 0.4 + 1,
+        "rgb(237,237,237)"
+      );
+      // legend drawing
+      if (items.length <= 10) {
+        for (let i = 0; i < items.length; i++) {
+          if (items[i] == "") items[i] = "None";
+          let color = colorarr[i];
+          let count = itemsCount[i];
+          let text =
+            getNick(items[i]) + " " + Math.round((count / total) * 10000) / 100 + "%";
+          let rectX = cw / 16;
+          let rectY = ch / 5 + (i * ch) / 10;
+          let rectW = cw / 8;
+          let rectH = ch / 12;
+          let textH = ch / 18;
+          if (items.length > 6) {
+            let n = items.length;
+            rectX = cw / 16;
+            rectY = ch / 5 + (i * 6 * ch) / 10 / n;
+            rectW = ((cw / 8) * 6) / n;
+            rectH = ch / 2 / n;
+            textH = ch / 3 / n;
+          }
+          drawRect(
+            rectX - 1,
+            rectY - 1,
+            rectW + 2,
+            rectH + 2,
+            "rgb(237,237,237)"
+          );
+          drawRect(rectX, rectY, rectW, rectH, color);
+          drawText(
+            rectX + 1.1 * rectW,
+            rectY + rectH / 2.5 + textH / 2,
+            text,
+            textH,
+            "rgb(237,237,237)",
+            "bottom"
+          );
+        }
+      } else {
+        let m = Math.ceil(Math.sqrt(items.length));
+        let rows = 2 * m;
+        let cols = Math.ceil(m / 2);
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            let k = cols * i + j;
+            if (k >= items.length) continue;
+            let color = colorarr[k];
+            let count = itemsCount[k];
+            let text =
+              getNick(items[k]) + " " + Math.round((count / total) * 10000) / 100 + "%";
+            let twSpace = cw * 0.55 - cw / 16;
+            let wSpace = twSpace / cols;
+
+            let rectX = cw / 16 + j * wSpace;
+            let rectY = ch / 5 + (i * 6 * ch) / 10 / rows;
+            let rectW = ((cw / 8) * 6) / cols / rows;
+            let rectH = ch / 2 / rows;
+            let textH0 = (wSpace / text.length) * 1.4;
+            let textH1 = ch / 3 / rows;
+            let textH = Math.min(textH0, textH1);
+
+            drawRect(
+              rectX - 1,
+              rectY - 1,
+              rectW + 2,
+              rectH + 2,
+              "rgb(237,237,237)"
+            );
+            drawRect(rectX, rectY, rectW, rectH, color);
+            drawText(
+              rectX + 1.1 * rectW,
+              rectY + rectH / 2.5 + textH / 2,
+              text,
+              textH,
+              "rgb(237,237,237)",
+              "bottom"
+            );
+          }
+        }
+      }
+
+      // slice drawing
+      let curTotal = 0;
+      for (let i = 0; i < items.length; i++) {
+        let count = itemsCount[i];
+        let color = colorarr[i];
+        drawEllipse(
+          cw * 0.75,
+          ch * 0.5,
+          ch * 0.4,
+          ch * 0.4,
+          color,
+          (count / total) * 360,
+          (curTotal / total) * 360
+        );
+        curTotal += count;
+      }
+      break;
     case "GraphN":
       if (7 + 7 * graphIncrement >= myArray.length + 7) {
         break;
@@ -1059,7 +1223,7 @@ function setCanvas(key, ctext) {
       ctx.clearRect(0, 0, cvas.width, cvas.height);
       break;
     default:
-      graphIncrement = parseInt(key.substring(5)) - 5;
+      graphIncrement = parseInt(key.substring(5)) - 6;
       setCanvas("GraphN", ctext);
       break;
   }
@@ -1132,11 +1296,20 @@ function drawEmptyRect(x, y, w, h, color = "red") {
   ctx.fill();
 }
 
-function drawEllipse(x, y, w, h, color = "red", degrees = 360) {
+function drawEllipse(x, y, w, h, color = "red", degrees = 360, startangle = 0) {
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
   ctx.beginPath();
-  ctx.ellipse(x, y, w, h, 0, 0, (degrees / 180) * Math.PI);
+  ctx.ellipse(
+    x,
+    y,
+    w,
+    h,
+    (startangle / 180) * Math.PI,
+    0,
+    (degrees / 180) * Math.PI
+  );
+  ctx.lineTo(x, y);
   ctx.fill();
 }
 
