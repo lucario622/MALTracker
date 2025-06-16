@@ -6,6 +6,7 @@ function start() {
 
   sortOptions.push("by Group Size");
   sortOptions.push("by RemLen");
+  sortOptions.push("by Length");
   placeSortSelector();
   sortselector.value = "by Status";
   let val = localStorage.getItem("transfer");
@@ -78,6 +79,9 @@ function display() {
       break;
     case "by RemLen":
       groups.sort(compareGroupTimeCom);
+      break;
+    case "by Length":
+      groups.sort(compareGroupTotalLength).reverse();
       break;
     case "by Pickup Time":
       groups.sort(compareGroupPickup);
