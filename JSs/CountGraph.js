@@ -157,13 +157,6 @@ function graphit() {
     if (cats[i] == "") cats[i] = "None";
     catsCount[i] = catscat[i][1];
   }
-  // for (let i = 33; i < 127; i++) {
-  //   drawText(0, ch, String.fromCharCode(i), ch * 1.6, "white");
-  // }
-  // drawRect(ch/1.15, 0, 100, ch, "red");
-  // text width = text height * 0.86956 or 20/23
-  // text size = text height * 1.6
-  // text size = text width * 1.818
   if (cats.length <= 10) {
     for (let i = 0; i < cats.length; i++) {
       if (cats[i] == "") cats[i] = "None";
