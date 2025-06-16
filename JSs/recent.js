@@ -1060,11 +1060,11 @@ function setCanvas(key, ctext) {
           drawRect(rectX, rectY, rectW, rectH, color);
           drawText(
             rectX + 1.1 * rectW,
-            rectY + rectH / 2.5 + textH / 2,
+            rectY + rectH / 2,
             text,
             textH,
             "rgb(237,237,237)",
-            "bottom"
+            "middle"
           );
         }
       } else {
@@ -1100,11 +1100,11 @@ function setCanvas(key, ctext) {
             drawRect(rectX, rectY, rectW, rectH, color);
             drawText(
               rectX + 1.1 * rectW,
-              rectY + rectH / 2.5 + textH / 2,
+              rectY + rectH / 2,
               text,
               textH,
               "rgb(237,237,237)",
-              "bottom"
+              "middle"
             );
           }
         }
