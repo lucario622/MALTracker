@@ -3,6 +3,8 @@ var ccc = [];
 var ctx;
 
 var megacv;
+var v;
+var savedselected;
 
 var cmplTotal = 0;
 var cmplLen = 0;
@@ -465,8 +467,8 @@ function start() {
       }
     }
   }
+
   while (minsremaining > 0) {
-    console.log(minsremaining);
     let lastitem = chain[chain.length - 1][0];
     if (lastitem == 0) {
       lastitem = chain[chain.length - 2][0];
@@ -493,7 +495,6 @@ function start() {
         }
       }
     }
-    console.log(chain[chain.length - 1]);
   }
   if (chain.length >= 2) {
     if (
@@ -511,10 +512,8 @@ function start() {
   minsremaining = 480000;
   while (minsremaining > 0) {
     if (norepeats.length >= candidates + 3) {
-      console.log("super cool break condition");
       break;
     }
-    console.log(minsremaining);
     let lastitem = chain[chain.length - 1][0];
     if (lastitem == 0) {
       lastitem = chain[chain.length - 2][0];
@@ -547,6 +546,7 @@ function start() {
   if (chain.length == 0) {
     console.log("chainless");
   }
+
   data.sort(compareWatchDate);
   for (let i = 0; i < data.length; i++) {
     if (data[i].status == "Completed") {
@@ -570,7 +570,7 @@ function start() {
   let u = document.getElementById("mainbody").clientWidth;
   let ah = document.getElementsByTagName("a")[0].clientHeight;
   ah = 0;
-  let v = innerHeight - p.clientHeight - ah;
+  v = innerHeight - p.clientHeight - ah;
   megacv = document.createElement("canvas");
   megacv.height = v - 40;
   megacv.width = (v - 30) * 2;
@@ -581,6 +581,16 @@ function start() {
   megacv.onclick = function () {
     megacv.hidden = true;
     toggleCanvi();
+  };
+  megacv.oncontextmenu = function () {
+    p.hidden = !p.hidden;
+    if (p.hidden) {
+      megacv.height = innerHeight - 40;
+    } else {
+      megacv.height = v - 40;
+    }
+    setCanvas("Graph" + savedselected, "megacv");
+    return false;
   };
   for (let i = 0; i < Math.floor(u / 300) * Math.floor(v / 150); i++) {
     let cv = document.createElement("canvas");
@@ -597,10 +607,10 @@ function start() {
       setCanvas("Clear", "megacv");
       setCanvas("Graph" + i, "megacv");
       megacv.hidden = false;
+      savedselected = i;
     };
   }
   toggleCanvi();
-  console.log(myArraysplit)
 }
 
 function setCanvas(key, ctext) {
@@ -965,10 +975,14 @@ function setCanvas(key, ctext) {
           continue;
         }
         let timecount = 0;
-        for (let e of myArraysplit[myArraysplit.length - (i + 7 * graphIncrement) - 1]) {
-          if (e.determineDayCount()>=20) continue;
-          timecount += (e.determineLen() - e.determineRemLen())/e.determineDayCount();
-          weekLen += (e.determineLen() - e.determineRemLen())/e.determineDayCount();
+        for (let e of myArraysplit[
+          myArraysplit.length - (i + 7 * graphIncrement) - 1
+        ]) {
+          if (e.determineDayCount() >= 20) continue;
+          timecount +=
+            (e.determineLen() - e.determineRemLen()) / e.determineDayCount();
+          weekLen +=
+            (e.determineLen() - e.determineRemLen()) / e.determineDayCount();
         }
         drawRect(
           (cvas.width / 7) * i,
