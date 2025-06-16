@@ -1023,11 +1023,12 @@ function setCanvas(key, ctext) {
       let cw = cvas.width;
       let ch = cvas.height;
       // outline drawing
+      let circlesize = Math.min(ch * 0.5,cw*0.2)
       drawEllipse(
         cw * 0.75,
         ch * 0.5,
-        ch * 0.4 + 1,
-        ch * 0.4 + 1,
+        circlesize + 1,
+        circlesize + 1,
         "rgb(237,237,237)"
       );
       // legend drawing
@@ -1119,8 +1120,8 @@ function setCanvas(key, ctext) {
         drawEllipse(
           cw * 0.75,
           ch * 0.5,
-          ch * 0.4,
-          ch * 0.4,
+          circlesize,
+          circlesize,
           color,
           (count / total) * 360,
           (curTotal / total) * 360
