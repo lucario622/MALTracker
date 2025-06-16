@@ -932,6 +932,7 @@ function assembleGroups() {
   if (sologroup.size != 0) {
     sologroup.size = 0;
     sologroup.entries.sort(compareTitles);
+    sologroup.groupName = "Individuals";
     groups.push(sologroup);
   }
 
