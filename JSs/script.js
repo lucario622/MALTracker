@@ -144,6 +144,12 @@ var filtboxarray = [
     "Suspense",
   ],
 ];
+var nicknames = {
+  "Is It Wrong to Try to Pick Up Girls in a Dungeon?":"DanMachi",
+  "Re:ZERO -Starting Life in Another World-":"Re:ZERO",
+  "That Time I Got Reincarnated as a Slime":"TenSura",
+  "The Irregular at Magic High School":"Mahouka",
+}
 var groups = [];
 var colors = {
   Watching: "rgb(45,176,57)",
@@ -1102,6 +1108,8 @@ class Entry {
     } else if (this.type == "Special") {
       this.len += this.episodes * avgSP;
     }
+    }
+
     this.len /= 2;
     this.len = Math.floor(this.len * 100) / 100;
     return this.len;
@@ -1112,9 +1120,9 @@ class Entry {
       return 1;
     }
     if (this.enddate == "") {
-      return daycount(this.startdate)+1
+      return daycount(this.startdate) + 1;
     }
-    let elapseddays = daycount(this.startdate)-daycount(this.enddate)+1
+    let elapseddays = daycount(this.startdate) - daycount(this.enddate) + 1;
     return elapseddays;
   }
 
@@ -3938,7 +3946,7 @@ function distByWatchDate() {
     let x = dayzero1 - daycount(e.startdate);
     let y = dayzero1 - daycount(e.enddate);
     myArray[x].push(e);
-    for (let j = x;j<=y;j++) {
+    for (let j = x; j <= y; j++) {
       myArraysplit[j].push(e);
     }
     if (myArray[x].length > maxwatched) maxwatched = myArray[x].length;
@@ -4111,7 +4119,15 @@ function startQS(comparison) {
 
 function overwritedate(str) {
   curdate = str;
-  curday = parseInt(str.substring(0,2))
-  curmon = parseInt(str.substring(3,5))
-  curyear = parseInt(str.substring(6,8))
+  curday = parseInt(str.substring(0, 2));
+  curmon = parseInt(str.substring(3, 5));
+  curyear = parseInt(str.substring(6, 8));
+}
+
+function getNick(str) {
+  if (nicknames[str] != undefined) {
+    return nicknames[str]
+  } else {
+    return str
+  }
 }
