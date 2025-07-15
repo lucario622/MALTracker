@@ -145,11 +145,11 @@ var filtboxarray = [
   ],
 ];
 var nicknames = {
-  "Is It Wrong to Try to Pick Up Girls in a Dungeon?":"DanMachi",
-  "Re:ZERO -Starting Life in Another World-":"Re:ZERO",
-  "That Time I Got Reincarnated as a Slime":"TenSura",
-  "The Irregular at Magic High School":"Mahouka",
-}
+  "Is It Wrong to Try to Pick Up Girls in a Dungeon?": "DanMachi",
+  "Re:ZERO -Starting Life in Another World-": "Re:ZERO",
+  "That Time I Got Reincarnated as a Slime": "TenSura",
+  "The Irregular at Magic High School": "Mahouka",
+};
 var groups = [];
 var colors = {
   Watching: "rgb(45,176,57)",
@@ -340,14 +340,26 @@ class EntryGroup {
     } else if (ptwCount + OHCount == this.size && airedCount > 0) {
       this.curStatus = "Yet to Start";
     } else if (compCount + NYACount + airingCount == this.size) {
-      this.curStatus = "Waiting for next part";
+      if (compCount == 0) {
+        this.curStatus = "Waiting for first airing";
+      } else {
+        this.curStatus = "Waiting for next part";
+      }
     } else if (
       OHCount + compCount + NYACount + airingCount == this.size &&
       compCount > 0
     ) {
-      this.curStatus = "Waiting for latest dub";
+      if (this.entries[this.size - 1].airStatus != "Aired") {
+        this.curStatus = "Waiting for first airing";
+      } else {
+        this.curStatus = "Waiting for latest dub";
+      }
     } else if (OHCount + compCount + NYACount + airingCount == this.size) {
-      this.curStatus = "Waiting for first dub";
+      if (this.size == 1 && this.entries[0].airStatus != "Aired") {
+        this.curStatus = "Waiting for first airing";
+      } else {
+        this.curStatus = "Waiting for first dub";
+      }
     } else if (compCount + OHCount + ptwCount == this.size && airedCount > 0) {
       this.curStatus = "Partially Watched";
     }
@@ -872,10 +884,6 @@ function assembleGroups() {
     "Mahou Shoujo ni Akogarete 2nd Season",
   ]);
   putInGroup("The Dangers in My Heart", "Boku no Kokoro no Yabai Yatsu Movie");
-  putInGroup(
-    "Rascal Does Not Dream of Bunny Girl Senpai",
-    "Seishun Buta Yarou wa Santa Claus no Yume wo Minai"
-  );
   massPutInGroup("JoJo's Bizarre Adventure", [
     "Thus Spoke Kishibe Rohan",
     "JoJo no Kimyou na Bouken Part 7: Steel Ball Run",
@@ -886,6 +894,7 @@ function assembleGroups() {
     "Ano Hi Mita Hana no Namae wo Bokutachi wa Mada Shiranai.: Menma e no Tegami"
   );
   putInGroup("Beyond the Boundary", "Kyoukai no Kanata: Mini Gekijou");
+  putInGroup("Kaguya-sama", "Kaguya-sama wa Kokurasetai: Otona e no Kaidan");
   putInGroup("Made in Abyss", "Marulk's Daily Life");
   // groups.forEach((element) => {
   //   element.recalcMain();
@@ -1880,6 +1889,7 @@ function compareGroupStatus(a, b) {
     "Waiting for first dub",
     "Waiting for latest dub",
     "Waiting for next part",
+    "Waiting for first airing",
     "All Completed",
     "Default",
   ];
@@ -2455,6 +2465,39 @@ function compareTimeCom(a, b) {
   }
   let atime = a.episodes - a.watchedepisodes;
   let btime = b.episodes - b.watchedepisodes;
+  switch (a.type) {
+    case "Movie":
+      atime *= avgMovie;
+      break;
+    case "TV Special":
+      atime *= avgTVSP;
+      break;
+    default:
+      atime *= avgTV;
+      break;
+  }
+  switch (b.type) {
+    case "Movie":
+      btime *= avgMovie;
+      break;
+    case "TV Special":
+      btime *= avgTVSP;
+      break;
+    default:
+      btime *= avgTV;
+      break;
+  }
+  if (atime > btime) {
+    return 1;
+  } else if (atime < btime) {
+    return -1;
+  }
+  return 0;
+}
+
+function compareLength(a, b) {
+  let atime = a.episodes;
+  let btime = b.episodes;
   switch (a.type) {
     case "Movie":
       atime *= avgMovie;
@@ -4183,8 +4226,8 @@ function overwritedate(str) {
 
 function getNick(str) {
   if (nicknames[str] != undefined) {
-    return nicknames[str]
+    return nicknames[str];
   } else {
-    return str
+    return str;
   }
 }

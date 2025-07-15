@@ -225,7 +225,10 @@ function start() {
   unsafechoice = null;
   for (let i = 0; i < groups.length; i++) {
     const g = groups[i];
-    if (g.curStatus == "Waiting for latest dub" || g.curStatus == "Waiting for first dub") {
+    if (
+      g.curStatus == "Waiting for latest dub" ||
+      g.curStatus == "Waiting for first dub"
+    ) {
       choice = groupNextWatchEntry(g);
       if (choice.rated >= "R+") {
         unsafechoice = choice;
@@ -356,7 +359,10 @@ function start() {
   unsafechoice = null;
   for (let i = 0; i < groups.length; i++) {
     const g = groups[i];
-    if (g.curStatus == "Waiting for latest dub" || g.curStatus == "Waiting for first dub") {
+    if (
+      g.curStatus == "Waiting for latest dub" ||
+      g.curStatus == "Waiting for first dub"
+    ) {
       choice = groupNextWatchEntry(g);
       if (choice.rated >= "R+") {
         unsafechoice = choice;
@@ -482,7 +488,13 @@ function start() {
     // find next item
     // first check if there is a logical next one
     let e = getNext(lastitem);
-    if (e != null) {
+    if (
+      e != null &&
+      e.airStatus == "Aired" &&
+      e.status != "Completed" &&
+      (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
+      !norepeats.includes(e)
+    ) {
       intothechain(e);
     } else {
       // last item was a dead end (end of a series)
@@ -516,11 +528,12 @@ function start() {
   }
 
   minsremaining = 480000;
+  let lastlast = ["", 0, 0];
   while (minsremaining > 0) {
-    if (norepeats.length >= candidates + 3) {
+    let lastitem = chain[chain.length - 1][0];
+    if (lastlast[0] == lastitem) {
       break;
     }
-    let lastitem = chain[chain.length - 1][0];
     if (lastitem == 0) {
       lastitem = chain[chain.length - 2][0];
     }
@@ -542,43 +555,78 @@ function start() {
           !norepeats.includes(e)
         ) {
           intothechain(e);
+          lastlast = [lastitem, 1, 1];
           break;
         }
       }
     }
+    lastlast = [lastitem, 1, 1];
   }
 
   // Series Pie Chart
   groups.sort(compareGroupTotalLength).reverse();
   for (let i = 0; i < groups.length; i++) {
-    if (
-      (groups[i].curStatus == "All Completed" || groups[i].curStatus == "Waiting for next part") &&
-      groups[i].groupName != "Individuals"
-    ) {
-      items.push(groups[i].groupName);
-      itemsCount.push(groups[i].determineLen());
-    } else if (groups[i].curStatus == "Partially Watched" || groups[i].curStatus == "Waiting for latest dub" || groups[i].curStatus == "Currently Watching") {
-      items.push(groups[i].groupName);
-      let tempcount = 0
-      for (let j = 0; j < groups[i].entries.length;j++) {
-        const e = groups[i].entries[j];
-        if (e.status == "Completed" || e.status == "Watching") tempcount += e.determineLen();
+    // if (
+    //   (groups[i].curStatus == "All Completed" ||
+    //     groups[i].curStatus == "Waiting for next part") &&
+    //   groups[i].groupName != "Individuals"
+    // ) {
+    //   items.push(groups[i].groupName);
+    //   itemsCount.push(groups[i].determineLen());
+    // } else if (
+    //   groups[i].curStatus == "Partially Watched" ||
+    //   groups[i].curStatus == "Waiting for latest dub" ||
+    //   groups[i].curStatus == "Currently Watching"
+    // ) {
+    //   items.push(groups[i].groupName);
+    //   let tempcount = 0;
+    //   for (let j = 0; j < groups[i].entries.length; j++) {
+    //     const e = groups[i].entries[j];
+    //     if (e.status == "Completed" || e.status == "Watching")
+    //       tempcount += e.determineLen();
+    //   }
+    //   itemsCount.push(tempcount);
+    // }
+    const curg = groups[i];
+    if (curg.groupName != "Individuals") {
+      let compCount = 0;
+      let watchingCount = 0;
+      let curlength = 0;
+      for (let j = 0; j < curg.entries.length; j++) {
+        const e = curg.entries[j];
+        if (e.status == "Completed") {
+          curlength+=e.determineLen();
+          compCount++;
+        } else if (e.status == "Watching") {
+          curlength+=e.determineLen()-e.determineRemLen();
+          watchingCount++;
+        }
       }
-      itemsCount.push(tempcount)
+      if (compCount+watchingCount>0) {
+        items.push(curg.groupName);
+        itemsCount.push(curlength);
+      }
+    } else {
+      curg.entries.sort(compareLength).reverse();
+      for (let j = 0; j < curg.entries.length; j++) {
+        const e = curg.entries[j];
+        items.push(e.title);
+        itemsCount.push(e.determineLen());
+      }
     }
   }
-  
+
   for (let i = 0; i < items.length; i++) {
     total += itemsCount[i];
   }
-  let cutoff = total/100;
-  let newitems = []
-  let newitemsCount = []
-  let miscitemsCount = 0
-  for (let i = 0;i<items.length;i++) {
+  let cutoff = total / 100;
+  let newitems = [];
+  let newitemsCount = [];
+  let miscitemsCount = 0;
+  for (let i = 0; i < items.length; i++) {
     if (itemsCount[i] >= cutoff) {
       newitems.push(items[i]);
-      newitemsCount.push(itemsCount[i])
+      newitemsCount.push(itemsCount[i]);
     } else {
       miscitemsCount += itemsCount[i];
     }
@@ -586,8 +634,8 @@ function start() {
   items = newitems;
   itemsCount = newitemsCount;
   if (miscitemsCount > 0) {
-    items.push("<1%")
-    itemsCount.push(miscitemsCount)
+    items.push("<1%");
+    itemsCount.push(miscitemsCount);
   }
   for (let i = 0; i < items.length; i++) {
     colorarr[i] =
@@ -648,6 +696,15 @@ function start() {
   for (let i = 0; i < Math.floor(u / 300) * Math.floor(v / 150); i++) {
     let cv = document.createElement("canvas");
     cv.setAttribute("id", "canvas" + (i + 1));
+    cv.oncontextmenu = function () {
+      p.hidden = !p.hidden;
+      if (p.hidden) {
+        megacv.height = innerHeight - 40;
+      } else {
+        megacv.height = v - 40;
+      }
+      return false;
+    };
     canvi.push(cv);
     ccc.push(true);
     insert(document.getElementById("mainbody"), cv);
@@ -974,7 +1031,8 @@ function setCanvas(key, ctext) {
       }
       break;
     case "Graph4":
-      let ftsz4 = cvas.height / 10;
+      let bigfont = Math.min(cvas.height / 10, cvas.height / 20);
+      let ftsz4 = Math.min(cvas.height / 10, cvas.height / 15);
       let downage = 0;
       let leftage = 0;
       let saveddownage = 0;
@@ -984,7 +1042,7 @@ function setCanvas(key, ctext) {
         if (
           downage >= cvas.height - ftsz4 &&
           leftage + rightest < cvas.width &&
-          ftsz4 != cvas.height / 10
+          ftsz4 != bigfont
         ) {
           downage = saveddownage;
           leftage += rightest;
@@ -996,7 +1054,7 @@ function setCanvas(key, ctext) {
         if (e.length != 3 && leftage == 0) {
           drawLine(0, downage - 2, cvas.width, downage - 2, "white");
           thecolor = "rgb(60, 60, 60)";
-          ftsz4 = cvas.height / 40;
+          ftsz4 = bigfont / 4;
           saveddownage = downage;
           rightest = 0;
           continue;
@@ -1021,7 +1079,7 @@ function setCanvas(key, ctext) {
       let cw = cvas.width;
       let ch = cvas.height;
       // outline drawing
-      let circlesize = Math.min(ch * 0.5,cw*0.2)
+      let circlesize = Math.min(ch * 0.5, cw * 0.2);
       drawEllipse(
         cw * 0.75,
         ch * 0.5,
@@ -1036,7 +1094,10 @@ function setCanvas(key, ctext) {
           let color = colorarr[i];
           let count = itemsCount[i];
           let text =
-            getNick(items[i]) + " " + Math.round((count / total) * 10000) / 100 + "%";
+            getNick(items[i]) +
+            " " +
+            Math.round((count / total) * 10000) / 100 +
+            "%";
           let rectX = cw / 16;
           let rectY = ch / 5 + (i * ch) / 10;
           let rectW = cw / 8;
@@ -1078,7 +1139,10 @@ function setCanvas(key, ctext) {
             let color = colorarr[k];
             let count = itemsCount[k];
             let text =
-              getNick(items[k]) + " " + Math.round((count / total) * 10000) / 100 + "%";
+              getNick(items[k]) +
+              " " +
+              Math.round((count / total) * 10000) / 100 +
+              "%";
             let twSpace = cw * 0.55 - cw / 16;
             let wSpace = twSpace / cols;
 
