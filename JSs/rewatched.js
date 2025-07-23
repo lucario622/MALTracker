@@ -11,10 +11,14 @@ function start() {
   assembleGroups();
 
   data.forEach((e) => {
-    if (e.rewatched == true || e.rewatched >= 1) {
+    if (e.rewatched == true) {
       rewaDict[e.title] = 1;
+    } else if (e.rewatched >= 1) {
+      rewaDict[e.title] = e.rewatched;
     } else {
-      rewaDict[e.title] = 0;
+      if (e.title in rewaDict) {
+        delete rewaDict[e.title];
+      }
     }
   });
 
@@ -54,8 +58,8 @@ function testdisplay() {
       "\t" +
       e.score +
       "\t" +
-      e.rewatched + 
-      "\t" + 
+      e.rewatched +
+      "\t" +
       e.title +
       "</b>";
     if (e.rewatched >= 1) {
@@ -86,7 +90,7 @@ function testdisplay() {
       }
     }
     pr1.lastChild.onclick = function () {
-      e.rewatched ++;
+      e.rewatched++;
       if (e.rewatched >= 1) {
         rewaDict[e.title]++;
       } else {
@@ -96,8 +100,10 @@ function testdisplay() {
       testdisplay();
     };
     pr1.lastChild.oncontextmenu = function () {
-      e.rewatched = 0
-      rewaDict[e.title] = 0;
+      e.rewatched = 0;
+      if (e.title in rewaDict) {
+        delete rewaDict[e.title];
+      }
       localStorage.setItem("rewatched", JSON.stringify(rewaDict));
       testdisplay();
     };
