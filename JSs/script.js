@@ -3167,8 +3167,11 @@ function parseAllTextGen() {
     e.genres.sort();
     if (redict[e.title] != undefined) {
       e.rewatched = redict[e.title];
+      if (redict[e.title] == 0) {
+        delete redict[e.title];
+      }
     } else {
-      redict[e.title] = 0;
+      e.rewatched = 0;
     }
   });
   localStorage.setItem("rewatched", JSON.stringify(redict));

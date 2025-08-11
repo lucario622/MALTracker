@@ -91,11 +91,7 @@ function testdisplay() {
     }
     pr1.lastChild.onclick = function () {
       e.rewatched++;
-      if (e.rewatched >= 1) {
-        rewaDict[e.title]++;
-      } else {
-        rewaDict[e.title] = 1;
-      }
+      rewaDict[e.title] = e.rewatched;
       localStorage.setItem("rewatched", JSON.stringify(rewaDict));
       testdisplay();
     };

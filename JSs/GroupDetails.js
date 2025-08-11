@@ -17,11 +17,12 @@ function start() {
 
   mainbd.innerHTML = "";
   let myData = localStorage.getItem("specialTransfer");
-  console.log(myData)
+  localStorage.removeItem("specialTransfer");
+  console.log(myData);
   elementlist = JSON.parse(myData);
 
   data.sort(compareMALScore).reverse();
-  console.log(elementlist)
+  console.log(elementlist);
   // elementlist.sort(compareAirStart);
   let lastscored = 0;
   for (let i = 0; i < data.length; i++) {
@@ -39,7 +40,7 @@ function start() {
     mainbd.innerHTML += baseformat.innerHTML;
     document.getElementsByClassName("f1-1")[z].innerText = curEntry.MALscore;
     allboxes[i++].innerText = curEntry.title;
-    console.log((data.indexOf(curEntry))) 
+    console.log(data.indexOf(curEntry));
     if (data.indexOf(curEntry) > lastscored) {
       allboxes[i++].innerText = "-";
     } else allboxes[i++].innerText = "Ranked #" + (data.indexOf(curEntry) + 1);
