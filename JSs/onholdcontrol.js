@@ -109,7 +109,25 @@ function start() {
         }
         return false;
       };
-      pr.children[1].oncontextmenu = pr.children[1].onclick;
+      pr.children[1].oncontextmenu = function () {
+        if (this.textContent == "No Active Dub") {
+          this.style.color = colors.Watching;
+          this.textContent = " Ongoing Dub ";
+          this.parentElement.children[2].lastChild.hidden = false;
+          this.parentElement.children[3].lastChild.hidden = false;
+          mytable[this.id] = "0";
+          localStorage.setItem("onholds", JSON.stringify(mytable));
+        } else {
+          console.log(this.style.color)
+          this.style.color = "red";
+          this.textContent = "No Active Dub";
+          mytable[this.id] = "1";
+          this.parentElement.children[2].lastChild.hidden = true;
+          this.parentElement.children[3].lastChild.hidden = true;
+          localStorage.setItem("onholds", JSON.stringify(mytable));
+        }
+        return false;
+      };
       insert(p, pr);
     }
   }
