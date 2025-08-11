@@ -1074,6 +1074,7 @@ class Entry {
     this.isNext = false;
     this.rewatched = 0;
     this.ranking = 0;
+    this.dubenddate = "0";
   }
 
   extractNum(field) {
@@ -2347,6 +2348,77 @@ function compareAirFinish(a, b) {
   return 0;
 }
 
+function compareDubFinish(a, b) {
+  if (!isDate(a.dubenddate) && !isDate(b.dubenddate)) {
+    return 0;
+  }
+  if (!isDate(a.dubenddate)) {
+    return 1;
+  }
+  if (!isDate(b.dubenddate)) {
+    return -1;
+  }
+  acode =
+    parseInt(a.dubenddate.substring(6, 8)) * 10000 +
+    parseInt(a.dubenddate.substring(3, 5)) * 100 +
+    parseInt(a.dubenddate.substring(0, 2));
+  bcode =
+    parseInt(b.dubenddate.substring(6, 8)) * 10000 +
+    parseInt(b.dubenddate.substring(3, 5)) * 100 +
+    parseInt(b.dubenddate.substring(0, 2));
+  if (acode < 400000) acode += 1000000;
+  if (bcode < 400000) bcode += 1000000;
+  if (isNaN(acode)) acode = 100000000;
+  if (isNaN(bcode)) bcode = 100000000;
+  if (acode % 10000 == 0) acode += 1014;
+  if (bcode % 10000 == 0) bcode += 1014;
+  if (acode % 100 == 0) acode += 14;
+  if (bcode % 100 == 0) bcode += 14;
+  if (acode > bcode) {
+    return 1;
+  } else if (acode < bcode) {
+    return -1;
+  }
+  return 0;
+}
+
+function compareAltFinish(a, b) {
+  let acode =
+    parseInt(a.airenddate.substring(6, 8)) * 10000 +
+    parseInt(a.airenddate.substring(3, 5)) * 100 +
+    parseInt(a.airenddate.substring(0, 2));
+  if (isDate(a.dubenddate)) {
+    acode =
+      parseInt(a.dubenddate.substring(6, 8)) * 10000 +
+      parseInt(a.dubenddate.substring(3, 5)) * 100 +
+      parseInt(a.dubenddate.substring(0, 2));
+  }
+  let bcode =
+    parseInt(b.airenddate.substring(6, 8)) * 10000 +
+    parseInt(b.airenddate.substring(3, 5)) * 100 +
+    parseInt(b.airenddate.substring(0, 2));
+  if (isDate(b.dubenddate)) {
+    bcode =
+      parseInt(b.dubenddate.substring(6, 8)) * 10000 +
+      parseInt(b.dubenddate.substring(3, 5)) * 100 +
+      parseInt(b.dubenddate.substring(0, 2));
+  }
+  if (acode < 400000) acode += 1000000;
+  if (bcode < 400000) bcode += 1000000;
+  if (isNaN(acode)) acode = 100000000;
+  if (isNaN(bcode)) bcode = 100000000;
+  if (acode % 10000 == 0) acode += 1014;
+  if (bcode % 10000 == 0) bcode += 1014;
+  if (acode % 100 == 0) acode += 14;
+  if (bcode % 100 == 0) bcode += 14;
+  if (acode > bcode) {
+    return 1;
+  } else if (acode < bcode) {
+    return -1;
+  }
+  return 0;
+}
+
 function compareRunLength(a, b) {
   // 03-05-24
   // if (a.airenddate == "") {
@@ -3160,6 +3232,14 @@ function parseAllTextGen() {
   } else {
     redict = {};
   }
+
+  let holdtable = localStorage.getItem("onholds");
+  if (holdtable != null) {
+    holdtable = JSON.parse(holdtable);
+  } else {
+    holdtable = {};
+  }
+
   // arrr.sort(compareMALScore).reverse();
   // let i = 1;
   arrr.forEach((e) => {
@@ -3172,6 +3252,11 @@ function parseAllTextGen() {
       }
     } else {
       e.rewatched = 0;
+    }
+    if (e.title in holdtable) {
+      e.dubenddate = holdtable[e.title];
+    } else {
+      e.dubenddate = "0";
     }
   });
   localStorage.setItem("rewatched", JSON.stringify(redict));
@@ -3540,6 +3625,7 @@ function generalinit() {
   <a href="LATG.html">Custom Graph</a>|||||
   <a href="CountGraph.html">Count Graph</a>|||||
   <a href="stats.html">Stats</a>|||||
+  <a href="onholdcontrol.html">On-hold Control</a>|||||
   `;
   mainbody.insertBefore(links, mainbody.childNodes[0]);
   if (sortselector != null) sortselector.hidden = true;
@@ -3786,7 +3872,7 @@ function justMALDiff(MALIter) {
 function placeChange(odat, ndat, e) {}
 
 function isDate(str) {
-  if (str[2] == "-" && str[5] == "-") {
+  if (str[2] == "-" && str[5] == "-" && str.length == 8) {
     return true;
   }
   return false;

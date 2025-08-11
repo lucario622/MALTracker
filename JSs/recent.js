@@ -101,8 +101,8 @@ function start() {
   }
   p.innerHTML += "<hr>";
 
-  data.sort(compareAirFinish);
-  let earliestUpcomingFinish;
+  data.sort(compareAltFinish);
+  let earliestDubcomingFinish;
   for (let i = 0; i < data.length; i++) {
     const e = data[i];
     if (
@@ -110,26 +110,65 @@ function start() {
       daycount(e.airenddate) <= 0 &&
       e.airStatus != "Aired"
     ) {
-      earliestUpcomingFinish = e;
+      earliestDubcomingFinish = e;
       break;
     }
   }
-  for (let j = data.indexOf(earliestUpcomingFinish); j < data.length; j++) {
+  let chosen = [];
+  for (let j = data.indexOf(earliestDubcomingFinish); j < data.length; j++) {
     const e = data[j];
+    if (!isDate(e.airenddate)) {
+      break;
+    }
+    if (isDate(e.dubenddate)) {
+      chosen.push([e, 1, e.dubenddate]);
+    } else if (e.status != "On-Hold") {
+      chosen.push([e, 2, e.airenddate]);
+    }
+  }
+
+  data.sort(compareAirFinish);
+  tempchosen = [];
+  for (let i = 0; i < data.length; i++) {
+    const e = data[i];
+    if (
+      e.status == "On-Hold" &&
+      !isDate(e.dubenddate) &&
+      daycount(e.airenddate) <= 365 &&
+      isEntryNextWatch(e)
+    ) {
+      chosen.push([e, 3, ndaysafter(e.airenddate, 365)]);
+    }
+  }
+  chosen.sort(compDts);
+
+  for (let e of chosen) {
     p.innerHTML += `<pre></pre>`;
-    p.lastChild.innerText = `Upcoming Finish: ${
-      e.title
-    } ${defaultdatetoreadable(e.airenddate)}`;
-    if (e.rated == "R+") {
+    if (e[1] == 1) {
+      p.lastChild.innerText = `Upcoming Dub Finish: ${
+        e[0].title
+      } ${defaultdatetoreadable(e[2])}`;
+    } else if (e[1] == 2) {
+      p.lastChild.innerText = `Upcoming Finish: ${
+        e[0].title
+      } ${defaultdatetoreadable(e[2])}`;
+    } else {
+      p.lastChild.innerText = `Upcoming Sub Wait Finish: ${
+        e[0].title
+      } ${defaultdatetoreadable(e[2])}`;
+    }
+    if (e[0].rated == "R+") {
       p.lastChild.setAttribute("class", "R");
       p.lastChild.hidden = true;
     }
-    if (daycount(e.airenddate) < -31) {
+    if (daycount(e[2]) < -31) {
       break;
     }
   }
+
   p.innerHTML += "<hr>";
 
+  //~~~~~~~~~~~~~~~~
   groups.sort(compareGroupRating).reverse();
   groups.sort(compareGroupStatus);
   data.sort(compareMALScore).reverse();
@@ -531,7 +570,7 @@ function start() {
   let lastlast = ["", 0, 0];
   while (minsremaining > 0) {
     let lastitem = chain[chain.length - 1][0];
-    if (lastlast[0] == lastitem) {
+    if (lastlast[0] === lastitem) {
       break;
     }
     if (lastitem == 0) {
@@ -540,7 +579,13 @@ function start() {
     // find next item
     // first check if there is a logical next one
     let e = getNext(lastitem);
-    if (e != null && e.airStatus == "Aired") {
+    if (
+      e != null &&
+      e.airStatus == "Aired" &&
+      e.status != "Completed" &&
+      (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
+      !norepeats.includes(e)
+    ) {
       intothechain(e);
     } else {
       // last item was a dead end (end of a series)
@@ -566,27 +611,6 @@ function start() {
   // Series Pie Chart
   groups.sort(compareGroupTotalLength).reverse();
   for (let i = 0; i < groups.length; i++) {
-    // if (
-    //   (groups[i].curStatus == "All Completed" ||
-    //     groups[i].curStatus == "Waiting for next part") &&
-    //   groups[i].groupName != "Individuals"
-    // ) {
-    //   items.push(groups[i].groupName);
-    //   itemsCount.push(groups[i].determineLen());
-    // } else if (
-    //   groups[i].curStatus == "Partially Watched" ||
-    //   groups[i].curStatus == "Waiting for latest dub" ||
-    //   groups[i].curStatus == "Currently Watching"
-    // ) {
-    //   items.push(groups[i].groupName);
-    //   let tempcount = 0;
-    //   for (let j = 0; j < groups[i].entries.length; j++) {
-    //     const e = groups[i].entries[j];
-    //     if (e.status == "Completed" || e.status == "Watching")
-    //       tempcount += e.determineLen();
-    //   }
-    //   itemsCount.push(tempcount);
-    // }
     const curg = groups[i];
     if (curg.groupName != "Individuals") {
       let compCount = 0;
@@ -595,14 +619,14 @@ function start() {
       for (let j = 0; j < curg.entries.length; j++) {
         const e = curg.entries[j];
         if (e.status == "Completed") {
-          curlength+=e.determineLen();
+          curlength += e.determineLen();
           compCount++;
         } else if (e.status == "Watching") {
-          curlength+=e.determineLen()-e.determineRemLen();
+          curlength += e.determineLen() - e.determineRemLen();
           watchingCount++;
         }
       }
-      if (compCount+watchingCount>0) {
+      if (compCount + watchingCount > 0) {
         items.push(curg.groupName);
         itemsCount.push(curlength);
       }
@@ -1402,4 +1426,29 @@ function sum(x) {
     sum += element;
   });
   return sum;
+}
+
+function compDts(a, b) {
+  acode =
+    parseInt(a[2].substring(6, 8)) * 10000 +
+    parseInt(a[2].substring(3, 5)) * 100 +
+    parseInt(a[2].substring(0, 2));
+  bcode =
+    parseInt(b[2].substring(6, 8)) * 10000 +
+    parseInt(b[2].substring(3, 5)) * 100 +
+    parseInt(b[2].substring(0, 2));
+  if (acode < 400000) acode += 1000000;
+  if (bcode < 400000) bcode += 1000000;
+  if (isNaN(acode)) acode = 1000000000;
+  if (isNaN(bcode)) bcode = 1000000000;
+  if (acode % 10000 == 0) acode += 1014;
+  if (bcode % 10000 == 0) bcode += 1014;
+  if (acode % 100 == 0) acode += 14;
+  if (bcode % 100 == 0) bcode += 14;
+  if (acode > bcode) {
+    return 1;
+  } else if (acode < bcode) {
+    return -1;
+  }
+  return 0;
 }
