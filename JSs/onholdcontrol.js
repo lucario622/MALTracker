@@ -13,14 +13,25 @@ function start() {
   if (mytable == null) {
     mytable = {};
   }
+  let temptable = [];
   for (let i = 0; i < data.length; i++) {
     if (data[i].title.length > longesttitle && data[i].status == "On-Hold") {
       longesttitle = data[i].title.length;
     }
-    if (data[i].title in mytable && data[i].status != "On-Hold") {
-      delete mytable[data[i].title];
+    if (data[i].title in mytable) {
+      if (data[i].status != "On-Hold") {
+        delete mytable[data[i].title];
+      } else {
+        temptable.push(data[i].title);
+      }
     }
   }
+  for (let x in mytable) {
+    if (!temptable.includes(x)) {
+      delete mytable[x];
+    }
+  }
+  localStorage.setItem("onholds", JSON.stringify(mytable));
 
   data.sort(compareAirFinish).reverse();
   data.sort(intablecomp);
@@ -61,8 +72,13 @@ function start() {
       pr.children[3].lastChild.addEventListener("input", function () {
         if (this.value > 0 && this.value == Math.floor(this.value)) {
           if (cur.airStatus == "Aired") {
-            let pastweeks = Math.floor((daycount(cur.airenddate)-daycount(curdate))/7)
-            let thedate = ndaysafter(cur.airenddate, (parseInt(this.value)+pastweeks) * 7);
+            let pastweeks = Math.floor(
+              (daycount(cur.airenddate) - daycount(curdate)) / 7
+            );
+            let thedate = ndaysafter(
+              cur.airenddate,
+              (parseInt(this.value) + pastweeks) * 7
+            );
             pr.children[2].lastChild.value = thedate;
             mytable[cur.title] = thedate;
             localStorage.setItem("onholds", JSON.stringify(mytable));
@@ -118,7 +134,7 @@ function start() {
           mytable[this.id] = "0";
           localStorage.setItem("onholds", JSON.stringify(mytable));
         } else {
-          console.log(this.style.color)
+          console.log(this.style.color);
           this.style.color = "red";
           this.textContent = "No Active Dub";
           mytable[this.id] = "1";
