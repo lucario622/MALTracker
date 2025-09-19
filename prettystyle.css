@@ -1,0 +1,214 @@
+#topbar {
+  border-radius: 17px;
+  background-color: rgb(12, 17, 22);
+  width: 94.5vw;
+  height: 63px;
+  margin-top: 21px;
+  margin-left: 2.5vw;
+  font-family: "Poppins";
+}
+
+#nextbar {
+  border-radius: 8px;
+  /* background-color: rgb(36, 63, 85); */
+  background-color: rgba(255, 255, 255, 0.05);
+  width: 47.6vw;
+  height: 49px;
+  margin-top: 8.88vh;
+  margin-left: 25.94vw;
+}
+
+#topsearch {
+  border-radius: 13px;
+  background-color: rgb(24, 29, 34);
+  width: 23.44vw;
+  height: 35px;
+  margin-left: 22.4479vw;
+  top: 35px;
+  position: absolute;
+}
+
+#searchicon {
+  position: absolute;
+  top: 5px;
+  left: 0.5vw;
+  width: 25px;
+}
+
+#searchinput {
+  position: absolute;
+  top: 6px;
+  left: 1.927vw;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-weight: 100;
+  font-size: 14px;
+  width: 16.77vw;
+  font-family: "Poppins";
+}
+
+#searchinput:focus {
+  outline: none;
+}
+
+#filter {
+  position: absolute;
+  right: 1vw;
+  top: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  color: white;
+  font-size: 13px;
+}
+
+#filtericon {
+  width: 20px;
+}
+
+#watch2gether {
+  position: absolute;
+  left: 49.7395vw;
+  top: 35px;
+  width: 32px;
+}
+
+.grayhover1:hover {
+  filter: invert(7%) sepia(0%) saturate(46%) hue-rotate(138deg) brightness(91%)
+    contrast(86%);
+  transition: filter 0.1s ease-out;
+  cursor: pointer;
+}
+
+.grayhover2:hover {
+  color: rgb(204, 204, 204);
+  cursor: pointer;
+}
+
+.grayhover2 {
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+#random {
+  position: absolute;
+  left: 52.5vw;
+  top: 37px;
+  width: 28px;
+}
+
+#genrebutton {
+  position: absolute;
+  left: 55.21vw;
+  top: 39px;
+}
+
+#typesbutton {
+  position: absolute;
+  left: 59.79vw;
+  top: 39px;
+}
+
+#newrbutton {
+  position: absolute;
+  left: 63.59vw;
+  top: 39px;
+}
+
+#upbutton {
+  position: absolute;
+  left: 70.83vw;
+  top: 39px;
+}
+
+#ongbutton {
+  position: absolute;
+  left: 75.89vw;
+  top: 39px;
+}
+
+#recbutton {
+  position: absolute;
+  left: 81.35vw;
+  top: 39px;
+}
+
+.underbuttons::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 0px;
+  bottom: -1px;
+  background-color: rgb(228, 95, 58);
+  width: 0px;
+  height: 2px;
+  transition: width 0.25s ease-out;
+}
+
+.underbuttons:hover::after {
+  width: 50%;
+}
+
+#langop1 {
+  position: absolute;
+  color: white;
+  padding-left: 11px;
+  padding-top: 3px;
+  border-radius: 17px;
+  height: 28px;
+  width: 30px;
+}
+
+#langop2 {
+  position: absolute;
+  color: white;
+  left: 41px;
+  padding-left: 13px;
+  padding-top: 3px;
+  border-radius: 17px;
+  height: 28px;
+  width: 27px;
+}
+
+#langsw {
+  position: absolute;
+  left: 85.83vw;
+  top: 37px;
+  width: 82px;
+  height: 29px;
+  background-color: rgb(24, 29, 34);
+  border-radius: 17px;
+  cursor: pointer;
+}
+
+#langsw:hover {
+  background-color: rgb(35, 42, 49);
+}
+
+#notifs {
+  position:absolute;
+  left:91.30vw;
+  top:36px;
+  width:28px;
+}
+
+body {
+  margin: 0px;
+  background: linear-gradient(to bottom, rgb(25, 76, 97), rgb(12, 17, 22) 560px),
+    no-repeat;
+  height: 2830px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(24, 29, 34);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(229, 103, 68);
+  border-radius: 10px;
+}

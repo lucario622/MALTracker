@@ -3612,6 +3612,7 @@ function generalinit() {
   d = document.getElementById("outputd");
   let links = document.createElement("div");
   links.style.color = "rgb(18,18,18)";
+  links.id = "links"
   links.innerHTML = `
   <a href="index.html">Normal</a>|||||
   <a href="advFilter.html">AdvFiltering</a>|||||
@@ -3626,6 +3627,7 @@ function generalinit() {
   <a href="CountGraph.html">Count Graph</a>|||||
   <a href="stats.html">Stats</a>|||||
   <a href="onholdcontrol.html">On-hold Control</a>|||||
+  <a href="prettyPage.html">Pretty page</a>|||||
   `;
   mainbody.insertBefore(links, mainbody.childNodes[0]);
   if (sortselector != null) sortselector.hidden = true;
@@ -3654,6 +3656,10 @@ function generalinit() {
     });
 
   if (rawfiledata != null) start();
+}
+
+function noLinks() {
+  document.getElementById("links").remove()
 }
 
 function compareDatas(olddata, newdata) {

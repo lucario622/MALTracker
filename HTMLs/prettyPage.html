@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucario213's Bookmarks</title>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link href="../prettystyle.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <script src="../JSs/script.js"></script>
+    <script src="../JSs/prettyPage.js"></script>
+</head>
+
+<body onload="init()" id="mainbody">
+    <div id="topbar">
+        <div id="topsearch">
+            <img src="../images/search.svg" id="searchicon"></img>
+            <input type="text" placeholder="Search anime" id="searchinput" spellcheck="false"></input>
+            <a id="filter" href="https://google.com" class="grayhover1"><img id="filtericon"
+                    src="../images/filter.svg"></img>FILTER</a>
+        </div>
+        <img src="../images/watch2gether.svg" id="watch2gether" class="grayhover1" onclick="btdn()">
+        <img src="../images/random.svg" id="random" class="grayhover1">
+        <span id="genrebutton" class="grayhover2 underbuttons">GENRES</span>
+        <span id="typesbutton" class="grayhover2 underbuttons">TYPES</span>
+        <span id="newrbutton" class="grayhover2 underbuttons">NEW RELEASES</span>
+        <span id="upbutton" class="grayhover2 underbuttons">UPDATES</span>
+        <span id="ongbutton" class="grayhover2 underbuttons">ONGOING</span>
+        <span id="recbutton" class="grayhover2 underbuttons" onclick="btdn()">RECENT</span>
+        <div id="langsw" onclick="swln()"><span id="langop1">en</span> <span id="langop2">jp</span></div>
+        <img src="../images/notif.svg" id="notifs" class="grayhover1">
+    </div>
+    <div id="nextbar"></div>
+    <pre id="outputp"></pre>
+    <div id="outputd"></div>
+</body>
+
+</html>
