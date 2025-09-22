@@ -13,12 +13,13 @@
 </head>
 
 <body onload="init()" id="mainbody">
+    <pre id="outputp"></pre>
+    <div id="outputd"></div>
     <div id="topbar">
         <div id="topsearch">
             <img src="../images/search.svg" id="searchicon"></img>
             <input type="text" placeholder="Search anime" id="searchinput" spellcheck="false"></input>
-            <a id="filter" href="https://google.com" class="grayhover1"><img id="filtericon"
-                    src="../images/filter.svg"></img>FILTER</a>
+            <a id="filter" href="https://google.com" class="grayhover1"></img>FILTER</a>
         </div>
         <img src="../images/watch2gether.svg" id="watch2gether" class="grayhover1" onclick="btdn()">
         <img src="../images/random.svg" id="random" class="grayhover1">
@@ -32,8 +33,43 @@
         <img src="../images/notif.svg" id="notifs" class="grayhover1">
     </div>
     <div id="nextbar"></div>
-    <pre id="outputp"></pre>
-    <div id="outputd"></div>
+    <div id="folders">
+        <a class="folder grayhover2" onclick="clickfolder(0)">All</a>
+        <a class="folder grayhover2" onclick="clickfolder(1)">Watching</a>
+        <a class="folder grayhover2" onclick="clickfolder(2)">On-Hold</a>
+        <a class="folder grayhover2" onclick="clickfolder(3)">Planning</a>
+        <a class="folder grayhover2" onclick="clickfolder(4)">Completed</a>
+        <a class="folder grayhover2" onclick="clickfolder(5)">Dropped</a>
+        <a class="folder grayhover2" id="more" onclick="btdn()">More</a>
+    </div>
+    <div id="filterbar">
+        <input id="filtersearch" placeholder="Search...">
+        <label id="filtersearchicon" for="filtersearch"></label>
+        <span id="typeselect" class="selector" tabindex="-1">Type</span>
+        <span id="genreselect" class="selector" tabindex="-1">Genre</span>
+        <span id="statusselect" class="selector" tabindex="-1">Status</span>
+        <span id="sortselect" class="selector" tabindex="-1">Default</span>
+        <div id="moreoptionsdiv"><img id="moreoptionsicon" src="../images/settings.svg"></div>
+        <span id="submitbtn" class="almostselector" onclick="display()">Filter</span>
+        <div id="typeoptions" class="options stay1" tabindex="-1">
+            <label class="option stay1"><input id="typeMovie" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>Movie</label>
+            <label class="option stay1"><input id="typeTV" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>TV</label>
+            <label class="option stay1"><input id="typeOVA" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>OVA</label>
+            <label class="option stay1"><input id="typeONA" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>ONA</label>
+            <label class="option stay1"><input id="typeSpecial" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>Special</label>
+        </div>
+        <div id="genreoptions" class="options stay1" tabindex="-1"></div>
+        <div id="statusoptions" class="options stay1" tabindex="-1">
+            <label class="option stay1"><input id="statusNot Yet Aired" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Not Yet Aired</label>
+            <label class="option stay1"><input id="statusReleasing" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Releasing</label>
+            <label class="option stay1"><input id="statusCompleted" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Completed</label>
+        </div>
+        <div id="sortoptions" class="options stay1" tabindex="-1">
+            <label class="radiooption stay1"><input id="sortDefault" name="sort" type="radio" class="stay1 sortrad" checked><span class="radiomark stay1"></span>Default</label>
+            <label class="radiooption stay1"><input id="sortWatched Date" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>Watched Date</label>
+        </div>
+        <div id="moreoptions" class="options stay1"></div>
+    </div>
 </body>
 
 </html>

@@ -3,19 +3,24 @@
   background-color: rgb(12, 17, 22);
   width: 94.5vw;
   height: 63px;
-  margin-top: 21px;
-  margin-left: 2.5vw;
-  font-family: "Poppins";
+  margin: 21px auto;
+  /* font-family: "Poppins"; */
+  display: flex;
+  justify-content: flex-end;
 }
 
 #nextbar {
   border-radius: 8px;
+  position: static;
   /* background-color: rgb(36, 63, 85); */
   background-color: rgba(255, 255, 255, 0.05);
-  width: 47.6vw;
+  /* width: 47.6vw; */
+  width: 914px;
   height: 49px;
-  margin-top: 8.88vh;
-  margin-left: 25.94vw;
+  /* margin-top: 8.88vh; */
+  /* margin-left: 25.94vw; */
+  margin: 8.88vh auto;
+  margin-bottom: 0px;
 }
 
 #topsearch {
@@ -23,26 +28,25 @@
   background-color: rgb(24, 29, 34);
   width: 23.44vw;
   height: 35px;
-  margin-left: 22.4479vw;
-  top: 35px;
-  position: absolute;
+  margin-right: 24px;
+  margin-top: 15px;
+  position: static;
+  display: flex;
 }
 
 #searchicon {
-  position: absolute;
-  top: 5px;
-  left: 0.5vw;
+  position: static;
+  margin-top: 0px;
+  margin-left: 0.5vw;
   width: 25px;
 }
 
 #searchinput {
-  position: absolute;
-  top: 6px;
-  left: 1.927vw;
   border: none;
+  padding-left: 5px;
+  padding-top: 0px;
   background-color: transparent;
   color: white;
-  font-weight: 100;
   font-size: 14px;
   width: 16.77vw;
   font-family: "Poppins";
@@ -53,24 +57,28 @@
 }
 
 #filter {
-  position: absolute;
-  right: 1vw;
-  top: 8px;
+  position: static;
+  margin-right: 0px;
+  margin-top: 7px;
   text-decoration: none;
-  display: inline-flex;
+  display: flex;
   color: white;
   font-size: 13px;
+  transform: translateX(19px);
 }
 
-#filtericon {
-  width: 20px;
+#filter::before {
+  transform: translateX(-11px);
+  content: url("./images/filter.svg");
+  width: 12px;
+  height: 12px;
 }
 
 #watch2gether {
-  position: absolute;
-  left: 49.7395vw;
-  top: 35px;
+  margin-right: 22px;
+  margin-top: -3px;
   width: 32px;
+  display: inline;
 }
 
 .grayhover1:hover {
@@ -82,7 +90,6 @@
 
 .grayhover2:hover {
   color: rgb(204, 204, 204);
-  cursor: pointer;
 }
 
 .grayhover2 {
@@ -91,58 +98,57 @@
 }
 
 #random {
-  position: absolute;
-  left: 52.5vw;
-  top: 37px;
-  width: 28px;
+  position: static;
+  margin-right: 26px;
+  margin-top: -3px;
+  width: 27px;
 }
 
 #genrebutton {
-  position: absolute;
-  left: 55.21vw;
-  top: 39px;
+  position: static;
+  margin-right: 28px;
+  margin-top: 18px;
 }
 
 #typesbutton {
-  position: absolute;
-  left: 59.79vw;
-  top: 39px;
+  position: static;
+  margin-right: 28px;
+  margin-top: 18px;
 }
 
 #newrbutton {
-  position: absolute;
-  left: 63.59vw;
-  top: 39px;
+  position: static;
+  margin-right: 29px;
+  margin-top: 18px;
 }
 
 #upbutton {
-  position: absolute;
-  left: 70.83vw;
-  top: 39px;
+  position: static;
+  margin-right: 29px;
+  margin-top: 18px;
 }
 
 #ongbutton {
-  position: absolute;
-  left: 75.89vw;
-  top: 39px;
+  position: static;
+  margin-right: 28px;
+  margin-top: 18px;
 }
 
 #recbutton {
-  position: absolute;
-  left: 81.35vw;
-  top: 39px;
+  position: static;
+  margin-right: 28px;
+  margin-top: 18px;
 }
 
 .underbuttons::after {
   content: "";
-  display: inline-block;
-  position: absolute;
-  left: 0px;
-  bottom: -1px;
+  display: block;
+  position: static;
   background-color: rgb(228, 95, 58);
   width: 0px;
   height: 2px;
-  transition: width 0.25s ease-out;
+  transform: translateY(-1px);
+  transition: width 0.15s linear;
 }
 
 .underbuttons:hover::after {
@@ -162,7 +168,7 @@
 #langop2 {
   position: absolute;
   color: white;
-  left: 41px;
+  margin-left: 41px;
   padding-left: 13px;
   padding-top: 3px;
   border-radius: 17px;
@@ -171,9 +177,9 @@
 }
 
 #langsw {
-  position: absolute;
-  left: 85.83vw;
-  top: 37px;
+  position: static;
+  margin-right: 22px;
+  margin-top: 16px;
   width: 82px;
   height: 29px;
   background-color: rgb(24, 29, 34);
@@ -186,10 +192,10 @@
 }
 
 #notifs {
-  position:absolute;
-  left:91.30vw;
-  top:36px;
-  width:28px;
+  position: static;
+  margin-right: 82px;
+  margin-top: -5px;
+  width: 28px;
 }
 
 body {
@@ -197,6 +203,7 @@ body {
   background: linear-gradient(to bottom, rgb(25, 76, 97), rgb(12, 17, 22) 560px),
     no-repeat;
   height: 2830px;
+  font-family: "Poppins";
 }
 
 ::-webkit-scrollbar {
@@ -211,4 +218,326 @@ body {
 ::-webkit-scrollbar-thumb {
   background: rgb(229, 103, 68);
   border-radius: 10px;
+}
+
+#outputp {
+  margin: 0px;
+}
+
+#folders {
+  color: white;
+  margin: 40px auto;
+  display: flex;
+  width: 880px;
+  height: 10px;
+  justify-content: space-evenly;
+  font-size: 15px;
+}
+
+.folder {
+  cursor: pointer;
+}
+
+#more {
+  display: flex;
+}
+
+#more:hover {
+  color: rgb(204, 204, 204);
+}
+
+#more::after {
+  content: url("./images/arrow.svg");
+  margin-left: 7px;
+  margin-top: 2px;
+}
+
+#filterbar {
+  font-family: "Poppins";
+  color: white;
+  margin: 52px auto;
+  display: flex;
+  width: 1346px;
+  height: 40px;
+  justify-content: left;
+  font-size: 14px;
+}
+
+#filtersearch {
+  font-family: "Poppins";
+  color: #d2d3d4;
+  background: #11161b;
+  width: 201px;
+  height: 35px;
+  border-radius: 9px;
+  border: none;
+  padding: 0px;
+  padding-left: 14px;
+  font-size: 14px;
+  margin-right: 11px;
+}
+
+#filtersearch:focus {
+  outline: none;
+}
+
+#filtersearchicon {
+  content: url("./images/search.svg");
+  position: absolute;
+  margin-left: 188px;
+  margin-top: 7px;
+  width: 20px;
+}
+
+.selector {
+  user-select: none;
+  background-color: #11161b;
+  color: #a6a9b1;
+  width: 201px;
+  padding: 0px;
+  padding-left: 14px;
+  padding-top: 7px;
+  height: 28px;
+  border-radius: 9px;
+  border: none;
+  margin-right: 11px;
+  transition: background-color 0.1s ease-out;
+  transition: color 0.1s ease-out;
+  cursor: pointer;
+}
+
+.selector::after {
+  display: block;
+  content: url("./images/arrow.svg");
+  transform: scale(0.65) translateY(-30px);
+  margin-left: 171px;
+}
+
+.selector:hover {
+  background-color: #181d22;
+  color: #ffffff;
+  transition: background-color 0.1s ease-out;
+  transition: color 0.1s ease-out;
+}
+
+.options {
+  border-radius: 9px;
+  position: absolute;
+  display: none;
+  background-color: #1c2228;
+  /* background-color: #ffffff; */
+  width: 185px;
+  height: auto;
+  margin-top: 40px;
+  padding: 14px;
+  padding-top: 10px;
+  font-size: 13px;
+}
+
+.option {
+  position: relative;
+  color: #d2d3d4;
+  border-radius: 3px;
+  background-color: #1c2228;
+  padding: 3px;
+  margin: 2px;
+  /* margin-left:35px; */
+  padding-left: 25px;
+  padding-top: 4.5px;
+  /* display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px; */
+}
+
+.option input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.option:hover {
+  background-color: #11161b;
+}
+
+.option input:checked ~ .checkmark {
+  background-color: white;
+}
+
+.option input[readonly] ~ .checkmark {
+  background-color: #86888b;
+}
+
+.option:has(input:checked) {
+  background-color: #36cb68;
+  color: white;
+}
+
+.option:has(input[readonly]) {
+  background-color: #0c1116;
+  color: #86888b;
+}
+
+.checkmark {
+  border-radius: 2px;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  height: 12px;
+  width: 12px;
+  background-color: #d2d3d4;
+}
+
+.checkmark:after {
+  content: "+";
+  color: #36cb68;
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.option input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.option input[readonly] ~ .checkmark:after {
+  display: block;
+  color: #0c1116;
+  content: "-";
+}
+
+/* Style the checkmark/indicator */
+.option .checkmark:after {
+  left: 2px;
+  top: -3px;
+  width: 5px;
+  height: 10px;
+}
+
+#genreoptions {
+  width: auto;
+  grid-template-columns: auto auto auto;
+}
+
+.radiooption {
+  position: relative;
+  color: #d2d3d4;
+  border-radius: 3px;
+  background-color: #1c2228;
+  padding: 3px;
+  margin: 2px;
+  padding-left: 25px;
+  padding-top: 4.5px;
+}
+
+.radiooption input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.radiooption:hover {
+  background-color: #11161b;
+}
+
+.radiooption input:checked ~ .radiomark {
+  background-color: white;
+}
+
+.radiooption:has(input:checked) {
+  background-color: #e45f3a;
+  color: white;
+}
+
+.radiooption:hover:has(input:checked) {
+  background-color: #36cb68;
+}
+
+.radiomark {
+  border-radius: 50%;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  height: 12px;
+  width: 12px;
+  background-color: #d2d3d4;
+}
+
+.radiomark:after {
+  content: "L";
+  color: #36cb68;
+  position: absolute;
+  display: none;
+  rotate: 45deg;
+  transform: scaleX(-1);
+}
+
+/* Show the checkmark when checked */
+.radiooption input:checked ~ .radiomark:after {
+  display: block;
+}
+
+.radiooption .radiomark:after {
+  left: 3px;
+  top: 0px;
+  width: 5px;
+  height: 10px;
+  font-size: 8px;
+}
+
+#moreoptionsdiv {
+  border-radius: 9px;
+  background-color: #11161b;
+  display: inline;
+  width: 41px;
+  height: 35px;
+  position: relative;
+  margin-right: 13px;
+  cursor: pointer;
+}
+
+#moreoptionsicon {
+  position: absolute;
+  width: 18px;
+  left: 13px;
+  top: 8px;
+  user-select: none;
+}
+
+#submitbtn {
+  position: relative;
+  border-radius: 9px;
+  width: 88px;
+  height: 28px;
+  background-color: #e35f3a;
+  padding-left: 73px;
+  padding-top: 7px;
+  cursor: pointer;
+  user-select: none;
+}
+
+#submitbtn::before {
+  position: absolute;
+  content: url("./images/feather.svg");
+  width: 18px;
+  left: 54px;
+  top: 8px;
+}
+
+#submitbtn:hover {
+  background-color: #b73c19;
+  transition: background-color 0.1s ease-out;
+}
+
+#moreoptions {
+  border-radius: 9px;
+  position: absolute;
+  display:block;
+  width:185px;
+  height:100px;
+  background-color: rgb(35, 42, 49);
 }
