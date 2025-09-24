@@ -200,10 +200,10 @@
 
 body {
   margin: 0px;
-  background: linear-gradient(to bottom, rgb(25, 76, 97), rgb(12, 17, 22) 560px),
-    no-repeat;
+  background: linear-gradient(to bottom, rgb(25, 76, 97), rgb(12, 17, 22) 560px);
   height: 2830px;
   font-family: "Poppins";
+  background-repeat: no-repeat;
 }
 
 ::-webkit-scrollbar {
@@ -489,7 +489,7 @@ body {
   font-size: 8px;
 }
 
-#moreoptionsdiv {
+#moreselect {
   border-radius: 9px;
   background-color: #11161b;
   display: inline;
@@ -534,10 +534,123 @@ body {
 }
 
 #moreoptions {
+  border-radius: 17px;
+  position: absolute;
+  display: none;
+  width: auto;
+  height: auto;
+  background-color: rgb(35, 42, 49);
+  margin-top: 53px;
+  padding-top: 25px;
+  padding-left: 26px;
+  padding-bottom: 25px;
+}
+
+.smallector {
+  user-select: none;
+  background-color: #1c2227;
+  color: #a6a9b1;
+  width: 148px;
+  padding: 0px;
+  padding-left: 14px;
+  padding-top: 7px;
+  height: 28px;
+  border-radius: 9px;
+  border: none;
+  margin-right: 11px;
+  transition: background-color 0.1s ease-out;
+  transition: color 0.1s ease-out;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.smallector::after {
+  display: block;
+  content: url("./images/arrow.svg");
+  transform: scale(0.65) translateY(-30px);
+  margin-left: 119px;
+}
+
+.smallector:hover {
+  background-color: #181d22;
+  color: white;
+  transition: background-color 0.1s ease-out;
+  transition: color 0.1s ease-out;
+}
+
+.smalloptions {
   border-radius: 9px;
   position: absolute;
-  display:block;
-  width:185px;
-  height:100px;
-  background-color: rgb(35, 42, 49);
+  display: none;
+  background-color: #1c2228;
+  /* background-color: #ffffff; */
+  width: 134px;
+  height: auto;
+  margin-top: 37px;
+  padding: 14px;
+  padding-top: 14px;
+  font-size: 13px;
+}
+
+.smalloption {
+  position: relative;
+  color: #d2d3d4;
+  border-radius: 3px;
+  background-color: #1c2228;
+  padding: 3px;
+  margin: 2px;
+  /* margin-left:35px; */
+  padding-left: 25px;
+  padding-top: 4.5px;
+  /* display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px; */
+}
+
+.smalloption input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.smalloption:hover {
+  background-color: #11161b;
+}
+
+.smalloption input:checked ~ .checkmark {
+  background-color: white;
+}
+
+.smalloption:has(input:checked) {
+  background-color: #36cb68;
+  color: white;
+}
+
+.smalloption input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.smalloption .checkmark:after {
+  left: 2px;
+  top: -3px;
+  width: 5px;
+  height: 10px;
+}
+
+#ratingoptions {
+  width: 210px;
+  margin-left: 346px;
+}
+
+#yearoptions {
+  width: auto;
+  grid-template-columns: 107px 107px 107px;
+  margin-left: 173px;
+}
+
+#outputd {
+  color:white;
 }

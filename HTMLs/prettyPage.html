@@ -14,7 +14,6 @@
 
 <body onload="init()" id="mainbody">
     <pre id="outputp"></pre>
-    <div id="outputd"></div>
     <div id="topbar">
         <div id="topsearch">
             <img src="../images/search.svg" id="searchicon"></img>
@@ -43,33 +42,62 @@
         <a class="folder grayhover2" id="more" onclick="btdn()">More</a>
     </div>
     <div id="filterbar">
-        <input id="filtersearch" placeholder="Search...">
+        <form id="searchform"><input id="filtersearch" placeholder="Search..."></form>
         <label id="filtersearchicon" for="filtersearch"></label>
         <span id="typeselect" class="selector" tabindex="-1">Type</span>
         <span id="genreselect" class="selector" tabindex="-1">Genre</span>
         <span id="statusselect" class="selector" tabindex="-1">Status</span>
         <span id="sortselect" class="selector" tabindex="-1">Default</span>
-        <div id="moreoptionsdiv"><img id="moreoptionsicon" src="../images/settings.svg"></div>
+        <div id="moreselect" class="nearlyselector"><img id="moreoptionsicon" src="../images/settings.svg" class="nearlynearlyselector"></div>
         <span id="submitbtn" class="almostselector" onclick="display()">Filter</span>
         <div id="typeoptions" class="options stay1" tabindex="-1">
-            <label class="option stay1"><input id="typeMovie" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>Movie</label>
-            <label class="option stay1"><input id="typeTV" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>TV</label>
-            <label class="option stay1"><input id="typeOVA" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>OVA</label>
-            <label class="option stay1"><input id="typeONA" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>ONA</label>
-            <label class="option stay1"><input id="typeSpecial" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>Special</label>
+            <label class="option stay1"><input name=type id="typeMovie" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>Movie</label>
+            <label class="option stay1"><input name=type id="typeTV" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>TV</label>
+            <label class="option stay1"><input name=type id="typeOVA" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>OVA</label>
+            <label class="option stay1"><input name=type id="typeONA" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>ONA</label>
+            <label class="option stay1"><input name=type id="typeSpecial" type="checkbox" class="stay1 typebox"><span class="checkmark stay1"></span>Special</label>
         </div>
         <div id="genreoptions" class="options stay1" tabindex="-1"></div>
         <div id="statusoptions" class="options stay1" tabindex="-1">
-            <label class="option stay1"><input id="statusNot Yet Aired" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Not Yet Aired</label>
-            <label class="option stay1"><input id="statusReleasing" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Releasing</label>
-            <label class="option stay1"><input id="statusCompleted" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Completed</label>
+            <label class="option stay1"><input name=status id="statusNot Yet Aired" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Not Yet Aired</label>
+            <label class="option stay1"><input name=status id="statusReleasing" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Releasing</label>
+            <label class="option stay1"><input name=status id="statusCompleted" type="checkbox" class="stay1 statusbox"><span class="checkmark stay1"></span>Completed</label>
         </div>
         <div id="sortoptions" class="options stay1" tabindex="-1">
-            <label class="radiooption stay1"><input id="sortDefault" name="sort" type="radio" class="stay1 sortrad" checked><span class="radiomark stay1"></span>Default</label>
-            <label class="radiooption stay1"><input id="sortWatched Date" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>Watched Date</label>
+            <label class="radiooption stay1"><input name=sort id="sortDefault" name="sort" type="radio" class="stay1 sortrad" checked><span class="radiomark stay1"></span>Default</label>
+            <label class="radiooption stay1"><input name=sort id="sortWatched date" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>Watched date</label>
+            <label class="radiooption stay1"><input name=sort id="sortUpdated date" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>Updated date</label>
+            <label class="radiooption stay1"><input name=sort id="sortRelease date" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>Release date</label>
+            <label class="radiooption stay1"><input name=sort id="sortEnd date" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>End date</label>
+            <label class="radiooption stay1"><input name=sort id="sortName A-Z" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>Name A-Z</label>
+            <label class="radiooption stay1"><input name=sort id="sortMAL score" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>MAL score</label>
+            <label class="radiooption stay1"><input name=sort id="sortTotal episodes" name="sort" type="radio" class="stay1 sortrad"><span class="radiomark stay1"></span>Total episodes</label>
         </div>
-        <div id="moreoptions" class="options stay1"></div>
+        <div id="moreoptions" class="options stay1">
+            <span id="seasonselect" class="smallector stay1" tabindex="-1">Season</span>
+            <span id="yearselect" class="smallector stay1" tabindex="-1">Year</span>
+            <span id="ratingselect" class="smallector stay1" tabindex="-1">Rating</span>
+            <div id="seasonoptions" class="smalloptions stay2 stay1" tabindex="-1">
+                <label class="smalloption stay2 stay1"><input name=season id="seasonFall" type="checkbox" class="stay1 stay2 seasonbox"><span class="checkmark stay1 stay2"></span>Fall</label>
+                <label class="smalloption stay2 stay1"><input name=season id="seasonSummer" type="checkbox" class="stay1 stay2 seasonbox"><span class="checkmark stay1 stay2"></span>Summer</label>
+                <label class="smalloption stay2 stay1"><input name=season id="seasonSpring" type="checkbox" class="stay1 stay2 seasonbox"><span class="checkmark stay1 stay2"></span>Spring</label>
+                <label class="smalloption stay2 stay1"><input name=season id="seasonWinter" type="checkbox" class="stay1 stay2 seasonbox"><span class="checkmark stay1 stay2"></span>Winter</label>
+                <label class="smalloption stay2 stay1"><input name=season id="seasonUnknown" type="checkbox" class="stay1 stay2 seasonbox"><span class="checkmark stay1 stay2"></span>Unknown</label>
+            </div>
+            <div id="yearoptions" class="smalloptions stay2 stay1" tabindex="-1">
+
+            </div>
+            <div id="ratingoptions" class="smalloptions stay2 stay1" tabindex="-1">
+                <label class="smalloption stay2 stay1"><input name=rating id="ratingG" type="checkbox" class="stay1 stay2 ratingbox"><span class="checkmark stay1 stay2"></span>G - All Ages</label>
+                <label class="smalloption stay2 stay1"><input name=rating id="ratingPG" type="checkbox" class="stay1 stay2 ratingbox"><span class="checkmark stay1 stay2"></span>PG - Children</label>
+                <label class="smalloption stay2 stay1"><input name=rating id="ratingPG-13" type="checkbox" class="stay1 stay2 ratingbox"><span class="checkmark stay1 stay2"></span>PG-13 - Teens 13 and Older</label>
+                <label class="smalloption stay2 stay1"><input name=rating id="ratingR" type="checkbox" class="stay1 stay2 ratingbox"><span class="checkmark stay1 stay2"></span>R - 17+, Violence & Profanity</label>
+                <label class="smalloption stay2 stay1"><input name=rating id="ratingR+" type="checkbox" class="stay1 stay2 ratingbox"><span class="checkmark stay1 stay2"></span>R+ - Profanity & Mild Nudity</label>
+                <label class="smalloption stay2 stay1"><input name=rating id="ratingRx" type="checkbox" class="stay1 stay2 ratingbox"><span class="checkmark stay1 stay2"></span>Rx - Hentai</label>
+            </div>
+        </div>
     </div>
+    <div id="outputd"></div>
 </body>
 
 </html>

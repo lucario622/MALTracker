@@ -8,6 +8,12 @@ var folders = [];
 var selectors = [];
 var optionss = [];
 var selectopen = 0;
+var nonzerocount;
+var checkstatuses;
+var groupstatuses;
+var filtvalues;
+var yeararray = [];
+var yeararray2 = [];
 
 function start() {
   languageselected = sessionStorage.getItem("lang");
@@ -24,7 +30,6 @@ function reportWindowSize() {
   console.log(window.innerWidth, window.innerHeight);
   nextbar = document.getElementById("nextbar");
   mylinks = document.getElementsByClassName("underbuttons");
-  console.log(mylinks);
   if (window.innerWidth > 1280) {
     nextbar.style.width = "914px";
   } else if (window.innerWidth > 768) {
@@ -62,7 +67,6 @@ function swln() {
   if (languageselected == 1) {
     ensw.style.backgroundColor = "rgba(228,95,58,1)";
     jpsw.style.backgroundColor = "rgba(228,95,58,0)";
-    console.log("???");
     languageselected = 0;
   } else {
     jpsw.style.backgroundColor = "rgba(228,95,58,1)";
@@ -78,7 +82,7 @@ function init() {
   binds = localStorage.getItem("binds");
   if (binds != null) {
     binds = JSON.parse(binds);
-    display();
+    window.onload = display;
   } else {
     p.innerText =
       "Please drag and drop file to parse and make sure covers folder is in images folder";
@@ -93,7 +97,15 @@ function init() {
   }
   folders[folderselected].style.color = "rgb(225,95,58)";
   selectors = document.getElementsByClassName("selector");
+  moreselectors = document.getElementsByClassName("smallector");
+  selectors = [...selectors, ...moreselectors];
   optionss = document.getElementsByClassName("options");
+  smalloptionss = document.getElementsByClassName("smalloptions");
+  bottomsearch = document.getElementById("searchform");
+  bottomsearch.addEventListener("submit", (e) => {
+    display();
+    e.preventDefault();
+  });
 
   for (let i = 0; i < filtboxarray[5].length; i++) {
     const cur = filtboxarray[5][i];
@@ -102,7 +114,7 @@ function init() {
     lbl.classList.add("stay1");
     lbl.innerHTML +=
       cur +
-      "<input id='genre" +
+      "<input name=genre id='genre" +
       cur +
       "' type='checkbox' class='stay1 genrebox' onclick='ts(this)'>";
     spn = document.createElement("span");
@@ -110,6 +122,43 @@ function init() {
     spn.classList.add("checkmark");
     insert(lbl, spn);
     insert(optionss[1], lbl);
+  }
+
+  yeararray = [];
+  yeararray2 = [];
+  for (let i = 2000 + curyear; i >= 2000; i--) {
+    yeararray.push(i);
+  }
+  for (let i = 1990; i >= 1900; i -= 10) {
+    yeararray.push(i + "s");
+  }
+
+  filtvalues = [
+    ["Movie", "TV", "OVA", "ONA", "Special"],
+    [...filtboxarray[5]],
+    [...filtboxarray[1].reverse()],
+    ["Fall", "Summer", "Spring", "Winter", ""],
+    [...yeararray],
+    [...filtboxarray[3]],
+  ];
+
+  for (let i = 0; i < yeararray.length; i++) {
+    const cur = yeararray[i];
+    lbl = document.createElement("label");
+    lbl.classList.add("smalloption");
+    lbl.classList.add("stay1");
+    lbl.classList.add("stay2");
+    lbl.innerHTML +=
+      cur +
+      "<input name=year id='year" +
+      cur +
+      "' type='checkbox' class='stay1 stay2 yearbox'>";
+    spn = document.createElement("span");
+    spn.classList.add("stay1");
+    spn.classList.add("stay2");
+    spn.classList.add("checkmark");
+    insert(lbl, spn);
+    insert(document.getElementById("yearoptions"), lbl);
   }
 
   for (i = 0; i < 4; i++) {
@@ -126,16 +175,45 @@ function init() {
         .focus({ preventScroll: true });
     });
   }
+  moreopsdiv = document.getElementById("moreoptions");
+  filterbtn = document.getElementById("submitbtn");
+  let rect = filterbtn.getBoundingClientRect();
+  let rect1 = document.getElementById("mainbody").getBoundingClientRect();
+  moreopsdiv.style.right = rect1.width - rect.right + "px";
   document.getElementById("mainbody").addEventListener("click", (e) => {
     if (!e.target.classList.contains("stay1")) {
       for (let j = 0; j < optionss.length; j++) {
         optionss[j].style.display = "none";
       }
     }
+    if (!e.target.classList.contains("stay2")) {
+      for (let j = 0; j < smalloptionss.length; j++) {
+        smalloptionss[j].style.display = "none";
+      }
+    }
     if (e.target.classList.contains("selector")) {
       document.getElementById(
         e.target.id.substring(0, e.target.id.length - 6) + "options"
       ).style.display = "grid";
+    }
+    if (e.target.classList.contains("smallector")) {
+      document.getElementById(
+        e.target.id.substring(0, e.target.id.length - 6) + "options"
+      ).style.display = "grid";
+    }
+    if (e.target.classList.contains("nearlyselector")) {
+      document.getElementById(
+        e.target.id.substring(0, e.target.id.length - 6) + "options"
+      ).style.display = "flex";
+    }
+
+    if (e.target.classList.contains("nearlynearlyselector")) {
+      document.getElementById(
+        e.target.parentElement.id.substring(
+          0,
+          e.target.parentElement.id.length - 6
+        ) + "options"
+      ).style.display = "flex";
     }
   });
 
@@ -168,7 +246,8 @@ function init() {
           firststatus = statusops[k].id.substring(6);
       }
       if (checkcount > 1) {
-        selectors[2].textContent = firststatus + " + [" + (checkcount - 1) + "]";
+        selectors[2].textContent =
+          firststatus + " + [" + (checkcount - 1) + "]";
       } else {
         selectors[2].textContent = firststatus;
       }
@@ -181,8 +260,11 @@ function init() {
       let checkcount = 0;
       let firstgenre = "Genre";
       for (let k = 0; k < genreops.length; k++) {
-        checkcount += (genreops[k].checked || genreops[k].readOnly);
-        if ((genreops[k].checked || genreops[k].readOnly) && firstgenre == "Genre")
+        checkcount += genreops[k].checked || genreops[k].readOnly;
+        if (
+          (genreops[k].checked || genreops[k].readOnly) &&
+          firstgenre == "Genre"
+        )
           firstgenre = genreops[k].id.substring(5);
       }
       if (checkcount > 1) {
@@ -197,6 +279,62 @@ function init() {
   for (let i = 0; i < sortops.length; i++) {
     sortops[i].addEventListener("change", (e) => {
       selectors[3].textContent = e.target.id.substring(4);
+    });
+  }
+
+  seasonops = document.getElementsByClassName("seasonbox");
+  for (let i = 0; i < seasonops.length; i++) {
+    seasonops[i].addEventListener("change", (e) => {
+      let checkcount = 0;
+      let firstseason = "Season";
+      for (let k = 0; k < seasonops.length; k++) {
+        checkcount += seasonops[k].checked;
+        if (seasonops[k].checked && firstseason == "Season")
+          firstseason = seasonops[k].id.substring(6);
+      }
+      if (checkcount > 1) {
+        selectors[4].textContent =
+          firstseason + " + [" + (checkcount - 1) + "]";
+      } else {
+        selectors[4].textContent = firstseason;
+      }
+    });
+  }
+
+  yearops = document.getElementsByClassName("yearbox");
+  for (let i = 0; i < yearops.length; i++) {
+    yearops[i].addEventListener("change", (e) => {
+      let checkcount = 0;
+      let firstyear = "Year";
+      for (let k = 0; k < yearops.length; k++) {
+        checkcount += yearops[k].checked;
+        if (yearops[k].checked && firstyear == "Year")
+          firstyear = yearops[k].id.substring(4);
+      }
+      if (checkcount > 1) {
+        selectors[5].textContent = firstyear + " + [" + (checkcount - 1) + "]";
+      } else {
+        selectors[5].textContent = firstyear;
+      }
+    });
+  }
+
+  ratingops = document.getElementsByClassName("ratingbox");
+  for (let i = 0; i < ratingops.length; i++) {
+    ratingops[i].addEventListener("change", (e) => {
+      let checkcount = 0;
+      let firstrating = "Rating";
+      for (let k = 0; k < ratingops.length; k++) {
+        checkcount += ratingops[k].checked;
+        if (ratingops[k].checked && firstrating == "Rating")
+          firstrating = ratingops[k].id.substring(6);
+      }
+      if (checkcount > 1) {
+        selectors[6].textContent =
+          firstrating + " + [" + (checkcount - 1) + "]";
+      } else {
+        selectors[6].textContent = firstrating;
+      }
     });
   }
 
@@ -276,7 +414,163 @@ function findnthstrfromi(str, sstr, n = 1, start = 0) {
 }
 
 function display() {
-  console.log("display");
-  d.innerHTML = "";
+  d.innerText = "";
   p.innerHTML = "";
+
+  let sorttarget = document
+    .querySelector('input[name="sort"]:checked')
+    .id.substring(4);
+  console.log(sorttarget);
+
+  data.sort(compareTitles);
+  switch (sorttarget) {
+    case "Default":
+      data.sort(compareTitles);
+      data.sort(compareStatus);
+      break;
+    case "Watched date":
+      data.sort(compareWatchDate).reverse();
+      break;
+    case "Updated date":
+      //something special here
+      // data.sort();
+      break;
+    case "Release date":
+      data.sort(compareAirStart).reverse();
+      break;
+    case "End date":
+      data.sort(compareAirFinish).reverse();
+      break;
+    case "Name A-Z":
+      data.sort(compareTitles);
+      break;
+    case "MAL score":
+      data.sort(compareMALScore).reverse();
+      break;
+    case "Total episodes":
+      data.sort(compareEpisodes).reverse();
+      break;
+    default:
+      break;
+  }
+
+  let count = 0;
+
+  let allchecks = document.querySelectorAll('input[type="checkbox"]');
+  checkstatuses = [];
+  groupstatuses = [];
+  let temparray = [];
+  nonzerocount = 0;
+  let lastname = "type";
+  let j = -1;
+  for (let ch of allchecks) {
+    let val = 0;
+    if (ch.checked) {
+      val = 1;
+    }
+    if (ch.readOnly) {
+      val = 2;
+    }
+    if (val != 0) {
+      nonzerocount++;
+    }
+    checkstatuses.push(val);
+    if (ch.name != lastname) {
+      lastname = ch.name;
+      groupstatuses.push(temparray);
+      temparray = [];
+      j++;
+    }
+    temparray.push(val);
+  }
+  groupstatuses.push(temparray);
+  let results = []
+  for (let e of data) {
+    if (passfail(e)) {
+      results.push(e)
+      // myp = document.createElement("span");
+      count++;
+      // myp.innerText = e.title + "\n";
+      // insert(d, myp);
+    }
+  }
+  console.log(count)
+}
+
+function certaincondition(val, i, j, e) {
+  switch (i) {
+    case 0:
+      return e.type == filtvalues[i][j];
+    case 1:
+      if (val == 1) {
+        return !e.genres.includes(filtvalues[i][j]);
+      } else {
+        return e.genres.includes(filtvalues[i][j]);
+      }
+    case 2:
+      return e.airStatus == filtvalues[i][j];
+    case 3:
+      return (
+        e.premiered.substring(0, e.premiered.indexOf(" ")) == filtvalues[i][j]
+      );
+    case 4:
+      return (
+        e.premiered.substring(e.premiered.indexOf(" ") + 1) == filtvalues[i][j]
+      );
+    case 5:
+      return e.rated == filtvalues[i][j];
+  }
+}
+
+function passfail(element) {
+  if (
+    document.getElementById("filtersearch").value == "" &&
+    nonzerocount == 0
+  ) {
+    return true;
+  }
+
+  let pass = [];
+  pass[0] = true;
+  pass[1] = false;
+  pass[2] = true;
+  pass[3] = false;
+  pass[4] = false;
+  pass[4] = false;
+  pass[5] = false;
+
+  for (let i = 0; i < groupstatuses.length; i++) {
+    for (let j = 0; j < groupstatuses[i].length; j++) {
+      if (
+        groupstatuses[i][j] != 0 &&
+        certaincondition(groupstatuses[i][j], i, j, element)
+      ) {
+        pass[i + 1] = true;
+        if (i == 1) pass[i + 1] = false;
+      }
+    }
+  }
+
+  for (let i = 0; i < groupstatuses.length; i++) {
+    if (sumArrToi(groupstatuses[i]) == 0) pass[i + 1] = true;
+  }
+
+  for (let i = 1; i < pass.length; i++) {
+    pass[0] = pass[0] && pass[i];
+  }
+
+  searchbox = document.getElementById("filtersearch");
+  searchterms = searchbox.value.toLowerCase().split(" ");
+  if (searchbox.value != "") {
+    for (let i = 0; i < searchterms.length; i++) {
+      let curterm = searchterms[i];
+      pass[0] = pass[0] && element.title.toLowerCase().includes(curterm);
+    }
+  }
+
+  if (pass[0]) {
+    return true;
+  }
+
+  return false;
 }

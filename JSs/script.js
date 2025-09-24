@@ -1672,7 +1672,8 @@ function daycount(e) {
   return result;
 }
 
-function sumArrToi(arr, i) {
+function sumArrToi(arr, i=-1) {
+  if (i == -1) i = arr.length-1;
   let result = 0;
   if (i >= arr.length) i = arr.length - 1;
   for (let j = 0; j <= i; j++) {
@@ -2272,9 +2273,17 @@ function compareMALScore(a, b) {
 }
 
 function compareStatus(a, b) {
-  if (a.status > b.status) {
+  let ORDER = [
+    "On-Hold",
+    "Plan to Watch",
+    "Watching",
+    "Completed",
+  ]
+  acode = ORDER.indexOf(a.status)
+  bcode = ORDER.indexOf(b.status)
+  if (acode > bcode) {
     return 1;
-  } else if (a.status < b.status) {
+  } else if (acode < bcode) {
     return -1;
   }
   return 0;
