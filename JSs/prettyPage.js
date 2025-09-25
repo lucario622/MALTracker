@@ -375,20 +375,22 @@ function parseHTML() {
     frontchop = str2[i].substring(ind + 6);
     ind = findnthstrfromi(frontchop, "</a>", 1, 0);
     foundtitle = frontchop.substring(0, ind);
+    let andind = foundtitle.indexOf("&");
+    if (andind != -1) {
+      foundtitle = foundtitle.substring(0,andind)+"&"+foundtitle.substring(andind+5);
+      console.log(foundtitle)
+    }
 
     ind = findnthstrfromi(str2[i], "/", 9, 0);
 
     frontchop = str2[i].substring(ind + 1);
     ind = findnthstrfromi(frontchop, '"', 1, 0);
+    let ind1 = findnthstrfromi(frontchop, "?", 1, 0);
+    if (ind1 < ind && ind1 != -1) ind = ind1;
     foundfile = frontchop.substring(0, ind);
     binds[foundtitle] = foundfile;
   }
   localStorage.setItem("binds", JSON.stringify(binds));
-  myimg = document.createElement("img");
-  myimg.src =
-    "../images/covers/" +
-    binds[Object.keys(binds)[(Math.random() * Object.keys(binds).length) << 0]];
-  insert(d, myimg);
   display();
 }
 
@@ -417,6 +419,7 @@ function findnthstrfromi(str, sstr, n = 1, start = 0) {
 function display() {
   d.innerText = "";
   p.innerHTML = "";
+  document.getElementsByClassName("itemcontainer")[0].innerHTML = "";
 
   let sorttarget = document
     .querySelector('input[name="sort"]:checked')
@@ -489,11 +492,57 @@ function display() {
   for (let e of data) {
     if (passfail(e)) {
       results.push(e);
-      myp = document.createElement("span");
       count++;
-      myp.innerText = e.title + "\n";
-      insert(d, myp);
+      // myp = document.createElement("span");
+      // myp.innerText = e.title + "\n";
+      // insert(d, myp);
     }
+  }
+  for (let e of results) {
+    myitem = document.createElement("div");
+    myitem.classList.add("aitem");
+    let covervar = binds[e.title];
+    if (covervar == undefined) {
+      console.log(e.title)
+      covervar = 1;
+    }
+    let dubcount = 0;
+    let subcount = 0;
+    if (e.airStatus == "Aired") {
+      subcount = e.episodes;
+    } else if (e.airStatus == "Airing") {
+      let myvar = e.episodes-Math.ceil(-daycount(e.airenddate)/7)
+      subcount = myvar
+    }
+    if (e.status == "Completed") {
+      dubcount = e.episodes;
+    }
+    if (isDate(e.dubenddate)) {
+      let myvar = subcount-Math.ceil(-daycount(e.dubenddate)/7)
+      dubcount = myvar
+    }
+    myitem.innerHTML =
+      '<div class="leftpart"><img class="coverimg" src="../images/covers/' +
+      binds[e.title] +
+      '"><div class="infobtn"> <img class="infoicon" src="../images/info.svg"></img></div></div><div class="rightpart"><div class="toprow"><span class="fake-dropdown">' +
+      e.status +
+      '</span><img src="../images/eye.svg" class="eyebtn"></img></div><span class="title">' +
+      e.title +
+      '</span><div class="epinfo"><span ' +
+      (subcount == 0 ? "hidden " : "") +
+      'class="subcount">CC ' +
+      subcount +
+      "</span><span " +
+      (dubcount == 0 ? "hidden " : "") +
+      'class="dubcount">' +
+      dubcount +
+      "</span><span " +
+      (e.type == "Movie" || e.episodes == 0 ? "hidden " : "") +
+      'class="totalcount">' +
+      e.episodes +
+      "</span></div></div>";
+    myitem.getElementsByClassName("title")[0].textContent = e.title;
+    insert(document.getElementsByClassName("itemcontainer")[0], myitem);
   }
   document.getElementById("resultcount").innerText = count + " anime";
   console.log(count);
@@ -527,7 +576,8 @@ function certaincondition(val, i, j, e) {
 function passfail(element) {
   if (
     document.getElementById("filtersearch").value == "" &&
-    nonzerocount == 0
+    nonzerocount == 0 &&
+    folderselected == 0
   ) {
     return true;
   }
@@ -568,6 +618,18 @@ function passfail(element) {
       let curterm = searchterms[i];
       pass[0] = pass[0] && element.title.toLowerCase().includes(curterm);
     }
+  }
+
+  let foldernames = [
+    "Watching",
+    "On-Hold",
+    "Plan to Watch",
+    "Completed",
+    "Dropped",
+  ];
+  console.log(folderselected);
+  if (folderselected > 0) {
+    pass[0] = pass[0] && element.status == foldernames[folderselected - 1];
   }
 
   if (pass[0]) {
