@@ -357,6 +357,7 @@ function init() {
   window.addEventListener("dragover", (e) => {
     e.preventDefault();
   });
+  display();
   // myimg = document.createElement("img");
   // myimg.src = "https://cdn.myanimelist.net/images/anime/1026/135253l.jpg";
   // insert(d, myimg);
@@ -484,17 +485,18 @@ function display() {
     temparray.push(val);
   }
   groupstatuses.push(temparray);
-  let results = []
+  let results = [];
   for (let e of data) {
     if (passfail(e)) {
-      results.push(e)
-      // myp = document.createElement("span");
+      results.push(e);
+      myp = document.createElement("span");
       count++;
-      // myp.innerText = e.title + "\n";
-      // insert(d, myp);
+      myp.innerText = e.title + "\n";
+      insert(d, myp);
     }
   }
-  console.log(count)
+  document.getElementById("resultcount").innerText = count + " anime";
+  console.log(count);
 }
 
 function certaincondition(val, i, j, e) {

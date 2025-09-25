@@ -200,7 +200,11 @@
 
 body {
   margin: 0px;
-  background: linear-gradient(to bottom, rgb(25, 76, 97), rgb(12, 17, 22) 560px);
+  background: linear-gradient(
+    to bottom,
+    rgb(25, 76, 97),
+    rgb(12, 17, 22) 560px
+  );
   height: 2830px;
   font-family: "Poppins";
   background-repeat: no-repeat;
@@ -256,6 +260,7 @@ body {
   font-family: "Poppins";
   color: white;
   margin: 52px auto;
+  margin-bottom: 0px;
   display: flex;
   width: 1346px;
   height: 40px;
@@ -652,5 +657,88 @@ body {
 }
 
 #outputd {
-  color:white;
+  color: white;
 }
+
+#statsdiv {
+  justify-content: space-between;
+  color: white;
+  display: flex;
+  width: 1350px;
+  margin: 0px auto;
+  margin-top:16px;
+  font-size: 14px;
+}
+
+#anotherrandom {
+  display:grid;
+  grid-template-columns: auto auto;
+}
+
+#anotherrandom::before {
+  content: url("images/random.svg");
+  width: 18px;
+  margin-right:2px;
+}
+
+.itemcontainer {
+  margin: 0px auto;
+  margin-top: 24px;
+  width: 1345px;
+}
+
+.aitem {
+  width: 435px;
+  height: 162px;
+  background-color: #1e252b;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 114px auto;
+}
+
+.aitem:hover {
+  background-color: #20272e;
+}
+
+.coverimg {
+  height:162px;
+  border-radius: 16px;
+}
+
+.eyebtn {
+  width: 16px;
+  position: absolute;
+  margin-left:280px;
+  margin-top: 20px;
+}
+
+.leftpart:hover > div {
+  visibility: visible;
+}
+
+.rightpart {
+  display:grid;
+}
+
+.infobtn {
+  visibility: hidden;
+  position: absolute;
+  background-color: #e45f3a;
+  border-radius: 50%;
+  width:20px;
+  height:20px;
+  margin-top:-160px;
+  margin-left: 90px;
+}
+
+.infobtn:hover {
+  width:25px;
+  height:25px;
+  margin-left: 87.5px;
+  margin-top:-162.5px;
+}
+
+/* .title {
+  position: absolute;
+  left:1000px;
+} */
