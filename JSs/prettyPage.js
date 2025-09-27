@@ -126,7 +126,7 @@ function init() {
 
   yeararray = [];
   yeararray2 = [];
-  for (let i = 2000 + curyear; i >= 2000; i--) {
+  for (let i = 2000 + curyear + 1; i >= 2000; i--) {
     yeararray.push(i);
   }
   for (let i = 1990; i >= 1900; i -= 10) {
@@ -377,8 +377,11 @@ function parseHTML() {
     foundtitle = frontchop.substring(0, ind);
     let andind = foundtitle.indexOf("&");
     if (andind != -1) {
-      foundtitle = foundtitle.substring(0,andind)+"&"+foundtitle.substring(andind+5);
-      console.log(foundtitle)
+      foundtitle =
+        foundtitle.substring(0, andind) +
+        "&" +
+        foundtitle.substring(andind + 5);
+      console.log(foundtitle);
     }
 
     ind = findnthstrfromi(str2[i], "/", 9, 0);
@@ -416,6 +419,73 @@ function findnthstrfromi(str, sstr, n = 1, start = 0) {
   return result;
 }
 
+function realmod(x, n) {
+  let result = x % n;
+  while (result < 0) {
+    result += n;
+  }
+  return result;
+}
+
+function getdateforupd(e) {
+  let result = "--";
+  if (e.status == "Completed") {
+    result = e.airenddate;
+  }
+  if (e.status == "Plan to Watch") {
+    if (e.airStatus == "Aired") {
+      result = e.airenddate;
+    }
+    if (e.airStatus == "Airing") {
+      let modval = realmod(daycount(e.airstartdate), 7);
+      result = ndaysbefore(curdate, modval);
+    }
+  }
+  if (e.status == "On-Hold") {
+    if (isDate(e.dubenddate)) {
+      let modval = realmod(daycount(e.dubenddate), 7);
+      result = ndaysbefore(curdate, modval);
+    } else {
+      if (e.airStatus == "Aired") {
+        result = e.airenddate;
+      }
+      if (e.airStatus == "Airing") {
+        let modval = realmod(daycount(e.airstartdate), 7);
+        result = ndaysbefore(curdate, modval);
+      }
+    }
+  }
+  return result;
+}
+
+function compareUpdatedDate(a, b) {
+  let adate = getdateforupd(a);
+  let bdate = getdateforupd(b);
+
+  acode =
+    parseInt(adate.substring(6, 8)) * 10000 +
+    parseInt(adate.substring(3, 5)) * 100 +
+    parseInt(adate.substring(0, 2));
+  bcode =
+    parseInt(bdate.substring(6, 8)) * 10000 +
+    parseInt(bdate.substring(3, 5)) * 100 +
+    parseInt(bdate.substring(0, 2));
+  if (acode < 400000) acode += 1000000;
+  if (bcode < 400000) bcode += 1000000;
+  if (isNaN(acode)) acode = 0;
+  if (isNaN(bcode)) bcode = 0;
+  if (acode % 10000 == 0) acode += 1014;
+  if (bcode % 10000 == 0) bcode += 1014;
+  if (acode % 100 == 0) acode += 14;
+  if (bcode % 100 == 0) bcode += 14;
+  if (acode > bcode) {
+    return 1;
+  } else if (acode < bcode) {
+    return -1;
+  }
+  return 0;
+}
+
 function display() {
   d.innerText = "";
   p.innerHTML = "";
@@ -437,7 +507,7 @@ function display() {
       break;
     case "Updated date":
       //something special here
-      // data.sort();
+      data.sort(compareUpdatedDate).reverse();
       break;
     case "Release date":
       data.sort(compareAirStart).reverse();
@@ -489,6 +559,7 @@ function display() {
   }
   groupstatuses.push(temparray);
   let results = [];
+  console.log(groupstatuses);
   for (let e of data) {
     if (passfail(e)) {
       results.push(e);
@@ -503,7 +574,7 @@ function display() {
     myitem.classList.add("aitem");
     let covervar = binds[e.title];
     if (covervar == undefined) {
-      console.log(e.title)
+      console.log(e.title);
       covervar = 1;
     }
     let dubcount = 0;
@@ -511,15 +582,18 @@ function display() {
     if (e.airStatus == "Aired") {
       subcount = e.episodes;
     } else if (e.airStatus == "Airing") {
-      let myvar = e.episodes-Math.ceil(-daycount(e.airenddate)/7)
-      subcount = myvar
+      let myvar = e.episodes - Math.ceil(-daycount(e.airenddate) / 7);
+      subcount = myvar;
     }
     if (e.status == "Completed") {
       dubcount = e.episodes;
     }
+    if (e.status == "Plan to Watch") {
+      dubcount = subcount;
+    }
     if (isDate(e.dubenddate)) {
-      let myvar = subcount-Math.ceil(-daycount(e.dubenddate)/7)
-      dubcount = myvar
+      let myvar = subcount - Math.ceil(-daycount(e.dubenddate) / 7);
+      dubcount = myvar;
     }
     myitem.innerHTML =
       '<div class="leftpart"><img class="coverimg" src="../images/covers/' +
@@ -584,12 +658,12 @@ function passfail(element) {
 
   let pass = [];
   pass[0] = true;
-  pass[1] = false;
-  pass[2] = true;
-  pass[3] = false;
-  pass[4] = false;
-  pass[4] = false;
-  pass[5] = false;
+  pass[1] = false; // type
+  pass[2] = true; // genre
+  pass[3] = false; // airstatus
+  pass[4] = false; // Season
+  pass[5] = false; // Year
+  pass[6] = false; // Rating
 
   for (let i = 0; i < groupstatuses.length; i++) {
     for (let j = 0; j < groupstatuses[i].length; j++) {

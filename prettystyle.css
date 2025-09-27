@@ -337,7 +337,7 @@ body {
   padding: 14px;
   padding-top: 10px;
   font-size: 13px;
-  z-index:10;
+  z-index: 10;
 }
 
 .option {
@@ -350,6 +350,7 @@ body {
   /* margin-left:35px; */
   padding-left: 25px;
   padding-top: 4.5px;
+  user-select: none;
   /* display: block;
   position: relative;
   padding-left: 35px;
@@ -436,6 +437,7 @@ body {
   margin: 2px;
   padding-left: 25px;
   padding-top: 4.5px;
+  user-select: none;
 }
 
 .radiooption input {
