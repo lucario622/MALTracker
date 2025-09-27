@@ -55,7 +55,7 @@ function testdisplay() {
     pr1.innerHTML =
       "<b>" +
       ds2ymd(daycount(e.enddate)) +
-      "\t" +
+      (ds2ymd(daycount(e.enddate)).length < 8 ? "\t" : "") +
       e.score +
       "\t" +
       e.rewatched +
