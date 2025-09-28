@@ -716,6 +716,7 @@ body {
   width: 16px;
   margin-left: 155px;
   transform: translateY(-18px);
+  cursor: pointer;
 }
 
 .leftpart {
@@ -784,6 +785,7 @@ body {
 .title {
   margin-left: 18px;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .epinfo {

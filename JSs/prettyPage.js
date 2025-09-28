@@ -381,7 +381,6 @@ function parseHTML() {
         foundtitle.substring(0, andind) +
         "&" +
         foundtitle.substring(andind + 5);
-      console.log(foundtitle);
     }
 
     ind = findnthstrfromi(str2[i], "/", 9, 0);
@@ -494,7 +493,6 @@ function display() {
   let sorttarget = document
     .querySelector('input[name="sort"]:checked')
     .id.substring(4);
-  console.log(sorttarget);
 
   data.sort(compareTitles);
   switch (sorttarget) {
@@ -559,14 +557,10 @@ function display() {
   }
   groupstatuses.push(temparray);
   let results = [];
-  console.log(groupstatuses);
   for (let e of data) {
     if (passfail(e)) {
       results.push(e);
       count++;
-      // myp = document.createElement("span");
-      // myp.innerText = e.title + "\n";
-      // insert(d, myp);
     }
   }
   for (let e of results) {
@@ -588,7 +582,7 @@ function display() {
     if (e.status == "Completed") {
       dubcount = e.episodes;
     }
-    if (e.status == "Plan to Watch") {
+    if (e.status == "Plan to Watch" || e.status == "Watching") {
       dubcount = subcount;
     }
     if (isDate(e.dubenddate)) {
@@ -701,7 +695,6 @@ function passfail(element) {
     "Completed",
     "Dropped",
   ];
-  console.log(folderselected);
   if (folderselected > 0) {
     pass[0] = pass[0] && element.status == foldernames[folderselected - 1];
   }
