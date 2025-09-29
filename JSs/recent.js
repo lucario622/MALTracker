@@ -106,9 +106,10 @@ function start() {
   for (let i = 0; i < data.length; i++) {
     const e = data[i];
     if (
-      e.airenddate != "" &&
-      daycount(e.airenddate) <= 0 &&
-      e.airStatus != "Aired"
+      (e.airenddate != "" &&
+        daycount(e.airenddate) <= 0 &&
+        e.airStatus != "Aired") ||
+      (isDate(e.dubenddate) && daycount(e.dubenddate) <= 0)
     ) {
       earliestDubcomingFinish = e;
       break;
