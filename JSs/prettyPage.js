@@ -576,8 +576,12 @@ function display() {
     if (e.airStatus == "Aired") {
       subcount = e.episodes;
     } else if (e.airStatus == "Airing") {
-      let myvar = e.episodes - Math.ceil(-daycount(e.airenddate) / 7);
-      subcount = myvar;
+      if (e.episodes > 0) {
+        subcount = e.episodes - Math.ceil(-daycount(e.airenddate) / 7);
+      } else {
+        console.log("????");
+        console.log(e);
+      }
     }
     if (e.status == "Completed") {
       dubcount = e.episodes;
@@ -592,7 +596,11 @@ function display() {
     myitem.innerHTML =
       '<div class="leftpart"><img class="coverimg" src="../images/covers/' +
       binds[e.title] +
-      '"><div class="infobtn"> <img class="infoicon" src="../images/info.svg"></img></div></div><div class="rightpart"><div class="toprow"><span class="fake-dropdown">' +
+      '"><div class="infobtn"> <img class="infoicon" src="../images/info.svg"><div class="information"><span class="infotitle">' +
+      e.title +
+      '</span><div class="shortstats"><span class="rated">' +
+      e.rated +
+      '</span></div></div></img></div></div><div class="rightpart"><div class="toprow"><span class="fake-dropdown">' +
       e.status +
       '</span><img src="../images/eye.svg" class="eyebtn"></img></div><span class="title">' +
       e.title +

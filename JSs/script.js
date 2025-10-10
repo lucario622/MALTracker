@@ -3177,6 +3177,7 @@ function parseAllTextGen() {
             if (daycount(item.airstartdate) < 75) {
               // Started less than 12 weeks ago, assume 12 episodes such that it will end at some point in the future
               item.airenddate = ndaysafter(item.airstartdate, 11 * 7);
+              item.episodes = 12;
             } else {
               // Difficult to say how many episodes there will be
             }

@@ -724,7 +724,8 @@ body {
 }
 
 .leftpart:hover > div {
-  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.1s ease-in;
 }
 
 .rightpart {
@@ -734,7 +735,8 @@ body {
 }
 
 .infobtn {
-  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.1s ease-out;
   position: absolute;
   background-color: #e45f3a;
   border-radius: 50%;
@@ -749,6 +751,11 @@ body {
   height: 22px;
   margin-left: 89px;
   margin-top: -161px;
+}
+
+.infobtn:hover > .information {
+  display: block;
+  transition-delay: 0s;
 }
 
 .fake-dropdown {
@@ -826,4 +833,37 @@ body {
   padding-top: -2px;
   padding-right: 2px;
   padding-left: 3px;
+}
+
+.information {
+  /* visibility: hidden;
+  transition: visibility 0s 1s; */
+  /* display: none; */
+  /* transition: display 0s 1s; */
+  width: 325px;
+  height: auto;
+  background-color: #b13a18;
+  position: absolute;
+  margin-left: 26px;
+  margin-top: -29px;
+  border-radius: 14px;
+}
+
+.infotitle {
+  color: white;
+}
+
+.shortstats {
+  background-color: rgba(0, 0, 0, 0.5);
+  height:auto;
+  width:auto;
+  color: white;
+  border-radius: 10px;
+  padding:2px;
+}
+
+.rated {
+  background-color: #E45F3A;
+  border-radius: 10px;
+  height:20px;
 }
