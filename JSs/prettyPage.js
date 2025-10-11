@@ -15,6 +15,8 @@ var filtvalues;
 var yeararray = [];
 var yeararray2 = [];
 
+var newfileinput;
+
 function start() {
   languageselected = sessionStorage.getItem("lang");
   if (languageselected == null) {
@@ -80,12 +82,18 @@ function init() {
   generalinit();
   noLinks();
   binds = localStorage.getItem("binds");
+  newfileinput = document.createElement("input");
+  newfileinput.type = "file";
+  newfileinput.innerText =
+    "Please drag and drop file to parse and make sure covers folder is in images folder";
+  insert(document.getElementById("mainbody"),newfileinput);
+  console.log(newfileinput)
   if (binds != null) {
     binds = JSON.parse(binds);
     window.onload = display;
+    newfileinput.hidden = true;
   } else {
-    p.innerText =
-      "Please drag and drop file to parse and make sure covers folder is in images folder";
+    newfileinput.hidden = false;
   }
   ensw = document.getElementById("langop1");
   jpsw = document.getElementById("langop2");
@@ -345,6 +353,15 @@ function init() {
     jpsw.style.backgroundColor = "rgba(228,95,58,1)";
     ensw.style.backgroundColor = "rgba(228,95,58,0)";
   }
+  newfileinput.addEventListener("change", function () {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      filecontent = e.target.result;
+      newfileinput.hidden = true;
+      parseHTML();
+    };
+    reader.readAsText(this.files[0]);
+  });
   window.addEventListener("drop", (e) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -568,8 +585,66 @@ function display() {
     myitem.classList.add("aitem");
     let covervar = binds[e.title];
     if (covervar == undefined) {
-      console.log(e.title);
-      covervar = 1;
+      if (
+        e.title.includes("'") ||
+        e.title.includes("*") ||
+        e.title.includes("II") ||
+        e.title.includes(">>") ||
+        e.title.includes(" - A Cruel F")
+      ) {
+        let temptitle = e.title;
+        for (let i = 0; i < temptitle.length; i++) {
+          if (temptitle[i] == "'") {
+            temptitle =
+              temptitle.substring(0, i) +
+              String.fromCharCode(8217) +
+              temptitle.substring(i + 1);
+          } else if (temptitle[i] == "*") {
+            temptitle =
+              temptitle.substring(0, i) +
+              String.fromCharCode(9733) +
+              temptitle.substring(i + 1);
+          } else if (
+            i < temptitle.length - 1 &&
+            temptitle[i] == "I" &&
+            temptitle[i + 1] == "I"
+          ) {
+            temptitle =
+              temptitle.substring(0, i) +
+              String.fromCharCode(8545) +
+              temptitle.substring(i + 2);
+          } else if (
+            i < temptitle.length - 1 &&
+            temptitle[i] == "<" &&
+            temptitle[i + 1] == "<"
+          ) {
+            temptitle =
+              temptitle.substring(0, i) + "&lt;" + temptitle.substring(i + 2);
+          } else if (
+            i < temptitle.length - 1 &&
+            temptitle[i] == ">" &&
+            temptitle[i + 1] == ">"
+          ) {
+            temptitle =
+              temptitle.substring(0, i) +
+              "&gt;&gt;" +
+              temptitle.substring(i + 2);
+          } else if (
+            i < temptitle.length - 1 &&
+            temptitle[i] == " " &&
+            temptitle[i + 1] == "-"
+          ) {
+            temptitle =
+              temptitle.substring(0, i) + "  -" + temptitle.substring(i + 2);
+            break;
+          }
+        }
+        covervar = binds[temptitle];
+      } else {
+        covervar = "../fallback.jpg";
+        console.log("vv covervar == undefined");
+        console.log(e.title);
+      }
     }
     let dubcount = 0;
     let subcount = 0;
@@ -593,9 +668,12 @@ function display() {
       let myvar = subcount - Math.ceil(-daycount(e.dubenddate) / 7);
       dubcount = myvar;
     }
+    if (covervar == undefined) {
+      console.error(e.title);
+    }
     myitem.innerHTML =
       '<div class="leftpart"><img class="coverimg" src="../images/covers/' +
-      binds[e.title] +
+      covervar +
       '"><div class="infobtn"> <img class="infoicon" src="../images/info.svg"><div class="lilbridge"></div><div class="information"><span class="infotitle">' +
       e.title +
       '</span><div class="shortstats"><span class="rated">' +
@@ -631,13 +709,6 @@ function display() {
       'class="totalcount">' +
       e.episodes +
       "</span></div></div>";
-    let srcvar = myitem
-      .getElementsByClassName("coverimg")[0]
-      .getAttribute("src");
-    if (srcvar.includes("undefined")) {
-      myitem.getElementsByClassName("coverimg")[0].src =
-        "../images/fallback.jpg";
-    }
     myitem.getElementsByClassName("title")[0].textContent = e.title;
     insert(document.getElementsByClassName("itemcontainer")[0], myitem);
   }
