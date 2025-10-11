@@ -755,7 +755,7 @@ body {
 
 .infobtn:hover > .information {
   display: block;
-  transition-delay: 0s;
+  transition-delay: 2s;
 }
 
 .fake-dropdown {
@@ -836,17 +836,18 @@ body {
 }
 
 .information {
-  /* visibility: hidden;
-  transition: visibility 0s 1s; */
-  /* display: none; */
-  /* transition: display 0s 1s; */
-  width: 325px;
+  display: none;
+  transition: display 0.1s 2s;
+  width: 280px;
   height: auto;
   background-color: #b13a18;
   position: absolute;
   margin-left: 26px;
   margin-top: -29px;
   border-radius: 14px;
+  padding: 22px;
+  z-index: 100;
+  cursor: default;
 }
 
 .infotitle {
@@ -854,16 +855,44 @@ body {
 }
 
 .shortstats {
-  background-color: rgba(0, 0, 0, 0.5);
-  height:auto;
-  width:auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+  height: auto;
+  width: auto;
   color: white;
   border-radius: 10px;
-  padding:2px;
+  padding: 2px;
+  font-size: 13px;
 }
 
 .rated {
-  background-color: #E45F3A;
+  background-color: #e45f3a;
   border-radius: 10px;
-  height:20px;
+  height: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.malscore {
+  padding-left: 10px;
+}
+
+.lowerinfo {
+  font-size: 13px;
+  color: white;
+}
+
+.infolabel {
+  color: #ddaa9b;
+}
+
+.lilbridge {
+  cursor: default;
+  background-color: red;
+  width: 30px;
+  height: 20px;
+  position: absolute;
+  opacity: 0;
+  margin-top: -30px;
 }

@@ -596,11 +596,25 @@ function display() {
     myitem.innerHTML =
       '<div class="leftpart"><img class="coverimg" src="../images/covers/' +
       binds[e.title] +
-      '"><div class="infobtn"> <img class="infoicon" src="../images/info.svg"><div class="information"><span class="infotitle">' +
+      '"><div class="infobtn"> <img class="infoicon" src="../images/info.svg"><div class="lilbridge"></div><div class="information"><span class="infotitle">' +
       e.title +
       '</span><div class="shortstats"><span class="rated">' +
       e.rated +
-      '</span></div></div></img></div></div><div class="rightpart"><div class="toprow"><span class="fake-dropdown">' +
+      '</span><span class="malscore">' +
+      (e.MALscore == 0 ? "?" : e.MALscore) +
+      '</span></div><div class="lowerinfo"><span class="infolabel">Aired: </span>' +
+      (defaultdatetoreadable(e.airstartdate) == "-"
+        ? "?"
+        : defaultdatetoreadable(e.airstartdate)) +
+      " to " +
+      (defaultdatetoreadable(e.airenddate) == "-"
+        ? "?"
+        : defaultdatetoreadable(e.airenddate)) +
+      '<br><span class="infolabel">Status: </span>' +
+      e.airStatus +
+      '<br><span class="infolabel">Genres: </span>' +
+      e.genres.join(", ") +
+      '</div></div></img></div></div><div class="rightpart"><div class="toprow"><span class="fake-dropdown">' +
       e.status +
       '</span><img src="../images/eye.svg" class="eyebtn"></img></div><span class="title">' +
       e.title +
@@ -617,6 +631,13 @@ function display() {
       'class="totalcount">' +
       e.episodes +
       "</span></div></div>";
+    let srcvar = myitem
+      .getElementsByClassName("coverimg")[0]
+      .getAttribute("src");
+    if (srcvar.includes("undefined")) {
+      myitem.getElementsByClassName("coverimg")[0].src =
+        "../images/fallback.jpg";
+    }
     myitem.getElementsByClassName("title")[0].textContent = e.title;
     insert(document.getElementsByClassName("itemcontainer")[0], myitem);
   }
