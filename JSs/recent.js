@@ -867,6 +867,14 @@ function setCanvas(key, ctext) {
       data.sort(compareWatchEnd).reverse();
       let ftsz = cvas.height / 20;
       drawLine(5, cvas.height - 5, cvas.width - 5, 5, "red");
+      drawLine(5, 0.9 * cvas.height - 2, 0.9 * cvas.width - 2, 5, "green");
+      drawLine(
+        0.1 * cvas.width + 4,
+        cvas.height - 5,
+        cvas.width - 5,
+        0.1 * cvas.height + 4,
+        "green"
+      );
       let takentop = [[], [], [], [], [], [], [], [], [], [], []];
       let takenbottom = [[], [], [], [], [], [], [], [], [], [], []];
       for (let i = 0; i < 5; i++) {
