@@ -2274,9 +2274,9 @@ function compareMALScore(a, b) {
 
 function compareStatus(a, b) {
   let ORDER = [
+    "Watching",
     "On-Hold",
     "Plan to Watch",
-    "Watching",
     "Completed",
   ]
   acode = ORDER.indexOf(a.status)
@@ -3777,7 +3777,7 @@ function compareDatas(olddata, newdata) {
             // ranking change
             let pr1 = document.createElement("pre");
             let mystr = "";
-            mystr += "#" + oldplace + " ";
+            mystr += "#" + (oldplace+1) + " ";
             if (oldplace > newplace) {
               mystr += "up";
               pr1.style.color = colors.Watching;
@@ -3785,7 +3785,7 @@ function compareDatas(olddata, newdata) {
               mystr += "down";
               pr1.style.color = "red";
             }
-            mystr += " to #" + newplace;
+            mystr += " to #" + (newplace+1);
             pr1.innerText = "\t" + mystr;
             insert(d, pr1);
           }

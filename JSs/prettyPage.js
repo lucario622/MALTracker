@@ -665,7 +665,7 @@ function display() {
       dubcount = subcount;
     }
     if (isDate(e.dubenddate)) {
-      let myvar = subcount - Math.ceil(-daycount(e.dubenddate) / 7);
+      let myvar = e.episodes - Math.ceil(-daycount(e.dubenddate) / 7);
       dubcount = myvar;
     }
     if (covervar == undefined) {
