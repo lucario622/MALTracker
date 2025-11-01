@@ -710,6 +710,10 @@ function display() {
       e.episodes +
       "</span></div></div>";
     myitem.getElementsByClassName("title")[0].textContent = e.title;
+    myitem.onclick = function () {
+      localStorage.setItem("transfer", e.title);
+      window.open("PrettyDetails.html", "_blank").focus();
+    };
     insert(document.getElementsByClassName("itemcontainer")[0], myitem);
   }
   document.getElementById("resultcount").innerText = count + " anime";
