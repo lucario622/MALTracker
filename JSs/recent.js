@@ -135,10 +135,10 @@ function start() {
     if (
       e.status == "On-Hold" &&
       !isDate(e.dubenddate) &&
-      daycount(e.airenddate) <= 365 &&
+      daycount(e.airenddate) <= 730 &&
       isEntryNextWatch(e)
     ) {
-      chosen.push([e, 3, ndaysafter(e.airenddate, 365)]);
+      chosen.push([e, 3, ndaysafter(e.airenddate, 730)]);
     }
   }
   chosen.sort(compDts);
@@ -474,7 +474,7 @@ function start() {
     if (
       data[i].airStatus == "Aired" &&
       data[i].status != "Completed" &&
-      (data[i].status != "On-Hold" || daycount(data[i].airenddate) >= 365)
+      (data[i].status != "On-Hold" || daycount(data[i].airenddate) >= 730)
     ) {
       candidates++;
     }
@@ -512,7 +512,7 @@ function start() {
         isEntryNextWatch(e) &&
         e.airStatus == "Aired" &&
         e.status != "Completed" &&
-        (e.status != "On-Hold" || daycount(e.airenddate) >= 365)
+        (e.status != "On-Hold" || daycount(e.airenddate) >= 730)
       ) {
         intothechain(e);
         break;
@@ -532,7 +532,7 @@ function start() {
       e != null &&
       e.airStatus == "Aired" &&
       e.status != "Completed" &&
-      (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
+      (e.status != "On-Hold" || daycount(e.airenddate) >= 730) &&
       !norepeats.includes(e)
     ) {
       intothechain(e);
@@ -545,7 +545,7 @@ function start() {
           isEntryNextWatch(e) &&
           e.airStatus == "Aired" &&
           e.status != "Completed" &&
-          (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
+          (e.status != "On-Hold" || daycount(e.airenddate) >= 730) &&
           !norepeats.includes(e)
         ) {
           intothechain(e);
@@ -584,7 +584,7 @@ function start() {
       e != null &&
       e.airStatus == "Aired" &&
       e.status != "Completed" &&
-      (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
+      (e.status != "On-Hold" || daycount(e.airenddate) >= 730) &&
       !norepeats.includes(e)
     ) {
       intothechain(e);
@@ -597,7 +597,7 @@ function start() {
           isEntryNextWatch(e) &&
           e.airStatus == "Aired" &&
           e.status != "Completed" &&
-          (e.status != "On-Hold" || daycount(e.airenddate) >= 365) &&
+          (e.status != "On-Hold" || daycount(e.airenddate) >= 730) &&
           !norepeats.includes(e)
         ) {
           intothechain(e);
