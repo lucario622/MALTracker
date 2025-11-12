@@ -235,3 +235,38 @@ section.range-slider input[type="range"]::-moz-focus-outer {
   color: white;
   scrollbar-width: none;
 }
+
+#gamediv {
+  margin: auto;
+  margin-top: 10%;
+  width: 50%;
+  height: 50%;
+  border: 3px solid green;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+}
+
+.gamecard {
+  border: 2px solid red;
+  display:grid;
+  width: 200px;
+  padding:10px;
+  justify-items: center;
+  cursor: pointer;
+  transition: background-color 0.1s ease-in-out;
+}
+
+.gamecard:hover {
+  background-color:#272727;
+  transition: background-color 0.1s ease-in-out;
+}
+
+.gametitle {
+  max-width:max-content;
+}
+
+.gamerating {
+  text-align: center;
+}
