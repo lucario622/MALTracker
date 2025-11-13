@@ -4027,15 +4027,21 @@ function placeFiltBoxes() {
         const e1 = e[j];
         let checkdiv = document.createElement("div");
         checkdiv.className = "checkboxes";
-        let newcheckbox = document.createElement("input");
-        newcheckbox.type = "checkbox";
-        newcheckbox.id = e1;
-        newcheckbox.value = e1;
-        let newlabel = document.createElement("label");
-        newlabel.setAttribute("for", e1);
-        newlabel.innerText = e1;
-        insert(checkdiv, newcheckbox);
-        insert(checkdiv, newlabel);
+        if (filtboxarray[5].includes(e1)) {
+          // do fancy stuff
+          checkdiv.classList.add("specialdisplay")
+          checkdiv.innerHTML = "<label class=\"option\">"+e1+"<input type=\"checkbox\" id=\""+e1+"\" value=\""+e1+"\" onclick=\"ts(this)\"><span class=\"checkmark\"></span>"
+        } else {
+          let newcheckbox = document.createElement("input");
+          newcheckbox.type = "checkbox";
+          newcheckbox.id = e1;
+          newcheckbox.value = e1;
+          let newlabel = document.createElement("label");
+          newlabel.setAttribute("for", e1);
+          newlabel.innerText = e1;
+          insert(checkdiv, newcheckbox);
+          insert(checkdiv, newlabel);
+        }
         insert(newdiv, checkdiv);
       }
       insert(filtbox, newdiv);

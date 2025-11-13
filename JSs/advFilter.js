@@ -52,6 +52,11 @@ function start() {
   display();
 }
 
+function ts(cb) {
+  if (cb.readOnly) cb.checked = cb.readOnly = false;
+  else if (!cb.checked) cb.readOnly = cb.indeterminate = true;
+}
+
 function init() {
   // Initialize Sliders
   sliderSections = document.getElementsByClassName("range-slider");
@@ -477,7 +482,7 @@ function display() {
 function allfiltempty() {
   let pass = true;
   filtboxes.forEach((element) => {
-    if (element.checked) {
+    if (element.checked || element.readOnly) {
       pass = false;
     }
   });
@@ -533,7 +538,7 @@ function allgenreempty() {
   let pass = true;
   for (let i = sublen2d(5); i < sublen2d(6); i++) {
     const element = filtboxes[i];
-    if (element.checked) pass = false;
+    if (element.checked || element.readOnly) pass = false;
   }
   return pass;
 }
@@ -591,17 +596,23 @@ function passfail(element) {
   ];
   let pass = [];
   pass[0] = true;
-  pass[1] = false;
-  pass[2] = false;
-  pass[3] = false;
-  pass[4] = false;
-  pass[5] = false;
-  pass[6] = true;
+  pass[1] = false; // type
+  pass[2] = false; // air status
+  pass[3] = false; // status
+  pass[4] = false; // rated
+  pass[5] = false; // demographic
+  pass[6] = true; // genre
 
   let k = 0;
   for (let i = 0; i < filtboxarray.length; i++) {
     for (let j = 0; j < filtboxarray[i].length; j++) {
-      if (filtboxes[k].checked && certaincondition(i + 1, k, element)) {
+      if (
+        filtboxes[k].readOnly &&
+        element.genres.includes(filtboxarray.flat()[k])
+      ) {
+        console.log("Announce this")
+        pass[i + 1] = false;
+      } else if (filtboxes[k].checked && certaincondition(i + 1, k, element)) {
         pass[i + 1] = true;
         if (i == 5) pass[i + 1] = false;
       }

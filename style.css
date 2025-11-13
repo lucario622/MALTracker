@@ -271,3 +271,68 @@ section.range-slider input[type="range"]::-moz-focus-outer {
 .gamerating {
   text-align: center;
 }
+.option input:checked ~ .checkmark {
+  background-color: green;
+}
+
+.option input[readonly] ~ .checkmark {
+  background-color: red;
+}
+
+.checkmark {
+  border-radius: 2px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  /* margin-left: -60px; */
+  height: 12px;
+  width: 12px;
+  background-color: #d2d3d4;
+}
+
+.checkmark:after {
+  content: "+";
+  color: #36cb68;
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.option input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.option input[readonly] ~ .checkmark:after {
+  display: block;
+  color: #0c1116;
+  content: "-";
+}
+
+/* Style the checkmark/indicator */
+.option .checkmark:after {
+  margin-left: 3px;
+  top: -5px;
+  width: 5px;
+  height: 10px;
+}
+
+.option input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkboxes {
+  user-select: none;
+}
+
+.option {
+  margin-left: 20px;
+}
+
+.specialdisplay {
+  position: relative;
+}
+
