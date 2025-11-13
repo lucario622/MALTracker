@@ -1672,8 +1672,8 @@ function daycount(e) {
   return result;
 }
 
-function sumArrToi(arr, i=-1) {
-  if (i == -1) i = arr.length-1;
+function sumArrToi(arr, i = -1) {
+  if (i == -1) i = arr.length - 1;
   let result = 0;
   if (i >= arr.length) i = arr.length - 1;
   for (let j = 0; j <= i; j++) {
@@ -2273,14 +2273,9 @@ function compareMALScore(a, b) {
 }
 
 function compareStatus(a, b) {
-  let ORDER = [
-    "Watching",
-    "On-Hold",
-    "Plan to Watch",
-    "Completed",
-  ]
-  acode = ORDER.indexOf(a.status)
-  bcode = ORDER.indexOf(b.status)
+  let ORDER = ["Watching", "On-Hold", "Plan to Watch", "Completed"];
+  acode = ORDER.indexOf(a.status);
+  bcode = ORDER.indexOf(b.status);
   if (acode > bcode) {
     return 1;
   } else if (acode < bcode) {
@@ -3622,7 +3617,7 @@ function generalinit() {
   d = document.getElementById("outputd");
   let links = document.createElement("div");
   links.style.color = "rgb(18,18,18)";
-  links.id = "links"
+  links.id = "links";
   links.innerHTML = `
   <a href="index.html">Normal</a>|||||
   <a href="advFilter.html">AdvFiltering</a>|||||
@@ -3669,7 +3664,7 @@ function generalinit() {
 }
 
 function noLinks() {
-  document.getElementById("links").remove()
+  document.getElementById("links").remove();
 }
 
 function compareDatas(olddata, newdata) {
@@ -3777,7 +3772,7 @@ function compareDatas(olddata, newdata) {
             // ranking change
             let pr1 = document.createElement("pre");
             let mystr = "";
-            mystr += "#" + (oldplace+1) + " ";
+            mystr += "#" + (oldplace + 1) + " ";
             if (oldplace > newplace) {
               mystr += "up";
               pr1.style.color = colors.Watching;
@@ -3785,7 +3780,7 @@ function compareDatas(olddata, newdata) {
               mystr += "down";
               pr1.style.color = "red";
             }
-            mystr += " to #" + (newplace+1);
+            mystr += " to #" + (newplace + 1);
             pr1.innerText = "\t" + mystr;
             insert(d, pr1);
           }

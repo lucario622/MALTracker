@@ -1,6 +1,6 @@
 var curindex = 0;
 var shuffledData = [];
-var sfwmode = true;
+var sfwmode = false;
 var chosenside;
 var scoreArray = [];
 var correctAnswers = 0;

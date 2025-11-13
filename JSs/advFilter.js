@@ -46,7 +46,7 @@ function start() {
   let myinpfield = document.getElementById("searchinputfield");
   myinpfield.addEventListener("input", function () {
     display();
-  })
+  });
 
   placeSortSelector();
   display();
@@ -579,7 +579,7 @@ function passfail(element) {
     element.watchedepisodes >= rangevalues["WEPISODES"][0] &&
     element.watchedepisodes <= rangevalues["WEPISODES"][1] &&
     element.episodes >= rangevalues["EPISODES"][0] &&
-    element.episodes <= rangevalues["EPISODES"][1] && 
+    element.episodes <= rangevalues["EPISODES"][1] &&
     document.getElementById("searchinputfield").value == ""
   ) {
     return true;
@@ -626,9 +626,11 @@ function passfail(element) {
   for (let i = 1; i < pass.length; i++) {
     pass[0] = pass[0] && pass[i];
   }
-  searchbox = document.getElementById("searchinputfield")
-  if (searchbox.value != ""){
-    pass[0] = pass[0] && (element.title.toLowerCase().includes(searchbox.value.toLowerCase()));
+  searchbox = document.getElementById("searchinputfield");
+  if (searchbox.value != "") {
+    pass[0] =
+      pass[0] &&
+      element.title.toLowerCase().includes(searchbox.value.toLowerCase());
   }
   if (
     pass[0] &&
