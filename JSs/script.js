@@ -865,7 +865,7 @@ function assembleGroups() {
   disbandGroup("The Melancholy of Haruhi Suzumiya");
   massPutInGroup("The Disappearance of Haruhi Suzumiya", [
     "The Melancholy of Haruhi Suzumiya",
-    "The Melancholy of Haruhi Suzumiya Season 2",
+    "The Melancholy of Haruhi Suzumiya (2009)",
   ]);
   putInGroup("One Piece", "Monsters: 103 Mercies Dragon Damnation");
   buildNewGroup("Monster Musume: Everyday Life with Monster Girls", [
