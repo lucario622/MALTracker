@@ -271,6 +271,58 @@ section.range-slider input[type="range"]::-moz-focus-outer {
 .gamerating {
   text-align: center;
 }
+
+#wordlediv {
+  border: 2px solid blue;
+  display: grid;
+  margin: auto;
+  margin-top: 10%;
+  width: 75%;
+  height: 50%;
+  padding: 10px;
+}
+
+#wordlediv1 {
+  border: 2px solid blue;
+  display: grid;
+  margin: auto;
+  width: 75%;
+  height: 50%;
+  padding: 10px;
+  color: white;
+}
+
+#searchbar {
+  text-align: left;
+  font-size: 18px;
+  height: 20px;
+  border: 1px solid gray;
+  padding: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: transparent;
+  color: white;
+  border-radius: 20px;
+}
+
+#searchbar:focus {
+  outline: none;
+}
+
+#searchresults {
+  width: inherit;
+  border: 2px solid green;
+  height: auto;
+  position: absolute;
+  margin-top: 32px;
+  color: white;
+  background-color: rgb(18,18,18);
+}
+
+.searchresult:hover {
+  background-color: gray;
+}
+
 .option input:checked ~ .checkmark {
   background-color: green;
 }
