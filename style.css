@@ -388,3 +388,7 @@ section.range-slider input[type="range"]::-moz-focus-outer {
   position: relative;
 }
 
+.dokubutton {
+  color: white;
+  outline: 1px solid pink;
+}

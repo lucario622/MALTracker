@@ -3898,7 +3898,8 @@ function isIterable(obj) {
 
 function allBoolTrue(alliter) {
   let result = true;
-  for (let e of alliter) {
+  for (let i = 0;i<alliter.length;i++) {
+    const e = alliter[i]
     result = result && e;
   }
   return result;
@@ -4024,8 +4025,15 @@ function placeFiltBoxes() {
         checkdiv.className = "checkboxes";
         if (filtboxarray[5].includes(e1)) {
           // do fancy stuff
-          checkdiv.classList.add("specialdisplay")
-          checkdiv.innerHTML = "<label class=\"option\">"+e1+"<input type=\"checkbox\" id=\""+e1+"\" value=\""+e1+"\" onclick=\"ts(this)\"><span class=\"checkmark\"></span>"
+          checkdiv.classList.add("specialdisplay");
+          checkdiv.innerHTML =
+            '<label class="option">' +
+            e1 +
+            '<input type="checkbox" id="' +
+            e1 +
+            '" value="' +
+            e1 +
+            '" onclick="ts(this)"><span class="checkmark"></span>';
         } else {
           let newcheckbox = document.createElement("input");
           newcheckbox.type = "checkbox";
@@ -4336,4 +4344,18 @@ function getNick(str) {
   } else {
     return str;
   }
+}
+
+function reduceList(arr, field, val) {
+  let result = [];
+  if (field == "genres" || field == "studios" || field == "licensors") {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i][field].includes(val)) result.push(arr[i]);
+    }
+  } else {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i][field] == val) result.push(arr[i]);
+    }
+  }
+  return result;
 }
