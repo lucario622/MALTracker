@@ -884,10 +884,8 @@ function assembleGroups() {
     "Mahou Shoujo ni Akogarete 2nd Season",
   ]);
   putInGroup("The Dangers in My Heart", "Boku no Kokoro no Yabai Yatsu Movie");
-  massPutInGroup("JoJo's Bizarre Adventure", [
-    "Thus Spoke Kishibe Rohan",
-    "JoJo no Kimyou na Bouken Part 7: Steel Ball Run",
-  ]);
+  putInGroup("JoJo's Bizarre Adventure", "Thus Spoke Kishibe Rohan");
+  putInGroup("JoJo's Bizarre Adventure", "Steel Ball Run: JoJo's Bizarre Adventure");
   migrateGroup("Boruto", "Naruto");
   putInGroup(
     "Anohana",
