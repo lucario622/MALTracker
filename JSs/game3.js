@@ -33,6 +33,8 @@ function start() {
     tryagain = false;
     headingchoices = [[], []];
     // headings should be one of: genre, type, Score, most likely genre because theres 21 of those against 6 types and 5 scores 21+6+5 = 32
+    // maybe just keep it to genre? that was hard enough to code by itself
+    // at least the others are individually simpler than genres
 
     let alreadyChosen = [];
     for (let i = 0; i < rows; i++) {
@@ -63,6 +65,26 @@ function start() {
               "not enough entries with genre " + filtboxarray[5][mynumber]
             );
           }
+        } else if (mynumber < 27) {
+          // Type (TV MOVIE OVA ONA SPECIAL TV_SPECIAL)
+          if (alreadyChosen.includes(filtboxarray[0][mynumber - 21])) {
+            console.warn("you already took " + filtboxarray[0][mynumber - 21]);
+            continue;
+          }
+          let possibilities = reduceList(
+            options,
+            "type",
+            filtboxarray[0][mynumber - 21]
+          );
+          if (possibilities.length >= cols) {
+            headingchoices[0][i] = ["type", filtboxarray[0][mynumber - 21]];
+            alreadyChosen.push(filtboxarray[0][mynumber - 21]);
+            break;
+          } else {
+            console.log(
+              "not enough entries with type " + filtboxarray[0][mynumber - 21]
+            );
+          }
         }
       }
       console.error(headingchoices[0][i][1] + " passed");
@@ -79,7 +101,7 @@ function start() {
         for (let k = 0; k < rows; k++) {
           goOn.push(true);
         }
-        mynumber = Math.floor(Math.random() * 21);
+        mynumber = Math.floor(Math.random() * 26);
         if (mynumber < 21) {
           if (alreadyChosen.includes(filtboxarray[5][mynumber])) {
             console.warn(
@@ -128,6 +150,52 @@ function start() {
               goOn[k] = false;
             }
           }
+        } else {
+          let category = mynumber - 16;
+          if (alreadyChosen.includes(category)) {
+            console.warn("you already took " + category + " bro");
+            goOn[0] = false;
+            continue;
+          }
+          let possibilities = [];
+          for (let k = 0; k < rows; k++) {
+            possibilities.push([]);
+            possibilities[k] = reduceList(
+              reduceList(
+                options,
+                headingchoices[0][k][0],
+                headingchoices[0][k][1]
+              ),
+              "score",
+              category
+            );
+            if (
+              possibilities[k].length >= 1 &&
+              headingchoices[0][k][1] != category
+            ) {
+              headingchoices[1][j] = ["score", category];
+              console.log(
+                "sufficient (" +
+                  possibilities[k].length +
+                  ") entries with score " +
+                  category +
+                  " & " +
+                  headingchoices[0][k][0] +
+                  " " +
+                  headingchoices[0][k][1]
+              );
+            } else {
+              console.log(
+                "not enough entries with score " +
+                  category +
+                  " & " +
+                  headingchoices[0][k][0] +
+                  " " +
+                  headingchoices[0][k][1]
+              );
+              goOn[k] = false;
+            }
+          }
         }
         console.log(goOn);
         if (tries > 50) {
@@ -150,27 +218,39 @@ function start() {
   td.innerText = "[\\]";
   for (let i = 0; i < cols; i++) {
     let td = thr.insertCell();
-    td.innerText = headingchoices[1][i][1];
+    td.innerHTML = "<div class='catcell'>" + headingchoices[1][i][1] + "<div>";
+    // td.className = "catcell"
+    // td.innerText = headingchoices[1][i][1];
   }
   gameCells = [];
   for (let i = 0; i < rows; i++) {
     gameCells.push([]);
     let gameRow = guessTable.insertRow();
     let td = gameRow.insertCell();
-    td.innerText = headingchoices[0][i][1];
+    // td.innerText = headingchoices[0][i][1];
+    td.style.width = "0%";
+    // td.className = "catcell"
+    td.innerHTML = "<div class='catcell'>" + headingchoices[0][i][1] + "<div>";
     for (let j = 0; j < cols; j++) {
       gameCells[i][j] = gameRow.insertCell();
-      //   gameCells[i][j].innerText = reduceList(
-      //     reduceList(options, headingchoices[0][i][0], headingchoices[0][i][1]),
-      //     headingchoices[1][j][0],
-      //     headingchoices[1][j][1]
-      //   )//.length;
+      gameCells[i][j].innerText = reduceList(
+        reduceList(options, headingchoices[0][i][0], headingchoices[0][i][1]),
+        headingchoices[1][j][0],
+        headingchoices[1][j][1]
+      ).length;
+      // gameCells[i][j].classList.add("dokucell")
       gameCells[i][j].innerHTML =
-        '<button class="dokubutton" onclick="searchsubmission(' +
+        '<div class="dokucell"onclick="searchsubmission(' +
         i +
         "," +
         j +
-        ')">Submit</button>';
+        ')">' +
+        reduceList(
+          reduceList(options, headingchoices[0][i][0], headingchoices[0][i][1]),
+          headingchoices[1][j][0],
+          headingchoices[1][j][1]
+        ).length;
+      +"</div>";
     }
   }
   let resultContainer = document.getElementById("wordlediv1");
@@ -224,7 +304,13 @@ function searchsubmission(i, j) {
     headingchoices[1][j][1]
   );
 
-  gameCells[i][j].innerHTML = corrects.includes(result);
+  // gameCells[i][j].innerHTML = corrects.includes(result);
+  if (corrects.includes(result)) {
+    console.log(gameCells[i][j].childNodes[0]);
+    gameCells[i][j].childNodes[0].innerText = result.title;
+  } else {
+    window.alert(result + " is incorrect.");
+  }
 }
 
 function trimRemainder() {

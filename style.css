@@ -251,12 +251,17 @@ section.range-slider input[type="range"]::-moz-focus-outer {
 .gamecard {
   border: 2px solid red;
   display: grid;
-  width: 200px;
+  width: min(50%, min-content);
   padding: 10px;
   justify-items: center;
   cursor: pointer;
   transition: background-color 0.1s ease-in-out;
   user-select: none;
+}
+
+.gamecover {
+  width: min(min-content,100%);
+  /* width: 100%; */
 }
 
 .gamecard:hover {
@@ -316,7 +321,7 @@ section.range-slider input[type="range"]::-moz-focus-outer {
   position: absolute;
   margin-top: 32px;
   color: white;
-  background-color: rgb(18,18,18);
+  background-color: rgb(18, 18, 18);
 }
 
 .searchresult:hover {
@@ -391,4 +396,39 @@ section.range-slider input[type="range"]::-moz-focus-outer {
 .dokubutton {
   color: white;
   outline: 1px solid pink;
+}
+
+.catcell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dokucell {
+  border: 5px solid green;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+#outergamediv {
+  display: flex;
+}
+
+.sidepanel {
+  width: 400px;
+  height: 480px;
+  margin-top: 100px;
+  color: white;
+  font-size: 12px;
+}
+
+.panelEntry {
+  border: 1px solid white;
+}
+
+#rightpanel {
+  overflow-y: auto;
+  scrollbar-width: none;
 }

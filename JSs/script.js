@@ -3896,8 +3896,8 @@ function isIterable(obj) {
 
 function allBoolTrue(alliter) {
   let result = true;
-  for (let i = 0;i<alliter.length;i++) {
-    const e = alliter[i]
+  for (let i = 0; i < alliter.length; i++) {
+    const e = alliter[i];
     result = result && e;
   }
   return result;
@@ -4055,6 +4055,13 @@ function insert(container, item) {
   container.insertBefore(
     item,
     container.childNodes[container.childNodes.length]
+  );
+}
+
+function nInsert(container, item, n = 0) {
+  container.insertBefore(
+    item,
+    container.childNodes[Math.min(container.childNodes.length, n)]
   );
 }
 

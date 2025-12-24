@@ -8,11 +8,11 @@ var correctAnswers = 0;
 function init() {
   generalinit();
   p.style.fontSize = "30px";
-  p.style.color = "white"
-  p.style.textAlign = "center"
+  p.style.color = "white";
+  p.style.textAlign = "center";
   d.style.fontSize = "50px";
   d.style.wordWrap = "break-word";
-  d.style.width = "100%"
+  d.style.width = "100%";
   binds = localStorage.getItem("binds");
   if (binds != null) {
     binds = JSON.parse(binds);
@@ -111,15 +111,123 @@ function reveal() {
   }
   if (isCorrect) {
     correctAnswers++;
+    scoreArray.push(1);
     d.innerText += String.fromCharCode(9989);
   } else {
+    scoreArray.push(0);
     d.innerText += String.fromCharCode(10060);
   }
-  p.innerText = Math.round((100*correctAnswers/(curindex+1)))+"%"
-  // p.innerText += " "
+  p.innerText = Math.round((100 * correctAnswers) / (curindex + 1)) + "%";
   setTimeout(() => {
     mainclick.onclick = nextLevel;
   }, 100);
+  // add something to the panels
+
+  // right panel has history (simple)
+  let rightpanel = document.getElementById("rightpanel");
+  let newLine = document.createElement("p");
+  newLine.className = "panelEntry";
+  let eLeft = shuffledData[curindex];
+  let eRight = shuffledData[curindex + 1];
+  newLine.innerText =
+    eLeft.MALscore +
+    "\t" +
+    eLeft.title +
+    "\n" +
+    eRight.MALscore +
+    "\t" +
+    shuffledData[curindex + 1];
+  newLine.style.backgroundColor = "red";
+  newLine.style.textWrap = "nowrap";
+  newLine.style.overflowX = "hidden";
+  if (isCorrect) newLine.style.backgroundColor = "green";
+  nInsert(rightpanel, newLine, 1);
+
+  // left panel has furthest and closest (less simple)
+  let leftPanel = document.getElementById("leftpanel");
+  let guessDifferences = [];
+  for (let i = 0; i < curindex + 1; i++) {
+    let cur1 = shuffledData[i];
+    let cur2 = shuffledData[i + 1];
+    guessDifferences.push([Math.abs(cur1.MALscore - cur2.MALscore), i]);
+  }
+  guessDifferences.sort((a, b) => a[0] - b[0]);
+  leftPanel.innerHTML = "Closest";
+  if (guessDifferences.length > 10) {
+    // need to hide some
+    for (let i = 0; i < 5; i++) {
+      let cur = guessDifferences[i];
+      let cur1 = shuffledData[cur[1]];
+      let cur2 = shuffledData[cur[1] + 1];
+      let newLine = document.createElement("p");
+      newLine.className = "panelEntry";
+      newLine.innerText =
+        cur1.MALscore +
+        "\t" +
+        cur1.title +
+        "\n" +
+        cur2.MALscore +
+        "\t" +
+        cur2.title;
+      newLine.style.backgroundColor = "red";
+      newLine.style.textWrap = "nowrap";
+      newLine.style.overflowX = "hidden";
+      if (scoreArray[cur[1]] == 1) newLine.style.backgroundColor = "green";
+      nInsert(leftPanel, newLine, 1);
+    }
+    let newLine = document.createElement("p");
+    newLine.className = "panelEntry";
+    newLine.innerText = ":\n:"
+    newLine.style.textWrap = "nowrap";
+    newLine.style.border = "none";
+    nInsert(leftPanel, newLine, 1);
+    for (
+      let i = guessDifferences.length - 5;
+      i < guessDifferences.length;
+      i++
+    ) {
+      let cur = guessDifferences[i];
+      let cur1 = shuffledData[cur[1]];
+      let cur2 = shuffledData[cur[1] + 1];
+      let newLine = document.createElement("p");
+      newLine.className = "panelEntry";
+      newLine.innerText =
+        cur1.MALscore +
+        "\t" +
+        cur1.title +
+        "\n" +
+        cur2.MALscore +
+        "\t" +
+        cur2.title;
+      newLine.style.backgroundColor = "red";
+      newLine.style.textWrap = "nowrap";
+      newLine.style.overflowX = "hidden";
+      if (scoreArray[cur[1]] == 1) newLine.style.backgroundColor = "green";
+      nInsert(leftPanel, newLine, 1);
+    }
+  } else {
+    // do not need to hide any (simpler)
+    for (let i = 0; i < guessDifferences.length; i++) {
+      let cur = guessDifferences[i];
+      let cur1 = shuffledData[cur[1]];
+      let cur2 = shuffledData[cur[1] + 1];
+      let newLine = document.createElement("p");
+      newLine.className = "panelEntry";
+      newLine.innerText =
+        cur1.MALscore +
+        "\t" +
+        cur1.title +
+        "\n" +
+        cur2.MALscore +
+        "\t" +
+        cur2.title;
+      newLine.style.backgroundColor = "red";
+      newLine.style.textWrap = "nowrap";
+      newLine.style.overflowX = "hidden";
+      if (scoreArray[cur[1]] == 1) newLine.style.backgroundColor = "green";
+      nInsert(leftPanel, newLine, 1);
+    }
+  }
 }
 
 function nextLevel() {
