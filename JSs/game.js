@@ -4,6 +4,7 @@ var sfwmode = false;
 var chosenside;
 var scoreArray = [];
 var correctAnswers = 0;
+var pExpanded = false;
 
 function init() {
   generalinit();
@@ -17,6 +18,9 @@ function init() {
   if (binds != null) {
     binds = JSON.parse(binds);
   }
+  p.onclick = () => {
+    pExpanded = !pExpanded;
+  };
   display();
 }
 
@@ -118,6 +122,9 @@ function reveal() {
     d.innerText += String.fromCharCode(10060);
   }
   p.innerText = Math.round((100 * correctAnswers) / (curindex + 1)) + "%";
+  if (pExpanded) {
+    p.innerText += ` ${correctAnswers}/${curindex + 1}/${shuffledData.length}`;
+  }
   setTimeout(() => {
     mainclick.onclick = nextLevel;
   }, 100);
@@ -177,7 +184,7 @@ function reveal() {
     }
     let newLine = document.createElement("p");
     newLine.className = "panelEntry";
-    newLine.innerText = ":\n:"
+    newLine.innerText = ":\n:";
     newLine.style.textWrap = "nowrap";
     newLine.style.border = "none";
     nInsert(leftPanel, newLine, 1);

@@ -7,6 +7,9 @@ var rows = 3;
 var cols = 3;
 var gameCells;
 
+const re =
+  /(malscore[:<>!][\d]{1,2}(\.\d\d?)?)|((eps|score)[:<>!][0-9]+)|((type|genre)[:!]"[A-Za-z\s]+")|((type|genre)[:!][^"][A-Za-z\-]*[^"\s])|(date[:<>!]\d{2}-\d{2}-\d{2})/g;
+
 function init() {
   generalinit();
 }
@@ -19,6 +22,14 @@ function start() {
     displaysearchresults();
   });
   let searchresults = document.getElementById("searchresults");
+  searchbar.addEventListener("blur", (event) => {
+    setTimeout(() => {
+      searchresults.hidden = true;
+    }, 200);
+  });
+  searchbar.addEventListener("focus", (event) => {
+    if (searchresults.innerHTML != "") searchresults.hidden = false;
+  });
   searchresults.hidden = true;
   for (let i = 0; i < data.length; i++) {
     if (data[i].status == "Completed") {
@@ -260,35 +271,314 @@ function start() {
 function displaysearchresults() {
   let searchresults = document.getElementById("searchresults");
   let searchbar = document.getElementById("searchbar");
-  if (searchbar.value.length < 3) {
-    searchresults.hidden = true;
-  } else {
+  if (isAdvanced(searchbar.value)) {
     searchresults.hidden = false;
     searchresults.innerHTML = "";
-    for (let i = 0; i < options.length; i++) {
-      if (
-        options[i].title.toLowerCase().includes(searchbar.value.toLowerCase())
-      ) {
-        pr = document.createElement("p");
-        pr.innerText = options[i].title;
-        pr.style.cursor = "pointer";
-        pr.style.margin = "2px";
-        pr.style.userSelect = "none";
-        pr.classList.add("searchresult");
-        pr.onclick = function () {
-          searchbar.value = this.innerText;
-          searchresults.hidden = true;
-        };
-        searchresults.insertBefore(
-          pr,
-          searchresults.childNodes[searchresults.childNodes.length]
-        );
+    advancedSearchResults(searchbar.value);
+  } else {
+    if (searchbar.value.length < 3) {
+      searchresults.hidden = true;
+    } else {
+      searchresults.hidden = false;
+      searchresults.innerHTML = "";
+      for (let i = 0; i < options.length; i++) {
+        if (
+          options[i].title.toLowerCase().includes(searchbar.value.toLowerCase())
+        ) {
+          pr = document.createElement("p");
+          pr.innerText = options[i].title;
+          pr.style.cursor = "pointer";
+          pr.style.margin = "2px";
+          pr.style.userSelect = "none";
+          pr.classList.add("searchresult");
+          pr.onclick = function () {
+            searchbar.value = this.innerText;
+            searchresults.hidden = true;
+          };
+          searchresults.insertBefore(
+            pr,
+            searchresults.childNodes[searchresults.childNodes.length]
+          );
+        }
       }
     }
     if (searchresults.innerHTML == "") {
       searchresults.hidden = true;
     }
   }
+}
+
+function isAdvanced(query) {
+  // find out if the search is intended to be an advanced one, probably by finding certain words (type,eps,date,MALScore,genre,Score) before certain symbols ( : < > ! )
+  // RegEx for (type|eps|date|malscore|genre|score)[:<>!] or smth
+  return re.test(query);
+}
+
+function advancedSearchResults(query) {
+  // 1. split by space
+  let regQuery = query.match(re);
+  // 2. discard invalid attributes
+  // 3. create criteria (min-max & exclude list for eps,date,malscore,score, direct match for type, and include/exclude list for genre)
+
+  // eps date malscore score
+  let mins = [0, -Infinity, 0, 0];
+  let maxs = [Infinity, Infinity, 10, 10];
+  // genre type
+  let includeList = [];
+  // genre eps date malscore score
+  let excludeLists = [[], [], [], [], []];
+  let exactType = null;
+  for (let i = 0; i < regQuery.length; i++) {
+    const cur = regQuery[i];
+    let ind = cur.search(/[:<>!]/);
+    let cursymbol = cur[ind];
+    let attr = cur.substring(0, ind);
+    let dataValue = cur.substring(ind + 1);
+    if (dataValue.indexOf('"') != -1) {
+      dataValue = dataValue.substring(1, dataValue.length - 1);
+    }
+    switch (attr) {
+      case "genre":
+        if (filtboxarray[5].includes(dataValue)) {
+          // valid genre
+          if (cursymbol == ":") {
+            // include
+            if (!includeList.includes(dataValue)) {
+              // make sure not to fill with duplicates
+              if (excludeLists[0].includes(dataValue)) {
+                // remove from other list assuming the most recent one is right
+                excludeLists[0].splice(excludeLists[0].indexOf(dataValue), 1);
+              }
+              // add to include list
+              includeList.push(dataValue);
+            }
+          } else {
+            // exclude
+            if (!excludeLists[0].includes(dataValue)) {
+              // make sure not to fill with duplicates
+              if (includeList.includes(dataValue)) {
+                // remove from other list assuming the most recent one is right
+                includeList.splice(includeList.indexOf(dataValue), 1);
+              }
+              // add to exclude list
+              excludeLists[0].push(dataValue);
+            }
+          }
+        }
+        break;
+      case "type":
+        if (filtboxarray[0].includes(dataValue)) {
+          // valid type
+          if (cursymbol == ":") {
+            exactType = dataValue;
+          }
+        }
+        break;
+      case "eps":
+        dataValue = parseInt(dataValue);
+        if (!dataValue.isNaN && dataValue >= 0) {
+          // valid episode count
+          switch (cursymbol) {
+            case ":":
+              // exact
+              mins[0] = dataValue;
+              maxs[0] = dataValue;
+              break;
+            case "!":
+              // weird useless exclude case
+              excludeLists[1].push(dataValue);
+              break;
+            case "<":
+              // max episodes
+              // only update if:
+              //  It wouldn't do nothing if combined with the existing max
+              //  It wouldn't create 0 possible values
+              if (dataValue < maxs[0] && dataValue >= mins[0])
+                maxs[0] = dataValue;
+              break;
+            case ">":
+              // min episodes
+              if (dataValue > mins[0] && dataValue <= maxs[0])
+                mins[0] = dataValue;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+      case "date":
+        // due to incredible coding skill, no dates are invalid
+        switch (cursymbol) {
+          case ":":
+            // exact
+            mins[1] = daycount(dataValue);
+            maxs[1] = daycount(dataValue);
+            break;
+          case "!":
+            // weird useless exclude case
+            excludeLists[1].push(daycount(dataValue));
+            break;
+          case "<":
+            // latest date
+            // only update if:
+            //  It wouldn't do nothing if combined with the existing max
+            //  It wouldn't create 0 possible values
+            // HOWEVER, doing this with my daycount function means assign a min value
+            if (daycount(dataValue) > mins[1] && daycount(dataValue) <= maxs[1])
+              mins[1] = daycount(dataValue);
+            break;
+          case ">":
+            // earliest date
+            if (daycount(dataValue) < maxs[1] && daycount(dataValue) >= mins[1])
+              maxs[1] = daycount(dataValue);
+            break;
+          default:
+            break;
+        }
+        break;
+      case "malscore":
+        dataValue = parseFloat(dataValue);
+        if (!dataValue.isNaN && dataValue >= 1 && dataValue <= 10) {
+          // valid mal score
+          switch (cursymbol) {
+            case ":":
+              // exact
+              mins[2] = dataValue;
+              maxs[2] = dataValue;
+              break;
+            case "!":
+              // weird useless exclude case
+              excludeLists[3].push(dataValue);
+              break;
+            case "<":
+              // max score
+              // only update if:
+              //  It wouldn't do nothing if combined with the existing max
+              //  It wouldn't create 0 possible values
+              if (dataValue < maxs[2] && dataValue >= mins[2])
+                maxs[2] = dataValue;
+              break;
+            case ">":
+              // min score
+              if (dataValue > mins[2] && dataValue <= maxs[2])
+                mins[2] = dataValue;
+              break;
+            default:
+              break;
+          }
+        }
+        // TODO code in this and the score one. make sure this one allows decimals somehow
+        break;
+      case "score":
+        dataValue = parseInt(dataValue);
+        if (!dataValue.isNaN && dataValue >= 1 && dataValue <= 10) {
+          // valid score
+          switch (cursymbol) {
+            case ":":
+              // exact
+              mins[3] = dataValue;
+              maxs[3] = dataValue;
+              break;
+            case "!":
+              // weird useless exclude case
+              excludeLists[4].push(dataValue);
+              break;
+            case "<":
+              // max score
+              // only update if:
+              //  It wouldn't do nothing if combined with the existing max
+              //  It wouldn't create 0 possible values
+              if (dataValue < maxs[3] && dataValue >= mins[3])
+                maxs[3] = dataValue;
+              break;
+            case ">":
+              // min score
+              if (dataValue > mins[3] && dataValue <= maxs[3])
+                mins[3] = dataValue;
+              break;
+            default:
+              break;
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  if (
+    mins[0] == 0 &&
+    mins[1] == -Infinity &&
+    mins[2] == 0 &&
+    mins[3] == 0 &&
+    maxs[0] == Infinity &&
+    maxs[1] == Infinity &&
+    maxs[2] == 10 &&
+    maxs[3] == 10 &&
+    includeList.length == 0 &&
+    excludeLists[0].length == 0 &&
+    excludeLists[1].length == 0 &&
+    excludeLists[2].length == 0 &&
+    excludeLists[3].length == 0 &&
+    excludeLists[4].length == 0 &&
+    exactType == null
+  ) {
+    searchresults.hidden = true;
+    return false;
+  }
+  let sresults = [];
+  for (let e of options) {
+    if (
+      e.episodes >= mins[0] &&
+      e.episodes <= maxs[0] &&
+      !excludeLists[1].includes(e.episodes) &&
+      daycount(e.airstartdate) >= mins[1] &&
+      daycount(e.airstartdate) <= maxs[1] &&
+      !excludeLists[2].includes(daycount(e.airstartdate)) &&
+      e.MALscore >= mins[2] &&
+      e.MALscore <= maxs[2] &&
+      !excludeLists[3].includes(e.MALscore) &&
+      e.score >= mins[3] &&
+      e.score <= maxs[3] &&
+      !excludeLists[4].includes(e.score) &&
+      isSubSet(includeList, e.genres) &&
+      !hasAnyOverlap(excludeLists[0], e.genres) &&
+      (exactType == null || exactType == e.type)
+    ) {
+      sresults.push(e);
+    }
+  }
+  for (let e of sresults) {
+    pr = document.createElement("p");
+    pr.innerText = e.title;
+    pr.style.cursor = "pointer";
+    pr.style.margin = "2px";
+    pr.style.userSelect = "none";
+    pr.classList.add("searchresult");
+    pr.onclick = function () {
+      searchbar.value = this.innerText;
+      searchresults.hidden = true;
+    };
+    searchresults.insertBefore(
+      pr,
+      searchresults.childNodes[searchresults.childNodes.length]
+    );
+  }
+}
+
+function isSubSet(a, S) {
+  let result = true;
+  for (let e of a) {
+    result = result && S.includes(e);
+  }
+  return result;
+}
+
+function hasAnyOverlap(a, S) {
+  let result = false;
+  for (let e of a) {
+    result = result || S.includes(e);
+  }
+  return result;
 }
 
 function searchsubmission(i, j) {

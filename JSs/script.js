@@ -883,7 +883,10 @@ function assembleGroups() {
     "Gushing over Magical Girls",
     "Mahou Shoujo ni Akogarete 2nd Season",
   ]);
-  putInGroup("The Dangers in My Heart", "Boku no Kokoro no Yabai Yatsu Movie");
+  buildNewGroup("There's No Freaking Way I'll be Your Lover! Unless...", [
+    "There's No Freaking Way I'll be Your Lover! Unless...",
+    "Watashi ga Koibito ni Nareru Wake Nai jan, Muri Muri! (※Muri ja Nakatta!?) (TV Special)",
+  ]);
   putInGroup("JoJo's Bizarre Adventure", "Thus Spoke Kishibe Rohan");
   putInGroup("JoJo's Bizarre Adventure", "Steel Ball Run: JoJo's Bizarre Adventure");
   migrateGroup("Boruto", "Naruto");
@@ -892,7 +895,6 @@ function assembleGroups() {
     "Ano Hi Mita Hana no Namae wo Bokutachi wa Mada Shiranai.: Menma e no Tegami"
   );
   putInGroup("Beyond the Boundary", "Kyoukai no Kanata: Mini Gekijou");
-  putInGroup("Kaguya-sama", "Kaguya-sama wa Kokurasetai: Otona e no Kaidan");
   putInGroup("Made in Abyss", "Marulk's Daily Life");
   // groups.forEach((element) => {
   //   element.recalcMain();
