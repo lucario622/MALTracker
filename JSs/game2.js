@@ -26,7 +26,9 @@ function start() {
   });
   let searchresults = document.getElementById("searchresults");
   searchbar.addEventListener("blur", (event) => {
-    searchresults.hidden = true;
+    setTimeout(() => {
+      searchresults.hidden = true;
+    },100)
   });
   searchbar.addEventListener("focus", (event) => {
     if (searchresults.innerHTML != "") searchresults.hidden = false;
