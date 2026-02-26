@@ -86,8 +86,8 @@ function init() {
   newfileinput.type = "file";
   newfileinput.innerText =
     "Please drag and drop file to parse and make sure covers folder is in images folder";
-  insert(document.getElementById("mainbody"),newfileinput);
-  console.log(newfileinput)
+  insert(document.getElementById("mainbody"), newfileinput);
+  console.log(newfileinput);
   if (binds != null) {
     binds = JSON.parse(binds);
     window.onload = display;
@@ -671,6 +671,20 @@ function display() {
     if (covervar == undefined) {
       console.error(e.title);
     }
+    let dateSegment =
+      (defaultdatetoreadable(e.airstartdate) == "-"
+        ? "?"
+        : defaultdatetoreadable(e.airstartdate));
+    if (
+      defaultdatetoreadable(e.airstartdate) !=
+      defaultdatetoreadable(e.airenddate)
+    ) {
+      dateSegment +=
+        " to " +
+        (defaultdatetoreadable(e.airenddate) == "-"
+          ? "?"
+          : defaultdatetoreadable(e.airenddate));
+    }
     myitem.innerHTML =
       '<div class="leftpart"><img class="coverimg" src="../images/covers/' +
       covervar +
@@ -681,13 +695,7 @@ function display() {
       '</span><span class="malscore">' +
       (e.MALscore == 0 ? "?" : e.MALscore) +
       '</span></div><div class="lowerinfo"><span class="infolabel">Aired: </span>' +
-      (defaultdatetoreadable(e.airstartdate) == "-"
-        ? "?"
-        : defaultdatetoreadable(e.airstartdate)) +
-      " to " +
-      (defaultdatetoreadable(e.airenddate) == "-"
-        ? "?"
-        : defaultdatetoreadable(e.airenddate)) +
+      dateSegment +
       '<br><span class="infolabel">Status: </span>' +
       e.airStatus +
       '<br><span class="infolabel">Genres: </span>' +
