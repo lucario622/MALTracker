@@ -126,7 +126,7 @@ function reveal() {
     p.innerText += ` ${correctAnswers}/${curindex + 1}/${shuffledData.length}`;
   }
   setTimeout(() => {
-    mainclick.onclick = nextLevel;
+    mainclick.onclick = nextLevel; // prevent double-click moving on unintentionally
   }, 100);
   // add something to the panels
 

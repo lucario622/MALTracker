@@ -942,7 +942,7 @@ function assembleGroups() {
   ]);
   renameGroup("Nichijou - My Ordinary Life Episode 0","Nichijou - My Ordinary Life");
   forceGroup("Lord of Mysteries","Lord of Mysteries")
-  putInGroup("Lord of Mysteries","Guimi Zhi Zhu Tebie Pian: Liewu")
+  massPutInGroup("Lord of Mysteries",["Guimi Zhi Zhu Tebie Pian: Liewu","Guimi Zhi Zhu: Wu Mian Ren"])
   putInGroup("Assassination Classroom","Ansatsu Kyoushitsu Movie: Minna no Jikan")
   let sologroup = new EntryGroup();
   for (let j = 0; j < data.length; j++) {
