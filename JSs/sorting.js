@@ -1,4 +1,5 @@
 var arr = [];
+var arrPieces = [[],[],[],[],[],[]];
 var comparisonCount = 0;
 var myVar = 0;
 var sfwmode = false;
@@ -16,11 +17,12 @@ function start() {
   }
   makeDatas();
 
-  middlearray = data.toSorted(compareMALScore);
+  middlearray = data.toSorted(compareScores);
   arr = [];
   for (let i = 0; i < middlearray.length; i++) {
     if (middlearray[i].score > 0) {
       arr.push(middlearray[i]);
+      arrPieces[middlearray[i].score-5].push(middlearray[i])
     }
   }
   console.log(arr);
