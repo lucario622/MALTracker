@@ -4,6 +4,8 @@ var catSelect;
 var curSelected;
 var cw;
 var ch;
+var barGraph;
+var url;
 const axisOptions = [
   "airStatus",
   "type",
@@ -15,12 +17,16 @@ const axisOptions = [
   "title",
   "season",
   "year",
+  "episodes",
 ];
 function init() {
-  let myvar = window.location.search
-  myvar = new URLSearchParams(myvar)
-  curSelected = myvar.get('selected')
-  if (curSelected == null) curSelected = axisOptions[0]
+  url = window.location.search;
+  url = new URLSearchParams(url);
+  curSelected = url.get("selected");
+  if (curSelected == null) curSelected = axisOptions[0];
+  barGraph = url.get("bar");
+  if (barGraph == null) barGraph = false;
+  else barGraph = barGraph.length < 5;
   generalinit();
 }
 
@@ -37,10 +43,27 @@ function start() {
   catSelect = document.createElement("select");
   catSelect.name = "Cat Select";
   catSelect.addEventListener("change", function () {
-    window.location.search = "selected="+catSelect.value
+    url.set("selected", catSelect.value);
+    window.history.replaceState({}, "", window.location.pathname + "?" + url);
     graphit();
   });
   insert(document.getElementById("selectdiv"), catSelect);
+
+  let toggleLabel = document.createElement("label");
+  toggleLabel.textContent = "Bar Graph";
+  toggleLabel.style.color = "white";
+  let toggleInput = document.createElement("input");
+  toggleInput.type = "checkbox";
+  insert(toggleLabel, toggleInput);
+  insert(document.getElementById("selectdiv"), toggleLabel);
+  toggleInput.checked = barGraph;
+
+  toggleInput.onclick = () => {
+    barGraph = !barGraph;
+    url.set("bar", barGraph);
+    window.history.replaceState({}, "", window.location.pathname + "?" + url);
+    graphit();
+  };
 
   for (let i = 0; i < axisOptions.length; i++) {
     const option = document.createElement("option");
@@ -68,8 +91,6 @@ function graphit() {
   const field = catSelect.value;
   let cats = [];
   let catsCount = [];
-  cw = mainCanvas.width;
-  ch = mainCanvas.height;
   if (field == "title") {
     for (let e of data) {
       if (!cats.includes(e[field].toLowerCase().charAt(0))) {
@@ -127,23 +148,38 @@ function graphit() {
     }
   }
   let catscat = [];
+  let total = 0;
+  for (let i = 0; i < cats.length; i++) {
+    catscat.push([cats[i], catsCount[i]]);
+    total += catsCount[i];
+  }
+  console.log(cats);
+  console.log(catsCount);
+
+  if (barGraph) {
+    drawBarGraph(catscat);
+  } else {
+    drawPieGraph(catscat, total);
+  }
+}
+
+function drawPieGraph(catscat, total) {
+  cw = mainCanvas.width;
+  ch = mainCanvas.height;
+  catscat.sort((a, b) => {
+    return -Math.sign(a[1] - b[1]);
+  });
+  let curTotal = 0;
+  let colorarr = [];
+  let cats = [];
+  let catsCount = [];
   drawEllipse(
     cw * 0.75,
     ch * 0.5,
     cw * 0.2 + 1,
     cw * 0.2 + 1,
-    "rgb(237,237,237)"
+    "rgb(237,237,237)",
   );
-  let total = 0;
-  let curTotal = 0;
-  for (let i = 0; i < cats.length; i++) {
-    catscat.push([cats[i], catsCount[i]]);
-    total += catsCount[i];
-  }
-  catscat.sort((a, b) => {
-    return -Math.sign(a[1] - b[1]);
-  });
-  let colorarr = [];
   for (let i = 0; i < catscat.length; i++) {
     colorarr[i] =
       "rgb(" +
@@ -184,7 +220,7 @@ function graphit() {
         rectY + rectH / 2.5 + textH / 2,
         text,
         textH,
-        "rgb(237,237,237)"
+        "rgb(237,237,237)",
       );
     }
   } else {
@@ -216,7 +252,7 @@ function graphit() {
           rectY - 1,
           rectW + 2,
           rectH + 2,
-          "rgb(237,237,237)"
+          "rgb(237,237,237)",
         );
         drawRect(rectX, rectY, rectW, rectH, color);
         drawText(
@@ -224,7 +260,7 @@ function graphit() {
           rectY + rectH / 2.5 + textH / 2,
           text,
           textH,
-          "rgb(237,237,237)"
+          "rgb(237,237,237)",
         );
       }
     }
@@ -233,9 +269,9 @@ function graphit() {
   for (let i = 0; i < cats.length; i++) {
     let count = catsCount[i];
     let color = colorarr[i];
-    console.log(
-      "slice " + i + " is " + (count / total) * 360 + " degrees large"
-    );
+    // console.log(
+    //   "slice " + i + " is " + (count / total) * 360 + " degrees large",
+    // );
     drawEllipse(
       cw * 0.75,
       ch * 0.5,
@@ -243,12 +279,114 @@ function graphit() {
       cw * 0.2,
       color,
       (count / total) * 360,
-      (curTotal / total) * 360
+      (curTotal / total) * 360,
     );
     curTotal += count;
   }
-  console.log(cats);
-  console.log(catsCount);
+}
+
+function drawBarGraph(catscat) {
+  cw = mainCanvas.width;
+  ch = mainCanvas.height;
+  catscat.sort((a, b) => {
+    return Math.sign(a[0] - b[0]);
+  });
+  let barsArray = [];
+
+  let verticalSpace = ch - 50;
+
+  let maxBar = 0;
+
+  let allNums = true;
+
+  catscat.forEach((element) => {
+    if (isNaN(parseInt(element[0]))) {
+      allNums = false;
+    }
+  });
+
+  let i = 0;
+  catscat.forEach((element) => {
+    if (allNums) {
+      let element1 = parseInt(element[0]);
+      if (isNaN(element1)) element1 = element[0];
+      barsArray[element1] = element;
+    } else {
+      barsArray[i++] = element;
+    }
+
+    if (element[1] > maxBar) maxBar = element[1];
+  });
+  maxBar = maxBar*1.01
+  console.log(barsArray);
+
+  let offset = 0;
+  for (let i = 0; i < barsArray.length; i++) {
+    if (barsArray[i] != undefined) {
+      offset = i;
+      break;
+    }
+  }
+  let barCount = barsArray.length - offset;
+
+  let leftEdge = 50
+  let spacePerBar = (cw - leftEdge) / barCount;
+  console.log("Spaceperbar: "+spacePerBar)
+  if (spacePerBar < 20) {
+    spacePerBar = 20
+    // mainCanvas.width = leftEdge + 20*barCount;
+    // drawBarGraph(catscat);
+    // return;
+  }
+
+  let heightScale = verticalSpace / maxBar;
+  console.log("STUCK 1")
+
+
+  drawLine(leftEdge, 0, leftEdge, ch - 50, "white");
+  drawLine(leftEdge, ch - 50, cw, ch - 50, "white");
+
+  let tickOrder = 0
+  // sequence: [1,5,10,50,100,500,1000,5000,...]
+  let sequencer = (n) => (7.5+Math.pow(-1,n)*2.5)*(Math.pow(10,Math.ceil((n-2)/2)));
+  let seqN = 0
+  while (maxBar > tickOrder*20) {
+    tickOrder = sequencer(seqN);
+    seqN++;
+  }
+
+  for (let i = 0;i<maxBar;i+=tickOrder) {
+    drawLine(leftEdge-5,(ch-50-i*heightScale),leftEdge,(ch-50-i*heightScale),"white");
+    drawLine(leftEdge,(ch-50-i*heightScale),cw,(ch-50-i*heightScale),colors.NotAired)
+    drawText(leftEdge-5,(ch-50-i*heightScale)+5,i,20,"white","right");
+  }
+
+  for (let i = offset; i < barsArray.length; i++) {
+    let barX = leftEdge + (i - offset) * spacePerBar + spacePerBar * 0.05;
+    if (barsArray[i] != undefined)
+      drawRect(
+        barX,
+        ch - 50,
+        spacePerBar * 0.9,
+        -barsArray[i][1] * heightScale,
+        colors.NotAired,
+      );
+    let barLabel = barsArray[i];
+    if (barLabel == undefined) {
+      barLabel = i;
+    } else {
+      barLabel = barLabel[0]
+    }
+    drawText(
+      barX + spacePerBar * 0.45,
+      ch - 15,
+      barLabel,
+      40,
+      "white",
+      "center",
+      spacePerBar*0.9,
+    );
+  }
 }
 
 function drawEllipse(x, y, w, h, color = "red", degrees = 360, startangle = 0) {
@@ -262,16 +400,29 @@ function drawEllipse(x, y, w, h, color = "red", degrees = 360, startangle = 0) {
     h,
     (startangle / 180) * Math.PI,
     0,
-    (degrees / 180) * Math.PI
+    (degrees / 180) * Math.PI,
   );
   mainContext.lineTo(x, y);
   mainContext.fill();
 }
 
-function drawText(x, y, str, size, color = "red") {
+function drawText(
+  x,
+  y,
+  str,
+  size,
+  color = "red",
+  align = "left",
+  maxW = undefined,
+) {
   mainContext.fillStyle = color;
   mainContext.font = size + "px monospace, monospace";
-  mainContext.fillText(str, x, y);
+  mainContext.textAlign = align;
+  if (maxW == undefined) {
+    mainContext.fillText(str, x, y);
+  } else {
+    mainContext.fillText(str, x, y, maxW);
+  }
 }
 
 function drawRect(x, y, w, h, color = "red") {
@@ -284,4 +435,14 @@ function drawRect(x, y, w, h, color = "red") {
 
 function clear() {
   mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+}
+
+function drawLine(x1, y1, x2, y2, color = "red") {
+  mainContext.strokeStyle = color;
+
+  mainContext.beginPath();
+  mainContext.moveTo(x1, y1);
+  mainContext.lineTo(x2, y2);
+
+  mainContext.stroke();
 }
