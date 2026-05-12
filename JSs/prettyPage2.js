@@ -1,4 +1,20 @@
+var filecontent = "";
+var binds;
 var languageselected;
+var failcovercount = 0;
+var ensw;
+var jpsw;
+var folderselected = 0;
+var folders = [];
+var selectors = [];
+var optionss = [];
+var selectopen = 0;
+var nonzerocount;
+var checkstatuses;
+var groupstatuses;
+var filtvalues;
+var yeararray = [];
+var yeararray2 = [];
 
 function start() {
   languageselected = sessionStorage.getItem("lang");
@@ -72,22 +88,22 @@ function init() {
     e.preventDefault();
   });
 
-  for (let i = 0; i < filtboxarray[5].length; i++) {
-    const cur = filtboxarray[5][i];
-    lbl = document.createElement("label");
-    lbl.classList.add("option");
-    lbl.classList.add("stay1");
-    lbl.innerHTML +=
-      cur +
-      "<input name=genre id='genre" +
-      cur +
-      "' type='checkbox' class='stay1 genrebox' onclick='ts(this)'>";
-    spn = document.createElement("span");
-    spn.classList.add("stay1");
-    spn.classList.add("checkmark");
-    insert(lbl, spn);
-    insert(optionss[1], lbl);
-  }
+  // for (let i = 0; i < filtboxarray[5].length; i++) {
+  //   const cur = filtboxarray[5][i];
+  //   lbl = document.createElement("label");
+  //   lbl.classList.add("option");
+  //   lbl.classList.add("stay1");
+  //   lbl.innerHTML +=
+  //     cur +
+  //     "<input name=genre id='genre" +
+  //     cur +
+  //     "' type='checkbox' class='stay1 genrebox' onclick='ts(this)'>";
+  //   spn = document.createElement("span");
+  //   spn.classList.add("stay1");
+  //   spn.classList.add("checkmark");
+  //   insert(lbl, spn);
+  //   insert(optionss[1], lbl);
+  // }
 
   yeararray = [];
   yeararray2 = [];
@@ -107,201 +123,201 @@ function init() {
     [...filtboxarray[3]],
   ];
 
-  for (let i = 0; i < yeararray.length; i++) {
-    const cur = yeararray[i];
-    lbl = document.createElement("label");
-    lbl.classList.add("smalloption");
-    lbl.classList.add("stay1");
-    lbl.classList.add("stay2");
-    lbl.innerHTML +=
-      cur +
-      "<input name=year id='year" +
-      cur +
-      "' type='checkbox' class='stay1 stay2 yearbox'>";
-    spn = document.createElement("span");
-    spn.classList.add("stay1");
-    spn.classList.add("stay2");
-    spn.classList.add("checkmark");
-    insert(lbl, spn);
-    insert(document.getElementById("yearoptions"), lbl);
-  }
+  // for (let i = 0; i < yeararray.length; i++) {
+  //   const cur = yeararray[i];
+  //   lbl = document.createElement("label");
+  //   lbl.classList.add("smalloption");
+  //   lbl.classList.add("stay1");
+  //   lbl.classList.add("stay2");
+  //   lbl.innerHTML +=
+  //     cur +
+  //     "<input name=year id='year" +
+  //     cur +
+  //     "' type='checkbox' class='stay1 stay2 yearbox'>";
+  //   spn = document.createElement("span");
+  //   spn.classList.add("stay1");
+  //   spn.classList.add("stay2");
+  //   spn.classList.add("checkmark");
+  //   insert(lbl, spn);
+  //   insert(document.getElementById("yearoptions"), lbl);
+  // }
 
-  for (i = 0; i < 4; i++) {
-    let rect = selectors[i].getBoundingClientRect();
-    optionss[i].style.left = rect.left + "px";
-    selectors[i].addEventListener("focus", (e) => {
-      document.getElementById(
-        e.target.id.substring(0, e.target.id.length - 6) + "options",
-      ).style.display = "grid";
-      document
-        .getElementById(
-          e.target.id.substring(0, e.target.id.length - 6) + "options",
-        )
-        .focus({ preventScroll: true });
-    });
-  }
-  moreopsdiv = document.getElementById("moreoptions");
-  filterbtn = document.getElementById("submitbtn");
-  let rect = filterbtn.getBoundingClientRect();
-  let rect1 = document.getElementById("mainbody").getBoundingClientRect();
-  moreopsdiv.style.right = rect1.width - rect.right + "px";
-  document.getElementById("mainbody").addEventListener("click", (e) => {
-    if (!e.target.classList.contains("stay1")) {
-      for (let j = 0; j < optionss.length; j++) {
-        optionss[j].style.display = "none";
-      }
-    }
-    if (!e.target.classList.contains("stay2")) {
-      for (let j = 0; j < smalloptionss.length; j++) {
-        smalloptionss[j].style.display = "none";
-      }
-    }
-    if (e.target.classList.contains("selector")) {
-      document.getElementById(
-        e.target.id.substring(0, e.target.id.length - 6) + "options",
-      ).style.display = "grid";
-    }
-    if (e.target.classList.contains("smallector")) {
-      document.getElementById(
-        e.target.id.substring(0, e.target.id.length - 6) + "options",
-      ).style.display = "grid";
-    }
-    if (e.target.classList.contains("nearlyselector")) {
-      document.getElementById(
-        e.target.id.substring(0, e.target.id.length - 6) + "options",
-      ).style.display = "flex";
-    }
+  // for (i = 0; i < 4; i++) {
+  //   let rect = selectors[i].getBoundingClientRect();
+  //   optionss[i].style.left = rect.left + "px";
+  //   selectors[i].addEventListener("focus", (e) => {
+  //     document.getElementById(
+  //       e.target.id.substring(0, e.target.id.length - 6) + "options",
+  //     ).style.display = "grid";
+  //     document
+  //       .getElementById(
+  //         e.target.id.substring(0, e.target.id.length - 6) + "options",
+  //       )
+  //       .focus({ preventScroll: true });
+  //   });
+  // }
+  // moreopsdiv = document.getElementById("moreoptions");
+  // filterbtn = document.getElementById("submitbtn");
+  // let rect = filterbtn.getBoundingClientRect();
+  // let rect1 = document.getElementById("mainbody").getBoundingClientRect();
+  // moreopsdiv.style.right = rect1.width - rect.right + "px";
+  // document.getElementById("mainbody").addEventListener("click", (e) => {
+  //   if (!e.target.classList.contains("stay1")) {
+  //     for (let j = 0; j < optionss.length; j++) {
+  //       optionss[j].style.display = "none";
+  //     }
+  //   }
+  //   if (!e.target.classList.contains("stay2")) {
+  //     for (let j = 0; j < smalloptionss.length; j++) {
+  //       smalloptionss[j].style.display = "none";
+  //     }
+  //   }
+  //   if (e.target.classList.contains("selector")) {
+  //     document.getElementById(
+  //       e.target.id.substring(0, e.target.id.length - 6) + "options",
+  //     ).style.display = "grid";
+  //   }
+  //   if (e.target.classList.contains("smallector")) {
+  //     document.getElementById(
+  //       e.target.id.substring(0, e.target.id.length - 6) + "options",
+  //     ).style.display = "grid";
+  //   }
+  //   if (e.target.classList.contains("nearlyselector")) {
+  //     document.getElementById(
+  //       e.target.id.substring(0, e.target.id.length - 6) + "options",
+  //     ).style.display = "flex";
+  //   }
 
-    if (e.target.classList.contains("nearlynearlyselector")) {
-      document.getElementById(
-        e.target.parentElement.id.substring(
-          0,
-          e.target.parentElement.id.length - 6,
-        ) + "options",
-      ).style.display = "flex";
-    }
-  });
+  //   if (e.target.classList.contains("nearlynearlyselector")) {
+  //     document.getElementById(
+  //       e.target.parentElement.id.substring(
+  //         0,
+  //         e.target.parentElement.id.length - 6,
+  //       ) + "options",
+  //     ).style.display = "flex";
+  //   }
+  // });
 
-  typeops = document.getElementsByClassName("typebox");
-  for (let i = 0; i < typeops.length; i++) {
-    typeops[i].addEventListener("change", (e) => {
-      let checkcount = 0;
-      let firsttype = "Type";
-      for (let k = 0; k < typeops.length; k++) {
-        checkcount += typeops[k].checked;
-        if (typeops[k].checked && firsttype == "Type")
-          firsttype = typeops[k].id.substring(4);
-      }
-      if (checkcount > 1) {
-        selectors[0].textContent = firsttype + " + [" + (checkcount - 1) + "]";
-      } else {
-        selectors[0].textContent = firsttype;
-      }
-    });
-  }
+  // typeops = document.getElementsByClassName("typebox");
+  // for (let i = 0; i < typeops.length; i++) {
+  //   typeops[i].addEventListener("change", (e) => {
+  //     let checkcount = 0;
+  //     let firsttype = "Type";
+  //     for (let k = 0; k < typeops.length; k++) {
+  //       checkcount += typeops[k].checked;
+  //       if (typeops[k].checked && firsttype == "Type")
+  //         firsttype = typeops[k].id.substring(4);
+  //     }
+  //     if (checkcount > 1) {
+  //       selectors[0].textContent = firsttype + " + [" + (checkcount - 1) + "]";
+  //     } else {
+  //       selectors[0].textContent = firsttype;
+  //     }
+  //   });
+  // }
 
-  statusops = document.getElementsByClassName("statusbox");
-  for (let i = 0; i < statusops.length; i++) {
-    statusops[i].addEventListener("change", (e) => {
-      let checkcount = 0;
-      let firststatus = "Status";
-      for (let k = 0; k < statusops.length; k++) {
-        checkcount += statusops[k].checked;
-        if (statusops[k].checked && firststatus == "Status")
-          firststatus = statusops[k].id.substring(6);
-      }
-      if (checkcount > 1) {
-        selectors[2].textContent =
-          firststatus + " + [" + (checkcount - 1) + "]";
-      } else {
-        selectors[2].textContent = firststatus;
-      }
-    });
-  }
+  // statusops = document.getElementsByClassName("statusbox");
+  // for (let i = 0; i < statusops.length; i++) {
+  //   statusops[i].addEventListener("change", (e) => {
+  //     let checkcount = 0;
+  //     let firststatus = "Status";
+  //     for (let k = 0; k < statusops.length; k++) {
+  //       checkcount += statusops[k].checked;
+  //       if (statusops[k].checked && firststatus == "Status")
+  //         firststatus = statusops[k].id.substring(6);
+  //     }
+  //     if (checkcount > 1) {
+  //       selectors[2].textContent =
+  //         firststatus + " + [" + (checkcount - 1) + "]";
+  //     } else {
+  //       selectors[2].textContent = firststatus;
+  //     }
+  //   });
+  // }
 
-  genreops = document.getElementsByClassName("genrebox");
-  for (let i = 0; i < genreops.length; i++) {
-    genreops[i].addEventListener("change", (e) => {
-      let checkcount = 0;
-      let firstgenre = "Genre";
-      for (let k = 0; k < genreops.length; k++) {
-        checkcount += genreops[k].checked || genreops[k].readOnly;
-        if (
-          (genreops[k].checked || genreops[k].readOnly) &&
-          firstgenre == "Genre"
-        )
-          firstgenre = genreops[k].id.substring(5);
-      }
-      if (checkcount > 1) {
-        selectors[1].textContent = firstgenre + " + [" + (checkcount - 1) + "]";
-      } else {
-        selectors[1].textContent = firstgenre;
-      }
-    });
-  }
+  // genreops = document.getElementsByClassName("genrebox");
+  // for (let i = 0; i < genreops.length; i++) {
+  //   genreops[i].addEventListener("change", (e) => {
+  //     let checkcount = 0;
+  //     let firstgenre = "Genre";
+  //     for (let k = 0; k < genreops.length; k++) {
+  //       checkcount += genreops[k].checked || genreops[k].readOnly;
+  //       if (
+  //         (genreops[k].checked || genreops[k].readOnly) &&
+  //         firstgenre == "Genre"
+  //       )
+  //         firstgenre = genreops[k].id.substring(5);
+  //     }
+  //     if (checkcount > 1) {
+  //       selectors[1].textContent = firstgenre + " + [" + (checkcount - 1) + "]";
+  //     } else {
+  //       selectors[1].textContent = firstgenre;
+  //     }
+  //   });
+  // }
 
-  sortops = document.getElementsByClassName("sortrad");
-  for (let i = 0; i < sortops.length; i++) {
-    sortops[i].addEventListener("change", (e) => {
-      selectors[3].textContent = e.target.id.substring(4);
-    });
-  }
+  // sortops = document.getElementsByClassName("sortrad");
+  // for (let i = 0; i < sortops.length; i++) {
+  //   sortops[i].addEventListener("change", (e) => {
+  //     selectors[3].textContent = e.target.id.substring(4);
+  //   });
+  // }
 
-  seasonops = document.getElementsByClassName("seasonbox");
-  for (let i = 0; i < seasonops.length; i++) {
-    seasonops[i].addEventListener("change", (e) => {
-      let checkcount = 0;
-      let firstseason = "Season";
-      for (let k = 0; k < seasonops.length; k++) {
-        checkcount += seasonops[k].checked;
-        if (seasonops[k].checked && firstseason == "Season")
-          firstseason = seasonops[k].id.substring(6);
-      }
-      if (checkcount > 1) {
-        selectors[4].textContent =
-          firstseason + " + [" + (checkcount - 1) + "]";
-      } else {
-        selectors[4].textContent = firstseason;
-      }
-    });
-  }
+  // seasonops = document.getElementsByClassName("seasonbox");
+  // for (let i = 0; i < seasonops.length; i++) {
+  //   seasonops[i].addEventListener("change", (e) => {
+  //     let checkcount = 0;
+  //     let firstseason = "Season";
+  //     for (let k = 0; k < seasonops.length; k++) {
+  //       checkcount += seasonops[k].checked;
+  //       if (seasonops[k].checked && firstseason == "Season")
+  //         firstseason = seasonops[k].id.substring(6);
+  //     }
+  //     if (checkcount > 1) {
+  //       selectors[4].textContent =
+  //         firstseason + " + [" + (checkcount - 1) + "]";
+  //     } else {
+  //       selectors[4].textContent = firstseason;
+  //     }
+  //   });
+  // }
 
-  yearops = document.getElementsByClassName("yearbox");
-  for (let i = 0; i < yearops.length; i++) {
-    yearops[i].addEventListener("change", (e) => {
-      let checkcount = 0;
-      let firstyear = "Year";
-      for (let k = 0; k < yearops.length; k++) {
-        checkcount += yearops[k].checked;
-        if (yearops[k].checked && firstyear == "Year")
-          firstyear = yearops[k].id.substring(4);
-      }
-      if (checkcount > 1) {
-        selectors[5].textContent = firstyear + " + [" + (checkcount - 1) + "]";
-      } else {
-        selectors[5].textContent = firstyear;
-      }
-    });
-  }
+  // yearops = document.getElementsByClassName("yearbox");
+  // for (let i = 0; i < yearops.length; i++) {
+  //   yearops[i].addEventListener("change", (e) => {
+  //     let checkcount = 0;
+  //     let firstyear = "Year";
+  //     for (let k = 0; k < yearops.length; k++) {
+  //       checkcount += yearops[k].checked;
+  //       if (yearops[k].checked && firstyear == "Year")
+  //         firstyear = yearops[k].id.substring(4);
+  //     }
+  //     if (checkcount > 1) {
+  //       selectors[5].textContent = firstyear + " + [" + (checkcount - 1) + "]";
+  //     } else {
+  //       selectors[5].textContent = firstyear;
+  //     }
+  //   });
+  // }
 
-  ratingops = document.getElementsByClassName("ratingbox");
-  for (let i = 0; i < ratingops.length; i++) {
-    ratingops[i].addEventListener("change", (e) => {
-      let checkcount = 0;
-      let firstrating = "Rating";
-      for (let k = 0; k < ratingops.length; k++) {
-        checkcount += ratingops[k].checked;
-        if (ratingops[k].checked && firstrating == "Rating")
-          firstrating = ratingops[k].id.substring(6);
-      }
-      if (checkcount > 1) {
-        selectors[6].textContent =
-          firstrating + " + [" + (checkcount - 1) + "]";
-      } else {
-        selectors[6].textContent = firstrating;
-      }
-    });
-  }
+  // ratingops = document.getElementsByClassName("ratingbox");
+  // for (let i = 0; i < ratingops.length; i++) {
+  //   ratingops[i].addEventListener("change", (e) => {
+  //     let checkcount = 0;
+  //     let firstrating = "Rating";
+  //     for (let k = 0; k < ratingops.length; k++) {
+  //       checkcount += ratingops[k].checked;
+  //       if (ratingops[k].checked && firstrating == "Rating")
+  //         firstrating = ratingops[k].id.substring(6);
+  //     }
+  //     if (checkcount > 1) {
+  //       selectors[6].textContent =
+  //         firstrating + " + [" + (checkcount - 1) + "]";
+  //     } else {
+  //       selectors[6].textContent = firstrating;
+  //     }
+  //   });
+  // }
 
   if (languageselected == 0) {
     jpsw.classList.remove("active");
@@ -351,9 +367,9 @@ function swln() {
 }
 
 function display() {
-  d.innerText = "";
-  p.innerHTML = "";
-  document.getElementsByClassName("itemcontainer")[0].innerHTML = "";
+  // d.innerText = "";
+  // p.innerHTML = "";
+  document.getElementsByClassName("items")[0].innerHTML = "";
 
   let sorttarget = document
     .querySelector('input[name="sort"]:checked')
@@ -423,10 +439,12 @@ function display() {
   groupstatuses.push(temparray);
   let results = [];
   for (let e of data) {
-    if (passfail(e)) {
-      results.push(e);
-      count++;
-    }
+    results.push(e);
+    count++;
+    // if (passfail(e)) {
+    //   results.push(e);
+    //   count++;
+    // }
   }
   for (let e of results) {
     myitem = document.createElement("div");
@@ -490,8 +508,7 @@ function display() {
         covervar = binds[temptitle];
       } else {
         covervar = "../fallback.jpg";
-        console.log("vv covervar == undefined");
-        console.log(e.title);
+        failcovercount++;
       }
     }
     let dubcount = 0;
@@ -533,55 +550,36 @@ function display() {
           ? "?"
           : defaultdatetoreadable(e.airenddate));
     }
+    arr_in = ["Watching", "On-Hold", "Plan to Watch", "Dropped", "Completed"];
+    arr_out = ["Watching", "On-Hold", "Planned", "Dropped", "Watched"];
     myitem.innerHTML =
       '<div class="poster tooltipstered"><span><img src="../images/covers/' +
       covervar +
       '"></span></div><div class="info"><div class="name"><a class="d-title">' +
       e.title +
-      '</a></div><div class="detail">';
-    /*
-    myitem.innerHTML =
-      '<div class="leftpart"><img class="coverimg" src="../images/covers/' +
-      covervar +
-      '"><div class="infobtn"> <img class="infoicon" src="../images/info.svg"><div class="lilbridge"></div><div class="information"><span class="infotitle">' +
-      e.title +
-      '</span><div class="shortstats"><span class="rated">' +
-      e.rated +
-      '</span><span class="malscore">' +
-      (e.MALscore == 0 ? "?" : e.MALscore) +
-      '</span></div><div class="lowerinfo"><span class="infolabel">Aired: </span>' +
-      dateSegment +
-      '<br><span class="infolabel">Status: </span>' +
-      e.airStatus +
-      '<br><span class="infolabel">Genres: </span>' +
-      e.genres.join(", ") +
-      '</div></div></img></div></div><div class="rightpart"><div class="toprow"><span class="fake-dropdown">' +
-      e.status +
-      '</span><img src="../images/eye.svg" class="eyebtn"></img></div><span class="title">' +
-      e.title +
-      '</span><div class="epinfo"><span ' +
-      (subcount == 0 ? "hidden " : "") +
-      'class="subcount">CC ' +
+      '</a></div><div class="detail"><div class="folder dropdown favourite"><div class="folder-toggle folder-text-' +
+      (arr_in.indexOf(e.status) + 1) +
+      '"><span class="folder-name">' +
+      arr_out[arr_in.indexOf(e.status)] +
+      '</span></div></div><div class="ep"> <span ' +
+      (subcount == 0 ? "hidden=true" : "") +
+      '><i class="fa-solid fa-closed-captioning"></i> CC' +
       subcount +
-      "</span><span " +
-      (dubcount == 0 ? "hidden " : "") +
-      'class="dubcount">' +
+      ' </span><span ' +
+      (dubcount == 0 ? "hidden=true" : "") +
+      '><img src="../images/microphone2.svg"></img> ' +
       dubcount +
-      "</span><span " +
-      (e.type == "Movie" || e.episodes == 0 ? "hidden " : "") +
-      'class="totalcount">' +
-      e.episodes +
+      " </span> <span>" +
+      (e.episodes == 0 ? "?" : e.episodes) +
+      ' EPS</span><span class="current"> <i class="fa-solid fa-bookmark"></i> ' +
+      (e.watchedepisodes == 0 ? "Not Played yet" : e.watchedepisodes) +
       "</span></div></div>";
-    */
-    myitem.getElementsByClassName("title")[0].textContent = e.title;
     myitem.onclick = function () {
       localStorage.setItem("transfer", e.title);
       window.open("PrettyDetails.html", "_blank").focus();
     };
-    insert(document.getElementsByClassName("itemcontainer")[0], myitem);
+    insert(document.getElementsByClassName("items", "scaff")[0], myitem);
   }
-  document.getElementById("resultcount").innerText = count + " anime";
-  console.log(count);
 }
 
 function certaincondition(val, i, j, e) {
