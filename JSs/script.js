@@ -478,7 +478,7 @@ class EntryGroup {
     if (this.entries[0].title.indexOf(":") > 2) {
       this.groupName = this.entries[0].title.substring(
         0,
-        this.entries[0].title.indexOf(":")
+        this.entries[0].title.indexOf(":"),
       );
     }
     this.determinestatus();
@@ -507,7 +507,7 @@ function shouldGroup(a, b) {
     astr.substring(0, astr.lastIndexOf(" ")) ==
       bstr.substring(
         0,
-        astr.substring(0, astr.lastIndexOf(" ")).length //
+        astr.substring(0, astr.lastIndexOf(" ")).length, //
       )
   ) {
     // tries to ignore anything in parentheses at the end of A. eg(Jojo's Bizzare Adventure (2012), Jojo's Bizzare Adventure: Stardust Crusaders) -> true
@@ -551,7 +551,7 @@ function shouldGroupGroup(g, b) {
     stra.substring(0, stra.lastIndexOf(" ")) ==
       strb.substring(
         0,
-        stra.substring(0, stra.lastIndexOf(" ")).length //
+        stra.substring(0, stra.lastIndexOf(" ")).length, //
       )
   ) {
     // tries to ignore anything in parentheses at the end of A. eg(Jojo's Bizzare Adventure (2012), Jojo's Bizzare Adventure: Stardust Crusaders) -> true
@@ -694,7 +694,7 @@ function putInGroup(grouptitle, itemtitle) {
       itemtitle +
         " not found, name must have changed, just remove that bit of hard coding. (Tried to put in group " +
         grouptitle +
-        ")"
+        ")",
     );
   } else {
     groups[grindex].add(groups[itindex].mainEntry);
@@ -714,7 +714,7 @@ function renameGroup(grouptitle, newtitle) {
       grouptitle +
         ' not found and therefore could not rename to "' +
         newtitle +
-        '"'
+        '"',
     );
     return;
   }
@@ -859,7 +859,7 @@ function assembleGroups() {
   // gotta love some hard coding
   putInGroup(
     "The Irregular at Magic High School",
-    "The Honor Student at Magic High School"
+    "The Honor Student at Magic High School",
   );
   forceUnGroup("Magic Maker: How to Make Magic in Another World");
   disbandGroup("The Melancholy of Haruhi Suzumiya");
@@ -875,7 +875,7 @@ function assembleGroups() {
   putInGroup("Laid-Back Camp", "Room Camp");
   putInGroup(
     "Laid-Back Camp",
-    "Room Camp: Saunas and Grub and Three-Wheeler Bikes"
+    "Room Camp: Saunas and Grub and Three-Wheeler Bikes",
   );
   disbandGroup("Monster");
   putInGroup("That Time I Got Reincarnated as a Slime", "The Slime Diaries");
@@ -888,11 +888,14 @@ function assembleGroups() {
     "Watashi ga Koibito ni Nareru Wake Nai jan, Muri Muri! (※Muri ja Nakatta!?) (TV Special)",
   ]);
   putInGroup("JoJo's Bizarre Adventure", "Thus Spoke Kishibe Rohan");
-  putInGroup("JoJo's Bizarre Adventure", "Steel Ball Run: JoJo's Bizarre Adventure");
+  putInGroup(
+    "JoJo's Bizarre Adventure",
+    "Steel Ball Run: JoJo's Bizarre Adventure",
+  );
   migrateGroup("Boruto", "Naruto");
   putInGroup(
     "Anohana",
-    "Ano Hi Mita Hana no Namae wo Bokutachi wa Mada Shiranai.: Menma e no Tegami"
+    "Ano Hi Mita Hana no Namae wo Bokutachi wa Mada Shiranai.: Menma e no Tegami",
   );
   putInGroup("Beyond the Boundary", "Kyoukai no Kanata: Mini Gekijou");
   putInGroup("Made in Abyss", "Marulk's Daily Life");
@@ -921,7 +924,7 @@ function assembleGroups() {
   rerecruit("Danganronpa");
   putInGroup(
     "Danganronpa",
-    "Super Danganronpa 2.5: Nagito Komaeda and the Destroyer of the World"
+    "Super Danganronpa 2.5: Nagito Komaeda and the Destroyer of the World",
   );
   renameGroup("Food Wars! The Second Plate", "Food Wars!");
   disbandGroup("Food Wars! The Third Plate");
@@ -940,10 +943,16 @@ function assembleGroups() {
     "Kizumonogatari Part 3: Cold-Blooded",
     "Nekomonogatari Black",
   ]);
-  renameGroup("Nichijou - My Ordinary Life Episode 0","Nichijou - My Ordinary Life");
-  forceGroup("Lord of Mysteries","Lord of Mysteries")
-  putInGroup("Lord of Mysteries","Guimi Zhi Zhu Tebie Pian: Liewu")
-  putInGroup("Assassination Classroom","Ansatsu Kyoushitsu Movie: Minna no Jikan")
+  renameGroup(
+    "Nichijou - My Ordinary Life Episode 0",
+    "Nichijou - My Ordinary Life",
+  );
+  forceGroup("Lord of Mysteries", "Lord of Mysteries");
+  putInGroup("Lord of Mysteries", "Guimi Zhi Zhu Tebie Pian: Liewu");
+  putInGroup(
+    "Assassination Classroom",
+    "Ansatsu Kyoushitsu Movie: Minna no Jikan",
+  );
   let sologroup = new EntryGroup();
   for (let j = 0; j < data.length; j++) {
     const e = data[j];
@@ -1207,6 +1216,17 @@ class Entry {
 
   determinePercentCompletion() {
     return this.determineProgressLen() / this.determineLen();
+  }
+
+  fieldHasValue(field) {
+    switch (typeof this[field]) {
+      case "string":
+        return this[field] != "";
+        break;
+      case "number":
+        return this[field] != 0;
+        break;
+    }
   }
 }
 
@@ -1716,7 +1736,7 @@ function testdaycount(e) {
   let dc = daycount(e);
   if (dw == dc) {
     console.log(
-      "daycountworking(e) works for date " + defaultdatetoreadable(e)
+      "daycountworking(e) works for date " + defaultdatetoreadable(e),
     );
   } else {
     console.error(
@@ -1731,7 +1751,7 @@ function testdaycount(e) {
         ") = " +
         dc +
         "\n\tit gave the day count for " +
-        defaultdatetoreadable(ndaysbefore(curdate, dw))
+        defaultdatetoreadable(ndaysbefore(curdate, dw)),
     );
   }
 }
@@ -3160,7 +3180,7 @@ function parseAllTextGen() {
             // Episode Count is known, so count out how long it will be until it finishes, assuming one episode releases every 7 days
             if (
               daycount(
-                ndaysafter(item.airstartdate, (item.episodes - 1) * 7)
+                ndaysafter(item.airstartdate, (item.episodes - 1) * 7),
               ) >= 0 &&
               item.airStatus == "Airing"
             ) {
@@ -3168,7 +3188,7 @@ function parseAllTextGen() {
             } else {
               item.airenddate = ndaysafter(
                 item.airstartdate,
-                (item.episodes - 1) * 7
+                (item.episodes - 1) * 7,
               );
             }
           } else {
@@ -3194,7 +3214,7 @@ function parseAllTextGen() {
               // Despite not existing yet, we already know the number of episodes and the start date
               item.airenddate = ndaysafter(
                 item.airstartdate,
-                (item.episodes - 1) * 7
+                (item.episodes - 1) * 7,
               );
             } else {
               // We know the start date but not the number of episodes, use 12
@@ -3487,7 +3507,7 @@ function parseAllText() {
           } else {
             item.airenddate = ndaysafter(
               item.airstartdate,
-              (item.episodes - 1) * 7
+              (item.episodes - 1) * 7,
             );
           }
         } else {
@@ -3512,7 +3532,7 @@ function parseAllText() {
             // Despite not existing yet, we already know the number of episodes and the start date
             item.airenddate = ndaysafter(
               item.airstartdate,
-              (item.episodes - 1) * 7
+              (item.episodes - 1) * 7,
             );
           } else {
             // We know the start date but not the number of episodes, use 12
@@ -4060,14 +4080,14 @@ function placeFiltBoxes() {
 function insert(container, item) {
   container.insertBefore(
     item,
-    container.childNodes[container.childNodes.length]
+    container.childNodes[container.childNodes.length],
   );
 }
 
 function nInsert(container, item, n = 0) {
   container.insertBefore(
     item,
-    container.childNodes[Math.min(container.childNodes.length, n)]
+    container.childNodes[Math.min(container.childNodes.length, n)],
   );
 }
 
