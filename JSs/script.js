@@ -478,7 +478,7 @@ class EntryGroup {
     if (this.entries[0].title.indexOf(":") > 2) {
       this.groupName = this.entries[0].title.substring(
         0,
-        this.entries[0].title.indexOf(":"),
+        this.entries[0].title.indexOf(":"),,
       );
     }
     this.determinestatus();
@@ -948,11 +948,10 @@ function assembleGroups() {
     "Nichijou - My Ordinary Life",
   );
   forceGroup("Lord of Mysteries", "Lord of Mysteries");
-  putInGroup("Lord of Mysteries", "Guimi Zhi Zhu Tebie Pian: Liewu");
-  putInGroup(
-    "Assassination Classroom",
-    "Ansatsu Kyoushitsu Movie: Minna no Jikan",
-  );
+  massPutInGroup("Lord of Mysteries", [
+    "Guimi Zhi Zhu Tebie Pian: Liewu",
+    "Guimi Zhi Zhu: Wu Mian Ren",
+  ]);
   let sologroup = new EntryGroup();
   for (let j = 0; j < data.length; j++) {
     const e = data[j];
@@ -3846,6 +3845,36 @@ function compareDatas(olddata, newdata) {
                 ) {
                   pr1.style.color = "red";
                 }
+              } else if (
+                isDate(Object.entries(e1)[i][1]) ||
+                isDate(Object.entries(e2)[i][1])
+              ) {
+                if (
+                  daycount(Object.entries(e1)[i][1]) <
+                  daycount(Object.entries(e2)[i][1])
+                ) {
+                  pr1.style.color = colors.Watching;
+                } else if (
+                  daycount(Object.entries(e1)[i][1]) >
+                  daycount(Object.entries(e2)[i][1])
+                ) {
+                  pr1.style.color = "red";
+                }
+              } else if (Object.entries(e1)[i][0] == "premiered") {
+                const seasonValues = ["Winter", "Spring", "Summer", "Fall", ""];
+                let premier_split1 = Object.entries(e1)[i][1].split(" ");
+                let premier_split2 = Object.entries(e2)[i][1].split(" ");
+                let premier_value1 = seasonValues.indexOf(premier_split1[0]);
+                let premier_value2 = seasonValues.indexOf(premier_split2[0]);
+                premier_value1 =
+                  parseInt(premier_split1[1]) * 10 + premier_value1;
+                premier_value2 =
+                  parseInt(premier_split2[1]) * 10 + premier_value2;
+                if (premier_value1 > premier_value2) {
+                  pr1.style.color = colors.Watching;
+                } else if (premier_value1 < premier_value2) {
+                  pr1.style.color = "red";
+                }
               } else {
                 if (Object.entries(e1)[i][1] < Object.entries(e2)[i][1]) {
                   pr1.style.color = colors.Watching;
@@ -3855,6 +3884,7 @@ function compareDatas(olddata, newdata) {
                   pr1.style.color = "red";
                 }
               }
+
               if (
                 isDate(Object.entries(e1)[i][1]) ||
                 isDate(Object.entries(e2)[i][1])
