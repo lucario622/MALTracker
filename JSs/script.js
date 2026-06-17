@@ -478,7 +478,7 @@ class EntryGroup {
     if (this.entries[0].title.indexOf(":") > 2) {
       this.groupName = this.entries[0].title.substring(
         0,
-        this.entries[0].title.indexOf(":"),,
+        this.entries[0].title.indexOf(":"),
       );
     }
     this.determinestatus();
